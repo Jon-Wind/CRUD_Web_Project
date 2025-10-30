@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filipino Recipes - Home</title>    
+
+    <!-- Google Fonts: Asar for a distinctive look - Used for logo and headings -->
+    <link href="https://fonts.googleapis.com/css2?family=Asar&display=swap" rel="stylesheet">
+
+    <!-- Link to external CSS - Contains all styling for the website -->
+    <link rel="stylesheet" href="styles.css">
+    
+</head>
+<body>
+
+    <!-- Main container - Provides overall structure for the page -->
+    <div class="grid-container">
+
+    <!-- Header Section - Contains logo and navigation -->
+    <header class="header" role="banner">
+        <!-- Logo with home link - Uses food emoji and text -->
+        <div class="logo">
+            <a href="index.html" class="logo-link" aria-label="Home page">&#127836; Filipino Recipes</a>
+        </div>
+    
+        <!-- Hamburger menu icon - Only visible on mobile devices -->
+        <div class="nav-toggle" aria-label="Toggle navigation menu" role="button" tabindex="0" aria-expanded="false">&#9776;</div>
+        
+        <!-- Navigation links - Primary site navigation -->
+        <nav class="nav-links" aria-label="Main navigation">
+            <a href="add-recipe.html" class="btn-link">Add a recipe</a>
+            <a href="about-this.html" class="btn-link">About</a>
+            <a href="contact.html" class="btn-link">Contact</a>
+        </nav>
+    </header>
+    
+
+
+
+    
+        <!-- Main Content - Recipe card grid using CSS Grid layout -->
+        <main class="content grid-4-col" role="main">
+
+            <!-- Recipe Card Component - Will be dynamically generated in Flask version -->
+            <!-- Each card represents a single recipe with category, title, description, and image -->
+            <article class="card" data-category="Main Course" data-recipe-id="1">
+                <img src="images/about.webp" alt="Adobo served with rice" class="card-image">
+                <header class="card-header">
+                    <p class="category">Main Course</p>
+                    <h3><a href="#" class="recipe-link">Adobo</a></h3>
+                </header>
+                <div class="card-body">
+                    <p class="recipe-short-des">A savoury dish of marinated pork or chicken simmered in soy sauce, vinegar, and garlic.</p>
+                </div>
+            </article>
+            
+            <article class="card" data-category="Main Course" data-recipe-id="3">
+                <img src="images/lumpia.jpg" alt="Plate of lumpia spring rolls" class="card-image">
+                <header class="card-header">
+                    <p class="category">Main Course</p>
+                    <h3><a href="recipe-detail.html" class="recipe-link">Lumpia</a></h3>
+                </header>
+                <div class="card-body">
+                    <p class="recipe-short-des">A crispy, golden fried spring roll filled with seasoned ground pork and vegetables, often served with sweet and sour dipping sauce.</p>
+                </div>
+            </article>
+
+            <article class="card" data-category="Main Course" data-recipe-id="1">
+                <img src="images/about.webp" alt="Adobo served with rice" class="card-image">
+                <header class="card-header">
+                    <p class="category">Main Course</p>
+                    <h3><a href="#" class="recipe-link">Adobo</a></h3>
+                </header>
+                <div class="card-body">
+                    <p class="recipe-short-des">A savoury dish of marinated pork or chicken simmered in soy sauce, vinegar, and garlic.</p>
+                </div>
+            </article>
+            
+            <article class="card" data-category="Main Course" data-recipe-id="3">
+                <img src="images/lumpia.jpg" alt="Plate of lumpia spring rolls" class="card-image">
+                <header class="card-header">
+                    <p class="category">Main Course</p>
+                    <h3><a href="recipe-detail.html" class="recipe-link">Lumpia</a></h3>
+                </header>
+                <div class="card-body">
+                    <p class="recipe-short-des">A crispy, golden fried spring roll filled with seasoned ground pork and vegetables, often served with sweet and sour dipping sauce.</p>
+                </div>
+            </article>
+
+            <article class="card" data-category="Main Course" data-recipe-id="1">
+                <img src="images/about.webp" alt="Adobo served with rice" class="card-image">
+                <header class="card-header">
+                    <p class="category">Main Course</p>
+                    <h3><a href="#" class="recipe-link">Adobo</a></h3>
+                </header>
+                <div class="card-body">
+                    <p class="recipe-short-des">A savoury dish of marinated pork or chicken simmered in soy sauce, vinegar, and garlic.</p>
+                </div>
+            </article>
+            
+            <article class="card" data-category="Main Course" data-recipe-id="3">
+                <img src="images/lumpia.jpg" alt="Plate of lumpia spring rolls" class="card-image">
+                <header class="card-header">
+                    <p class="category">Main Course</p>
+                    <h3><a href="recipe-detail.html" class="recipe-link">Lumpia</a></h3>
+                </header>
+                <div class="card-body">
+                    <p class="recipe-short-des">A crispy, golden fried spring roll filled with seasoned ground pork and vegetables, often served with sweet and sour dipping sauce.</p>
+                </div>
+            </article>
+
+            <article class="card" data-category="Main Course" data-recipe-id="1">
+                <img src="images/about.webp" alt="Adobo served with rice" class="card-image">
+                <header class="card-header">
+                    <p class="category">Main Course</p>
+                    <h3><a href="#" class="recipe-link">Adobo</a></h3>
+                </header>
+                <div class="card-body">
+                    <p class="recipe-short-des">A savoury dish of marinated pork or chicken simmered in soy sauce, vinegar, and garlic.</p>
+                </div>
+            </article>
+            
+            <article class="card" data-category="Main Course" data-recipe-id="3">
+                <img src="images/lumpia.jpg" alt="Plate of lumpia spring rolls" class="card-image">
+                <header class="card-header">
+                    <p class="category">Main Course</p>
+                    <h3><a href="recipe-detail.html" class="recipe-link">Lumpia</a></h3>
+                </header>
+                <div class="card-body">
+                    <p class="recipe-short-des">A crispy, golden fried spring roll filled with seasoned ground pork and vegetables, often served with sweet and sour dipping sauce.</p>
+                </div>
+            </article>
+        </main>
+        
+        <!-- Footer - Contains copyright information -->
+        <footer class="footer" role="contentinfo">
+            &copy; 2024 Filipino Recipes
+        </footer>
+    </div>
+
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact & Educational Guide</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Asar&display=swap" rel="stylesheet">
+
+    <!-- Link to external CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- Header with logo linking to index.html -->
+    <header class="header" role="banner">
+        <div class="logo">
+            <a href="index.html" class="logo-link">&#127836; Filipino Recipes</a>
+        </div>
+    
+        <!-- Hamburger menu icon -->
+        <div class="nav-toggle" aria-label="Toggle navigation menu" role="button" tabindex="0" aria-expanded="false">&#9776;</div>
+        
+        <!-- Navigation links -->
+        <nav class="nav-links" aria-label="Main navigation">
+            <a href="add-recipe.html" class="btn-link">Add a recipe</a>
+            <a href="about-this.html" class="btn-link">About</a>
+            <a href="contact.html" class="btn-link" aria-current="page">Contact</a>
+        </nav>
+    </header>
+
+    <!-- Recipe Content: Image and Details Containers with 20px gap -->
+    <main class="recipe-content" role="main">
+        <!-- Column 1: Image -->
+        <img src="images/about.webp" alt="Contact" class="recipe-image">
+
+        <!-- Column 2: Recipe Information Container -->
+        <div class="recipe-details-container">
+            <audio controls>
+                <source src="audio/Sample_Web_Dev_Project.wav" type="audio/wav">
+                Your browser does not support the audio element.
+            </audio>
+
+            <h1>How to Recreate This Website</h1>
+            <p>This guide provides step-by-step instructions for recreating this Filipino Recipes website, focusing on modern web development best practices.</p>
+            
+            <h2>Core Web Technologies</h2>
+            <ul>
+                <li><strong>HTML5 Semantic Structure:</strong> Use semantic tags like <strong>&lt;header&gt;</strong>, <strong>&lt;nav&gt;</strong>, <strong>&lt;main&gt;</strong>, <strong>&lt;section&gt;</strong>, <strong>&lt;article&gt;</strong>, and <strong>&lt;footer&gt;</strong> to create a meaningful document outline that improves accessibility and SEO.</li>
+                <li><strong>CSS Layout Systems:</strong> Implement <strong>Flexbox</strong> for one-dimensional layouts (header, navigation, footer) and <strong>CSS Grid</strong> for two-dimensional layouts (recipe card grid).</li>
+                <li><strong>Responsive Design:</strong> Use <strong>media queries</strong> and <strong>relative units</strong> (rem, %, vh/vw) to ensure the site works on all device sizes.</li>
+                <li><strong>Progressive Enhancement:</strong> Build the core functionality first, then add advanced features for modern browsers.</li>
+            </ul>
+            
+            <h1>Pages and Component Structure</h1>
+            
+            <h2>1. Index Page (index.html)</h2>
+            <p><strong>Purpose:</strong> Display a responsive grid of recipe cards with clickable links to detailed recipe pages.</p>
+            <ul>
+                <li><strong>Header Component:</strong>
+                    <ul>
+                        <li>Structure: <code>&lt;header class="header" role="banner"&gt;</code> with <code>&lt;div class="logo"&gt;</code> and <code>&lt;nav class="nav-links" aria-label="Main navigation"&gt;</code></li>
+                        <li>Layout: Use <strong>Flexbox</strong> with <code>display: flex; justify-content: space-between;</code> to position logo left and navigation right</li>
+                        <li>Mobile Toggle: <code>&lt;div class="nav-toggle" aria-label="Toggle navigation menu" role="button" tabindex="0"&gt;</code> for hamburger menu</li>
+                    </ul>
+                </li>
+                <li><strong>Recipe Grid Component:</strong>
+                    <ul>
+                        <li>Structure: <code>&lt;main class="content grid-4-col" role="main"&gt;</code> containing multiple <code>&lt;article class="card"&gt;</code> elements</li>
+                        <li>Layout: CSS Grid with <code>display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;</code></li>
+                        <li>Card Structure: <code>&lt;header class="card-header"&gt;</code> with category and title, followed by <code>&lt;div class="card-body"&gt;</code> with description</li>
+                        <li>Data Attributes: <code>data-category="Main Course"</code> for potential filtering functionality</li>
+                    </ul>
+                </li>
+            </ul>
+            
+            <h2>2. Recipe Detail Page (recipe-detail.html)</h2>
+            <p><strong>Purpose:</strong> Display detailed information about a specific recipe with a responsive two-column layout.</p>
+            <ul>
+                <li><strong>Header Component:</strong> Reused from index.html (component consistency)</li>
+                <li><strong>Recipe Detail Component:</strong>
+                    <ul>
+                        <li>Structure: <code>&lt;main class="recipe-content" role="main"&gt;</code> with two columns</li>
+                        <li>Layout: <strong>CSS Flexbox</strong> with <code>display: flex; gap: 2rem;</code> for desktop and <code>flex-direction: column;</code> for mobile</li>
+                        <li>Image Column: <code>&lt;img class="recipe-image" src="images/recipe.jpg" alt="Descriptive text"&gt;</code> with <code>max-width: 100%; height: auto;</code> for responsiveness</li>
+                        <li>Content Column: <code>&lt;div class="recipe-details-container"&gt;</code> containing:
+                            <ul>
+                                <li>Title: <code>&lt;h1&gt;Recipe Title&lt;/h1&gt;</code></li>
+                                <li>Description: <code>&lt;p class="description"&gt;</code></li>
+                                <li>Ingredients: <code>&lt;h2&gt;Ingredients&lt;/h2&gt;&lt;ul class="ingredients-list"&gt;</code></li>
+                                <li>Directions: <code>&lt;h2&gt;Directions&lt;/h2&gt;&lt;ol class="directions-list"&gt;</code></li>
+                                <li>Action Buttons: <code>&lt;div class="action-buttons"&gt;&lt;a href="#" class="action-link edit"&gt;Edit&lt;/a&gt;&lt;a href="#" class="action-link delete"&gt;Delete&lt;/a&gt;&lt;/div&gt;</code></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            
+            <h2>3. Add Recipe Page (add-recipe.html)</h2>
+            <p><strong>Purpose:</strong> An accessible, validated form for users to submit new recipes with proper feedback.</p>
+            <ul>
+                <li><strong>Header Component:</strong> Reused from index.html</li>
+                <li><strong>Form Component:</strong>
+                    <ul>
+                        <li>Structure: <code>&lt;main class="form-container" role="main"&gt;&lt;form id="recipe-form" class="recipe-form" novalidate&gt;</code></li>
+                        <li>Accessibility: Each input has associated <code>&lt;label for="input-id"&gt;</code> and appropriate ARIA attributes</li>
+                        <li>Form Fields:</li>
+                        <ul>
+                            <li>Category: <code>&lt;select id="recipe-category" name="category" required aria-required="true"&gt;</code> with options</li>
+                            <li>Recipe Name: <code>&lt;input type="text" id="recipe-name" name="recipe-name" required aria-required="true" placeholder="Enter recipe name"&gt;</code></li>
+                            <li>Description: <code>&lt;textarea id="recipe-desc" name="recipe-desc" rows="3" required aria-required="true" placeholder="Brief description of the recipe"&gt;&lt;/textarea&gt;</code></li>
+                            <li>Ingredients: <code>&lt;textarea id="ingredients" name="ingredients" rows="5" required aria-required="true" placeholder="Enter ingredients, one per line"&gt;&lt;/textarea&gt;</code></li>
+                            <li>Directions: <code>&lt;textarea id="directions" name="directions" rows="5" required aria-required="true" placeholder="Enter step-by-step directions"&gt;&lt;/textarea&gt;</code></li>
+                            <li>Image Upload: <code>&lt;input type="file" id="image-upload" name="image-upload" accept="image/*" aria-describedby="file-format-help"&gt;</code> with help text</li>
+                        </ul>
+                        <li>Form Validation: Client-side validation with <code>:invalid</code> CSS and JavaScript validation on submit</li>
+                        <li>Buttons: <code>&lt;div class="form-buttons"&gt;&lt;button type="submit" class="btn primary"&gt;Add Recipe&lt;/button&gt;&lt;button type="button" class="btn secondary" onclick="window.location.href='index.html'"&gt;Cancel&lt;/button&gt;&lt;/div&gt;</code></li>
+                    </ul>
+                </li>
+            </ul>
+            
+            <h2>4. About Page (about-this.html)</h2>
+            <p><strong>Purpose:</strong> Provide a description of the project, its technical specifications, and educational value.</p>
+            <ul>
+                <li><strong>Header Component:</strong> Reused from index.html</li>
+                <li><strong>About Content Component:</strong>
+                    <ul>
+                        <li>Structure: <code>&lt;main class="about-content" role="main"&gt;</code> with two-column layout on desktop</li>
+                        <li>Image Section: <code>&lt;img class="about-image" src="images/about.webp" alt="Filipino cuisine ingredients"&gt;</code></li>
+                        <li>Text Section: <code>&lt;div class="about-text"&gt;</code> containing:</li>
+                        <ul>
+                            <li>Title: <code>&lt;h1&gt;About the Filipino Recipes Project&lt;/h1&gt;</code></li>
+                            <li>Project Description: <code>&lt;p class="project-intro"&gt;</code> explaining the purpose and goals</li>
+                            <li>Tech Stack: <code>&lt;h2&gt;Technology Stack&lt;/h2&gt;&lt;ul class="tech-list"&gt;</code> listing HTML5, CSS3, JavaScript</li>
+                            <li>Design Principles: <code>&lt;h2&gt;Design Principles&lt;/h2&gt;&lt;ul class="principles-list"&gt;</code> explaining responsive design, accessibility, etc.</li>
+                            <li>Future Development: <code>&lt;h2&gt;Future Development&lt;/h2&gt;&lt;p&gt;</code> explaining the transition to a Flask-based PWA</li>
+                        </ul>
+                    </ul>
+                </li>
+            </ul>
+            
+            <h2>5. CSS Organization (styles.css)</h2>
+            <p><strong>Purpose:</strong> Create a maintainable, responsive design system with consistent styling across all pages.</p>
+            
+            <h3>CSS Architecture</h3>
+            <p>The CSS is organized into logical sections with clear comments to make it easy to find and modify styles:</p>
+            <ul>
+                <li><strong>CSS Variables (Custom Properties):</strong>
+                    <ul>
+                        <li><code>:root { --primary-color: rgb(174, 60, 60); --text-color: #333; --light-bg: #f9f9f9; }</code></li>
+                        <li>Benefits: Consistent colors, easy theme changes, better maintainability</li>
+                    </ul>
+                </li>
+                <li><strong>Base Styles:</strong>
+                    <ul>
+                        <li><code>* { box-sizing: border-box; }</code> for predictable sizing</li>
+                        <li><code>body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; }</code></li>
+                        <li><code>h1, h2, h3 { font-family: 'Asar', serif; }</code> for typographic hierarchy</li>
+                    </ul>
+                </li>
+                <li><strong>Layout Components:</strong>
+                    <ul>
+                        <li><code>.header</code> and <code>.footer</code> using <code>display: flex; justify-content: space-between; align-items: center;</code></li>
+                        <li><code>.grid-4-col</code> using <code>display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;</code></li>
+                        <li><code>.recipe-content</code> using <code>display: flex; gap: 2rem;</code> for two-column layout</li>
+                    </ul>
+                </li>
+                <li><strong>Component Styles:</strong>
+                    <ul>
+                        <li>Card components: <code>.card</code>, <code>.card-header</code>, <code>.card-body</code></li>
+                        <li>Form components: <code>.form-group</code>, <code>.btn</code>, <code>.btn.primary</code>, <code>.btn.secondary</code></li>
+                        <li>Navigation: <code>.nav-links</code>, <code>.nav-toggle</code>, <code>.logo</code></li>
+                    </ul>
+                </li>
+                <li><strong>Responsive Design:</strong>
+                    <ul>
+                        <li>Mobile-first approach with base styles for small screens</li>
+                        <li>Media queries: <code>@media (min-width: 768px) { /* Desktop styles */ }</code></li>
+                        <li>Responsive typography using <code>rem</code> units</li>
+                        <li>Fluid layouts with percentage widths and max-width constraints</li>
+                    </ul>
+                </li>
+                <li><strong>Accessibility Features:</strong>
+                    <ul>
+                        <li>Focus styles: <code>:focus { outline: 3px solid var(--primary-color); }</code></li>
+                        <li>Sufficient color contrast (WCAG AA compliance)</li>
+                        <li>Skip-to-content link for keyboard navigation</li>
+                    </ul>
+                </li>
+            </ul>
+            <h2>6. JavaScript Functionality</h2>
+            <p><strong>Purpose:</strong> Enhance the user experience with interactive features while maintaining accessibility.</p>
+            <ul>
+                <li><strong>Mobile Navigation Toggle:</strong>
+                    <ul>
+                        <li>Select elements: <code>const toggleButton = document.querySelector('.nav-toggle');</code></li>
+                        <li>Event listener: <code>toggleButton.addEventListener('click', () => { navLinks.classList.toggle('show'); });</code></li>
+                        <li>Accessibility: Update ARIA attributes with <code>toggleButton.setAttribute('aria-expanded', isExpanded);</code></li>
+                    </ul>
+                </li>
+                <li><strong>Form Validation:</strong>
+                    <ul>
+                        <li>Prevent default submission: <code>form.addEventListener('submit', (e) => { if (!form.checkValidity()) { e.preventDefault(); } });</code></li>
+                        <li>Custom validation messages: <code>input.setCustomValidity('Please enter a valid recipe name');</code></li>
+                        <li>Visual feedback: Add/remove <code>.error</code> class based on validation state</li>
+                    </ul>
+                </li>
+                <li><strong>Future Enhancements:</strong>
+                    <ul>
+                        <li>Recipe filtering by category</li>
+                        <li>Local storage for saving form drafts</li>
+                        <li>Dynamic recipe card generation from JSON data</li>
+                    </ul>
+                </li>
+            </ul>
+            
+            <h2>7. Transitioning to Flask</h2>
+            <p>When ready to convert this static site to a Flask web application:</p>
+            <ul>
+                <li><strong>Project Structure:</strong> Move HTML files to <code>templates/</code> folder and static assets to <code>static/</code> folder</li>
+                <li><strong>Template Conversion:</strong> Convert HTML files to Jinja2 templates with <code>{% extends "base.html" %}</code></li>
+                <li><strong>URL Generation:</strong> Replace static links with <code>{{ url_for('route_name') }}</code></li>
+                <li><strong>Static Assets:</strong> Update paths with <code>{{ url_for('static', filename='css/styles.css') }}</code></li>
+                <li><strong>Data Management:</strong> Replace hardcoded content with template variables <code>{{ recipe.name }}</code></li>
+            </ul>
+
+        </div>
+    </main>
+
+    <!-- Footer with copyright information -->
+    <footer class="footer" role="contentinfo">
+        &copy; 2024 Filipino Recipes
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

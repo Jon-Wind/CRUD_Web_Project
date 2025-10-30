@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Filipino Recipes{% endblock %}
+
+{% block content %}
+<!-- Main Content - Recipe card grid using CSS Grid layout -->
+<main class="content grid-4-col" role="main">
+    <!-- Recipe cards are generated in a loop from database data -->
+    {% for recipe in recipes %}
+    <article class="card" data-category="{{ recipe.category }}" data-recipe-id="{{ recipe.id }}">
+        {% set image_file = recipe.image_path or 'images/about.webp' %}
+        <img src="{{ url_for('static', filename=image_file) }}" alt="{{ recipe.name }} plated" class="card-image">
+        <header class="card-header">
+            <p class="category">{{ recipe.category }}</p>
+            <h3><a href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}" class="recipe-link">{{ recipe.name }}</a></h3>
+        </header>
+        <div class="card-body">
+            <p class="recipe-short-des">{{ recipe.description }}</p>
+        </div>
+    </article>
+    {% endfor %}
+</main>
+{% endblock %}

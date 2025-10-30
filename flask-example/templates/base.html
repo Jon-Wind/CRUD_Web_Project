@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Filipino Recipes{% endblock %}</title>
+    
+    <!-- Google Fonts - Used for the logo and headings -->
+    <link href="https://fonts.googleapis.com/css2?family=Asar&display=swap" rel="stylesheet">
+    
+    <!-- Link to CSS using Flask's url_for function -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    
+    <!-- Page-specific CSS can be added in templates that extend this one -->
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Header Section - Contains logo and navigation -->
+    <header class="header" role="banner">
+        <!-- Logo with home link - Uses food emoji and text -->
+        <div class="logo">
+            <a href="{{ url_for('index') }}" class="logo-link" aria-label="Home page">&#127836; Filipino Recipes</a>
+        </div>
+    
+        <!-- Hamburger menu icon - Only visible on mobile devices -->
+        <div class="nav-toggle" aria-label="Toggle navigation menu" role="button" tabindex="0" aria-expanded="false">&#9776;</div>
+        
+        <!-- Navigation links - Primary site navigation -->
+        {% set current_page = active_page | default('') %}
+        <nav class="nav-links" aria-label="Main navigation">
+            <a href="{{ url_for('add_recipe') }}" class="btn-link{% if current_page == 'add_recipe' %} active{% endif %}" {% if current_page == 'add_recipe' %}aria-current="page"{% endif %}>Add a recipe</a>
+            <a href="{{ url_for('about') }}" class="btn-link{% if current_page == 'about' %} active{% endif %}" {% if current_page == 'about' %}aria-current="page"{% endif %}>About</a>
+            <a href="{{ url_for('contact') }}" class="btn-link{% if current_page == 'contact' %} active{% endif %}" {% if current_page == 'contact' %}aria-current="page"{% endif %}>Contact</a>
+        </nav>
+    </header>
+
+    <!-- Main content block that will be replaced in child templates -->
+    {% block content %}{% endblock %}
+    
+    <!-- Site Footer - Contains copyright information -->
+    <footer class="footer" role="contentinfo">
+        &copy; 2024 Filipino Recipes
+    </footer>
+    
+    <!-- JavaScript for mobile navigation menu toggle -->
+    <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
+    
+    <!-- Additional JavaScript can be included in child templates -->
+    {% block scripts %}{% endblock %}
+</body>
+</html>

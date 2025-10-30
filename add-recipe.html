@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Recipe - Filipino Recipes</title>
+
+    <!-- Google Fonts - Used for the logo and headings -->
+    <link href="https://fonts.googleapis.com/css2?family=Asar&display=swap" rel="stylesheet">
+
+    <!-- Link to external CSS - Contains all styling for the website -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- Header Section - Contains logo and navigation -->
+    <header class="header" role="banner">
+        <!-- Logo with home link - Uses food emoji and text -->
+        <div class="logo">
+            <a href="index.html" class="logo-link" aria-label="Home page">&#127836; Filipino Recipes</a>
+        </div>
+    
+        <!-- Hamburger menu icon - Only visible on mobile devices -->
+        <div class="nav-toggle" aria-label="Toggle navigation menu" role="button" tabindex="0" aria-expanded="false">&#9776;</div>
+        
+        <!-- Navigation links - Primary site navigation -->
+        <nav class="nav-links" aria-label="Main navigation">
+            <a href="add-recipe.html" class="btn-link" aria-current="page">Add a recipe</a>
+            <a href="about-this.html" class="btn-link">About</a>
+            <a href="contact.html" class="btn-link">Contact</a>
+        </nav>
+    </header>
+
+    <!-- Main Content - Form to Add Recipe -->
+    <main class="recipe-content" role="main">
+        <div class="form-container">
+            <h1>Add a Recipe</h1>
+
+            <form action="submit-recipe.html" method="post" id="recipe-form" aria-labelledby="form-heading">
+                <!-- Placeholder action: replace with server route or JavaScript handler during backend integration -->
+                <p id="form-heading" class="sr-only">Use this form to add a new recipe to the collection</p>
+                <!-- Recipe Name Input - With validation for length and required field -->
+                <div class="form-group">
+                    <label for="recipe-name">Recipe Name:</label>
+                    <input type="text" id="recipe-name" name="recipe-name" 
+                           required minlength="3" maxlength="50" 
+                           aria-required="true" 
+                           placeholder="Enter recipe name (3-50 characters)">
+                </div>
+
+                <!-- Recipe Description Input - With validation for length and required field -->
+                <div class="form-group">
+                    <label for="recipe-desc">Description:</label>
+                    <input type="text" id="recipe-desc" name="recipe-desc" 
+                           required minlength="10" maxlength="200" 
+                           aria-required="true"
+                           placeholder="Brief description of the recipe (10-200 characters)">
+                </div>                
+
+                <!-- Ingredients Input - Textarea for list of ingredients -->
+                <div class="form-group">
+                    <label for="ingredients">Ingredients:</label>
+                    <textarea id="ingredients" name="ingredients" rows="5" 
+                              required aria-required="true"
+                              placeholder="Enter ingredients, one per line"></textarea>
+                </div>
+
+                <!-- Directions Input - Textarea for cooking instructions -->
+                <div class="form-group">
+                    <label for="directions">Directions:</label>
+                    <textarea id="directions" name="directions" rows="5" 
+                              required aria-required="true"
+                              placeholder="Enter step-by-step cooking instructions"></textarea>
+                </div>
+
+                <!-- Image Upload Input - For recipe photo -->
+                <div class="form-group">
+                    <label for="image-upload">Upload Image:</label>
+                    <input type="file" id="image-upload" name="image-upload" 
+                           accept="image/jpeg, image/png, image/webp" 
+                           aria-describedby="image-hint">
+                    <span id="image-hint">Optional. Accepted formats: JPEG, PNG, WEBP. Max size: 5MB.</span>
+                </div>
+                
+                <!-- Recipe Category Selection - Dropdown for categorizing the recipe -->
+                <div class="form-group">
+                    <label for="recipe-category">Category:</label>
+                    <select id="recipe-category" name="recipe-category" required aria-required="true">
+                        <option value="" disabled selected>Select a category</option>
+                        <option value="main-course">Main Course</option>
+                        <option value="soup">Soup</option>
+                        <option value="noodles">Noodles</option>
+                        <option value="special-occasion">Special Occasion</option>
+                        <option value="street-food">Street Food</option>
+                        <option value="dessert">Dessert</option>
+                    </select>
+                </div>
+
+                <!-- Form Actions - Buttons for submitting or canceling -->
+                <div class="form-actions">
+                    <button type="submit" class="btn" aria-label="Add this recipe">Add Recipe</button>
+                    <button type="button" class="btn" onclick="window.location.href='index.html'" aria-label="Cancel and return to home page">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Site Footer - Contains copyright information -->
+    <footer class="footer" role="contentinfo">
+        &copy; 2024 Filipino Recipes
+    </footer>
+
+    <script src="script.js"></script>
+    <!-- Add CSS for form hints and screen reader only content -->
+    <style>
+        .form-hint {
+            display: block;
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+
+</body>
+
+</html>
