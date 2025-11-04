@@ -1,23 +1,18 @@
-CREATE TABLE IF NOT EXISTS recipes (
+CREATE TABLE IF NOT EXISTS dnd_characters (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
-    category TEXT NOT NULL,
-    short_description TEXT NOT NULL,
-    long_description TEXT,
-    ingredients_text TEXT,
-    directions_text TEXT,
+    alignment TEXT,
+    race TEXT,
+    short_description TEXT,
     image_path TEXT,
     image_alt TEXT,
-    prep_time TEXT,
-    cook_time TEXT,
-    difficulty TEXT
+    character_class TEXT,
+    backstory TEXT,
+    personality TEXT,
+    connections TEXT,
+    abilities_skills TEXT,
+    extra TEXT
 );
-
-INSERT INTO recipes (
-    name, category, short_description, long_description,
-    ingredients_text, directions_text, image_path, image_alt,
-    prep_time, cook_time, difficulty
-)
 VALUES
     (
         'Adobo',

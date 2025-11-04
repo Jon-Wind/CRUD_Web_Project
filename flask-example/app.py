@@ -38,51 +38,53 @@ def register_routes(app):
     def index():
         db = get_db()
         rows = db.execute(
-            'SELECT id, name, category, short_description AS description, image_path FROM recipes ORDER BY id'
+            'SELECT id, name, race, character_class, short_description, image_path FROM dnd_characters ORDER BY id'
         ).fetchall()
-        recipes = [dict(row) for row in rows]
-        return render_template('index.html', recipes=recipes, active_page='home')
+        characters = [dict(row) for row in rows]
+        return render_template('index.html', characters=characters, active_page='home')
 
-    @app.route('/recipe/<int:recipe_id>')
-    def recipe_detail(recipe_id):
+    @app.route('/character/<int:character_id>')
+    def character_detail(character_id):
         db = get_db()
-        recipe_row = db.execute('SELECT * FROM recipes WHERE id = ?', (recipe_id,)).fetchone()
+        character_row = db.execute('SELECT * FROM dnd_characters WHERE id = ?', (character_id,)).fetchone()
 
-        if recipe_row is None:
-            return "Recipe not found", 404
+        if character_row is None:
+            return "Character not Found", 404
 
-        recipe = dict(recipe_row)
-        ingredients = [line.strip() for line in (recipe.get('ingredients_text') or '').splitlines() if line.strip()]
-        directions = [line.strip() for line in (recipe.get('directions_text') or '').splitlines() if line.strip()]
-
-        recipe_context = {
-            'id': recipe['id'],
-            'name': recipe['name'],
-            'category': recipe['category'],
-            'long_description': recipe.get('long_description') or recipe.get('short_description'),
-            'image_path': recipe.get('image_path') or 'images/about.webp',
-            'image_alt': recipe.get('image_alt') or f"{recipe['name']} plated",
-            'ingredients': ingredients,
-            'directions': directions,
-            'prep_time': recipe.get('prep_time'),
-            'cook_time': recipe.get('cook_time'),
-            'difficulty': recipe.get('difficulty')
+        character = dict(character_row)
+        
+        character_context = {
+            'id': character['id'],
+            'name': character['name'],
+            'alignment': character.get('alignment'),
+            'race': character.get('race'),
+            'short_description': character.get('short_description'),
+            'image_path': character.get('image_path') or 'images/about.webp',
+            'image_alt': character.get('image_alt') or f"Portrait of {character['name']}",
+            'character_class': character.get('character_class'),
+            'backstory': character.get('backstory'),
+            'personality': character.get('personality'),
+            'connections': character.get('connections'),
+            'abilities_skills': character.get('abilities_skills'),
+            'extra': character.get('extra')
         }
 
-        return render_template('recipe_detail.html', recipe=recipe_context, active_page='recipe_detail')
+        return render_template('character_detail.html', character=character_context, active_page='character_detail')
 
-    @app.route('/add-recipe', methods=['GET', 'POST'])
-    def add_recipe():
+    @app.route('/add-character', methods=['GET', 'POST'])
+    def add_character():
         error = None
         if request.method == 'POST':
-            name = request.form.get('recipe-name', '').strip()
-            short_desc = request.form.get('recipe-desc', '').strip()
-            category = request.form.get('recipe-category', '').strip() or 'Other'
-            ingredients_text = request.form.get('ingredients', '')
-            directions_text = request.form.get('directions', '')
-            prep_time = request.form.get('prep-time', '').strip() or None
-            cook_time = request.form.get('cook-time', '').strip() or None
-            difficulty = request.form.get('difficulty', '').strip() or 'Unrated'
+            name = request.form.get('character-name', '').strip()
+            alignment = request.form.get('alignment', '').strip()
+            race = request.form.get('race', '').strip()
+            short_description = request.form.get('short-description', '').strip()
+            character_class = request.form.get('character-class', '').strip()
+            backstory = request.form.get('backstory', '').strip()
+            personality = request.form.get('personality', '').strip()
+            connections = request.form.get('connections', '').strip()
+            abilities_skills = request.form.get('abilities-skills', '').strip()
+            extra = request.form.get('extra', '').strip()
             image_file = request.files.get('image-upload')
 
             image_path = 'images/about.webp'
@@ -102,77 +104,55 @@ def register_routes(app):
                     image_path = '/'.join(['images', 'uploads', unique_name])
                     image_alt = name or filename
 
-            if not (name and short_desc and ingredients_text.strip() and directions_text.strip()):
+            if not (name and short_description):
                 error = 'Please complete all required fields before submitting.'
-            else:
-                if error is None:
+            if not name:
+                error = 'Character name is required.'
+            elif not short_description:
+                error = 'Short description is required.'
+            elif not error:
+                try:
                     db = get_db()
-                    cursor = db.execute(
-                        '''
-                        INSERT INTO recipes (
-                            name, category, short_description, long_description,
-                            ingredients_text, directions_text, image_path, image_alt,
-                            prep_time, cook_time, difficulty
-                        )
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                        ''',
-                        (
-                            name,
-                            category,
-                            short_desc,
-                            short_desc,
-                            ingredients_text,
-                            directions_text,
-                            image_path,
-                            image_alt,
-                            prep_time,
-                            cook_time,
-                            difficulty
-                        )
+                    db.execute(
+                        'INSERT INTO dnd_characters (name, alignment, race, short_description, character_class, backstory, personality, connections, abilities_skills, extra, image_path, image_alt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                        (name, alignment, race, short_description, character_class, backstory, personality, connections, abilities_skills, extra, image_path, image_alt)
                     )
                     db.commit()
                     new_id = cursor.lastrowid
-                    return redirect(url_for('recipe_detail', recipe_id=new_id))
+                    return redirect(url_for('character_detail', character_id=new_id))
+                except db.IntegrityError:
+                    error = f"Character '{name}' already exists."
+                except Exception as e:
+                    error = f"An error occurred: {str(e)}"
 
-        return render_template('add_recipe.html', active_page='add_recipe', error=error)
+        return render_template('add_character.html', active_page='add_character', error=error)
 
-    @app.route('/recipe/<int:recipe_id>/edit', methods=['GET', 'POST'])
-    def edit_recipe(recipe_id):
+    @app.route('/character/<int:character_id>/edit', methods=['GET', 'POST'])
+    def edit_character(character_id):
         db = get_db()
-        recipe_row = db.execute('SELECT * FROM recipes WHERE id = ?', (recipe_id,)).fetchone()
+        character = db.execute('SELECT * FROM dnd_characters WHERE id = ?', (character_id,)).fetchone()
 
-        if recipe_row is None:
+        if character is None:
             abort(404)
 
-        recipe = dict(recipe_row)
+        character = dict(character)
         error = None
 
         if request.method == 'POST':
-            name = request.form.get('recipe-name', '').strip()
-            short_desc = request.form.get('recipe-desc', '').strip()
-            category = request.form.get('recipe-category', '').strip() or recipe.get('category') or 'Other'
-            ingredients_text = request.form.get('ingredients', '')
-            directions_text = request.form.get('directions', '')
-            prep_time_input = request.form.get('prep-time')
-            cook_time_input = request.form.get('cook-time')
-            difficulty_input = request.form.get('difficulty')
-
-            prep_time = (prep_time_input or '').strip() or None
-            cook_time = (cook_time_input or '').strip() or None
-            difficulty = (difficulty_input or '').strip()
-
-            if prep_time is None:
-                prep_time = recipe.get('prep_time')
-
-            if cook_time is None:
-                cook_time = recipe.get('cook_time')
-
-            if not difficulty:
-                difficulty = recipe.get('difficulty') or 'Unrated'
+            name = request.form.get('character-name', '').strip()
+            alignment = request.form.get('alignment', '').strip()
+            race = request.form.get('race', '').strip()
+            short_description = request.form.get('short-description', '').strip()
+            character_class = request.form.get('character-class', '').strip()
+            backstory = request.form.get('backstory', '').strip()
+            personality = request.form.get('personality', '').strip()
+            connections = request.form.get('connections', '').strip()
+            abilities_skills = request.form.get('abilities-skills', '').strip()
+            extra = request.form.get('extra', '').strip()
             image_file = request.files.get('image-upload')
 
-            image_path = recipe.get('image_path') or 'images/about.webp'
-            image_alt = recipe.get('image_alt') or f"{recipe.get('name', 'Recipe')} plated"
+            image_path = character.get('image_path', 'images/about.webp')
+            image_alt = character.get('image_alt', f"Portrait of {name}")
 
             if image_file and image_file.filename:
                 filename = secure_filename(image_file.filename)
@@ -186,63 +166,55 @@ def register_routes(app):
                     save_path = os.path.join(upload_folder, unique_name)
                     image_file.save(save_path)
                     image_path = '/'.join(['images', 'uploads', unique_name])
-                    image_alt = name or filename
+                    image_alt = f"Portrait of {name}"
 
-            if not (name and short_desc and ingredients_text.strip() and directions_text.strip()) and error is None:
-                error = 'Please complete all required fields before submitting.'
-
-            if error is None:
-                db.execute(
-                    '''
-                    UPDATE recipes
-                    SET name = ?, category = ?, short_description = ?, long_description = ?,
-                        ingredients_text = ?, directions_text = ?, image_path = ?, image_alt = ?,
-                        prep_time = ?, cook_time = ?, difficulty = ?
-                    WHERE id = ?
-                    ''',
-                    (
-                        name,
-                        category,
-                        short_desc,
-                        short_desc,
-                        ingredients_text,
-                        directions_text,
-                        image_path,
-                        image_alt,
-                        prep_time,
-                        cook_time,
-                        difficulty,
-                        recipe_id
+            if not name:
+                error = 'Character name is required.'
+            elif not short_description:
+                error = 'Short description is required.'
+            elif not error:
+                try:
+                    db.execute(
+                        '''
+                        UPDATE dnd_characters
+                        SET name = ?, alignment = ?, race = ?, short_description = ?,
+                            character_class = ?, backstory = ?, personality = ?, connections = ?,
+                            abilities_skills = ?, extra = ?, image_path = ?, image_alt = ?
+                        WHERE id = ?
+                        ''',
+                        (name, alignment, race, short_description, character_class,
+                         backstory, personality, connections, abilities_skills,
+                         extra, image_path, image_alt, character_id)
                     )
-                )
-                db.commit()
-                return redirect(url_for('recipe_detail', recipe_id=recipe_id))
+                    db.commit()
+                    return redirect(url_for('character_detail', character_id=character_id))
+                except db.IntegrityError:
+                    error = f"Character '{name}' already exists."
+                except Exception as e:
+                    error = f"An error occurred: {str(e)}"
 
-            recipe.update({
+            character = {
                 'name': name,
-                'category': category,
-                'short_description': short_desc,
-                'long_description': short_desc,
-                'ingredients_text': ingredients_text,
-                'directions_text': directions_text,
+                'alignment': alignment,
+                'race': race,
+                'short_description': short_description,
+                'character_class': character_class,
+                'backstory': backstory,
+                'personality': personality,
+                'connections': connections,
+                'abilities_skills': abilities_skills,
+                'extra': extra,
                 'image_path': image_path,
-                'image_alt': image_alt,
-                'prep_time': prep_time,
-                'cook_time': cook_time,
-                'difficulty': difficulty
-            })
+                'image_alt': image_alt
+            }
 
-        return render_template('edit_recipe.html', recipe=recipe, error=error, active_page='edit_recipe')
+        return render_template('edit_character.html', character=character, error=error, active_page='edit_character')
 
-    @app.route('/recipe/<int:recipe_id>/delete', methods=['POST'])
-    def delete_recipe(recipe_id):
+    @app.route('/character/<int:character_id>/delete', methods=['POST'])
+    def delete_character(character_id):
         db = get_db()
-        cursor = db.execute('DELETE FROM recipes WHERE id = ?', (recipe_id,))
+        db.execute('DELETE FROM dnd_characters WHERE id = ?', (character_id,))
         db.commit()
-
-        if cursor.rowcount == 0:
-            abort(404)
-
         return redirect(url_for('index'))
 
     @app.route('/about')

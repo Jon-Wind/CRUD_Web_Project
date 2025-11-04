@@ -1,0 +1,94 @@
+                         HOMEPAGE
+
+PC Wireframe
+------------------------------------------------------------
+| [logo]                Title                [About] [Contact] |
+------------------------------------------------------------
+                         Heading
+                    [   Searchbar   ]
+------------------------------------------------------------
+| Character Card | Character Card | Character Card | Character Card |
+|----------------|----------------|----------------|----------------|
+| Character name | Character name | Character name | Character name |
+| [ image ]      | [ image ]      | [ image ]      | [ image ]      |
+| Alignment | Race| Alignment | Race| Alignment | Race| Alignment | Race|
+| Short desc     | Short desc     | Short desc     | Short desc     |
+------------------------------------------------------------
+| Character Card | Character Card | Character Card | Character Card |
+| (same layout)  | (same layout)  | (same layout)  | (same layout)  |
+------------------------------------------------------------
+| Footer (if any)                                               |
+------------------------------------------------------------
+
+MOBILE WIREFRAME:
+------------------------------------------------
+| [logo]           Title                       |
+------------------------------------------------
+                   Heading
+              [   Searchbar   ]
+------------------------------------------------
+| Character name |
+| [ image ]      |
+| Alignment | Race |
+| Short desc     |
+------------------------------------------------
+| Character name |
+| [ image ]      |
+| Alignment | Race |
+| Short desc     |
+------------------------------------------------
+| About us         Contact us |
+------------------------------------------------
+
+                         CHARACTER DETAIL
+
+------------------------------------------------------------
+| [logo]                Title                [About] [Contact] |
+------------------------------------------------------------
+|                                                            |
+| [ Character Card ]                [ Details Panel ]        |
+|                                                            |
+| ---------------------------------------------------------- |
+| Character name                                             |
+| [  image placeholder  ]                                   |
+| Alignment: ____     Race: ____                             |
+| Short desc: Lorem ipsum dolor sit amet...                  |
+|                                                            |
+| [ Home ]   [ Edit ]   [ Delete ]                           |
+| ---------------------------------------------------------- |
+|                                                            |
+|                             DETAILS                        |
+| ---------------------------------------------------------- |
+| Class:        Lorem ipsum dolor sit amet...                |
+|                                                            |
+| Backstory:    Lorem ipsum dolor sit amet...                |
+|                                                            |
+| Personality:  Lorem ipsum dolor sit amet...                |
+|                                                            |
+| Connections:  Lorem ipsum dolor sit amet...                |
+|                                                            |
+| Abilities / Skills: Lorem ipsum dolor sit amet...          |
+|                                                            |
+| Extra:        Lorem ipsum dolor sit amet...                |
+------------------------------------------------------------
+
+------------------------------------------------
+| [logo]           Title                       |
+------------------------------------------------
+| [ Home ] [ Edit ] [ Delete ]                 |
+------------------------------------------------
+| Character name                               |
+| [ image placeholder ]                        |
+| Alignment: ____   Race: ____                 |
+| Short desc: Lorem ipsum dolor sit amet...    |
+------------------------------------------------
+|                    DETAILS                   |
+| Class: Lorem ipsum dolor sit amet...         |
+| Backstory: Lorem ipsum dolor sit amet...     |
+| Personality: Lorem ipsum dolor sit amet...   |
+| Connections: Lorem ipsum dolor sit amet...   |
+| Abilities / Skills: Lorem ipsum dolor sit... |
+| Extra: Lorem ipsum dolor sit amet...         |
+------------------------------------------------
+| About us                      Contact us     |
+------------------------------------------------
