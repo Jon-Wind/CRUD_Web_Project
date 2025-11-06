@@ -1,23 +1,86 @@
 {% extends "base.html" %}
 
-{% block title %}Home - Filipino Recipes{% endblock %}
+{% block title %}Home - D&D Character Manager{% endblock %}
+
+{% block extra_css %}
+<style>
+    .character-card {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        overflow: hidden;
+        margin-bottom: 20px;
+        transition: transform 0.2s;
+    }
+    .character-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .character-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+    .character-info {
+        padding: 15px;
+    }
+    .character-name {
+        font-size: 1.5em;
+        margin: 0 0 10px 0;
+        color: #2c3e50;
+    }
+    .character-meta {
+        color: #7f8c8d;
+        font-size: 0.9em;
+        margin-bottom: 10px;
+    }
+    .character-description {
+        color: #34495e;
+        margin-bottom: 15px;
+    }
+    .view-details {
+        display: inline-block;
+        background: #3498db;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    .view-details:hover {
+        background: #2980b9;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<!-- Main Content - Recipe card grid using CSS Grid layout -->
-<main class="content grid-4-col" role="main">
-    <!-- Recipe cards are generated in a loop from database data -->
-    {% for recipe in recipes %}
-    <article class="card" data-category="{{ recipe.category }}" data-recipe-id="{{ recipe.id }}">
-        {% set image_file = recipe.image_path or 'images/about.webp' %}
-        <img src="{{ url_for('static', filename=image_file) }}" alt="{{ recipe.name }} plated" class="card-image">
-        <header class="card-header">
-            <p class="category">{{ recipe.category }}</p>
-            <h3><a href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}" class="recipe-link">{{ recipe.name }}</a></h3>
-        </header>
-        <div class="card-body">
-            <p class="recipe-short-des">{{ recipe.description }}</p>
+<main class="content" role="main">
+    <div class="container">
+        <h1>D&D Characters</h1>
+        <div class="character-grid">
+            {% for character in characters %}
+            <div class="character-card">
+                <img src="{{ url_for('static', filename=character.image_path) }}" 
+                     alt="{{ character.image_alt }}" 
+                     class="character-image">
+                <div class="character-info">
+                    <h2 class="character-name">{{ character.name }}</h2>
+                    <div class="character-meta">
+                        <span>Level {{ character.level }} {{ character.race }} {{ character.character_class }}</span><br>
+                        <span>{{ character.alignment }}</span>
+                    </div>
+                    <p class="character-description">{{ character.short_description }}</p>
+                    <a href="{{ url_for('character_detail', character_id=character.id) }}" class="view-details">
+                        View Details
+                    </a>
+                </div>
+            </div>
+            {% else %}
+            <div class="no-characters">
+                <p>No characters found. <a href="{{ url_for('add_character') }}">Create your first character!</a></p>
+            </div>
+            {% endfor %}
         </div>
-    </article>
-    {% endfor %}
+    </div>
 </main>
 {% endblock %}

@@ -1,30 +1,112 @@
 {% extends "base.html" %}
 
-{% block title %}About - Filipino Recipes{% endblock %}
+{% block title %}About - D&D Character Manager{% endblock %}
+
+{% block extra_css %}
+<style>
+    .about-content {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .about-content h1 {
+        color: #2c3e50;
+        margin-top: 0;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #3498db;
+    }
+    
+    .about-section {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #ecf0f1;
+    }
+    
+    .about-section:last-child {
+        border-bottom: none;
+    }
+    
+    .about-section h2 {
+        color: #2c3e50;
+        margin-top: 0;
+    }
+    
+    .feature-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+    }
+    
+    .feature-card {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 8px;
+        border-left: 4px solid #3498db;
+    }
+    
+    .feature-card h3 {
+        margin-top: 0;
+        color: #2c3e50;
+    }
+    
+    @media (max-width: 768px) {
+        .about-content {
+            padding: 1rem;
+        }
+        
+        .feature-list {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<main class="recipe-content" role="main">
-    <img src="{{ url_for('static', filename='images/about.webp') }}" alt="About the Filipino Recipes project" class="recipe-image">
-
-    <div class="recipe-details-container">
-        <h1>About the Recipe Catalogue</h1>
-        <p>This Recipe Catalogue is a sample web development project for software engineering students. The design and functionality serve as a guide to understanding web technologies and UI/UX principles for responsive and user-friendly web applications.</p>
-
-        <h2>Tech Stack</h2>
-        <ul>
-            <li><strong>Frontend:</strong> HTML5, CSS (Flexbox &amp; Grid)</li>
-            <li><strong>Backend:</strong> Flask (Python)</li>
-            <li><strong>Database:</strong> JSON for data storage (extendable to SQL databases)</li>
-            <li><strong>Responsive Design:</strong> Media queries, CSS grid, and flexbox for layout optimisation across devices</li>
-        </ul>
-
-        <h2>Design Principles</h2>
-        <p>The UI/UX design follows modern web principles to ensure a seamless user experience. Key design considerations include:</p>
-        <ul>
-            <li>Easy-to-navigate interfaces</li>
-            <li>Minimalistic design for clarity and focus</li>
-            <li>Optimised user flows for efficient interactions</li>
-            <li>Accessibility for all users</li>
+<main class="about-content" role="main">
+    <h1>About D&D Character Manager</h1>
+    <p>Welcome to D&D Character Manager, your ultimate tool for creating and managing your Dungeons & Dragons characters. Whether you're a seasoned adventurer or just starting your journey, our platform makes it easy to create, track, and develop your characters.</p>
+    
+    <section class="about-section">
+        <h2>Our Mission</h2>
+        <p>Our mission is to provide an intuitive and powerful platform for tabletop RPG players to manage their characters. We believe that managing your character sheet should be as fun as playing the game itself.</p>
+    </section>
+    
+    <section class="about-section">
+        <h2>Features</h2>
+        <div class="feature-list">
+            <div class="feature-card">
+                <h3>Character Creation</h3>
+                <p>Easily create detailed character sheets with all the essential information about your D&D characters.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h3>Character Management</h3>
+                <p>Update and manage your characters as they grow and develop throughout your campaigns.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h3>Visual Customization</h3>
+                <p>Upload character images and customize their appearance to bring your characters to life.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h3>Backstory & Personality</h3>
+                <p>Keep track of your character's backstory, personality traits, and development over time.</p>
+            </div>
+        </div>
+    </section>
+    
+    <section class="about-section">
+        <h2>Get Started</h2>
+        <p>Ready to create your first character? <a href="{{ url_for('add_character') }}">Click here</a> to begin your adventure!</p>
+        
+        <p>Have questions or feedback? We'd love to hear from you! Visit our <a href="{{ url_for('contact') }}">Contact</a> page to get in touch.</p>
+    </section>
         </ul>
 
         <h2>Progressive Web Application</h2>

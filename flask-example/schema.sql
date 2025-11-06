@@ -3,53 +3,26 @@ CREATE TABLE IF NOT EXISTS dnd_characters (
     name TEXT NOT NULL,
     alignment TEXT,
     race TEXT,
-    short_description TEXT,
-    image_path TEXT,
-    image_alt TEXT,
     character_class TEXT,
+    level INTEGER,
+    background TEXT,
+    short_description TEXT,
     backstory TEXT,
     personality TEXT,
-    connections TEXT,
     abilities_skills TEXT,
-    extra TEXT
+    image_path TEXT,
+    image_alt TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-VALUES
-    (
-        'Adobo',
-        'Main Course',
-        'Soy sauce and vinegar-braised pork or chicken with garlic and bay leaves.',
-        'Adobo is a beloved Filipino comfort food that simmers meat in a savoury blend of soy sauce, vinegar, garlic, peppercorns, and bay leaves.',
-        '1 kg chicken thighs or pork belly\n1/2 cup soy sauce\n1/3 cup cane vinegar\n6 cloves garlic, minced\n2 bay leaves\n1 tsp whole peppercorns\n1 cup water\nSalt to taste',
-        'Combine meat with soy sauce, vinegar, garlic, peppercorns, and bay leaves; marinate for 30 minutes.\nBring to a boil, add water, then simmer covered for 30-40 minutes until tender.\nRemove the lid and continue simmering until the sauce thickens.\nServe hot with steamed rice.',
-        'images/about.webp',
-        'Bowl of chicken adobo served with rice',
-        '15 min',
-        '45 min',
-        'Easy'
-    ),
-    (
-        'Kare-Kare',
-        'Main Course',
-        'A rich peanut stew traditionally served with oxtail, vegetables, and bagoong.',
-        'Kare-Kare features slow-cooked meat and vegetables in a creamy peanut sauce, often paired with shrimp paste for savoury contrast.',
-        '1 kg oxtail or beef shanks\n2 cups water or beef stock\n1/2 cup peanut butter\n1/4 cup toasted ground rice\n1 bunch pechay (bok choy)\n1 medium eggplant, sliced\n1 banana blossom, sliced\n2 tbsp annatto seeds in water\nSalt and pepper to taste',
-        'Simmer meat in water or stock until tender, skimming excess fat.\nAdd peanut butter, ground rice, and annatto water; stir until sauce thickens.\nAdd vegetables and cook until tender.\nSeason and serve with shrimp paste.',
-        'images/about.webp',
-        'Bowl of kare-kare stew with vegetables',
-        '25 min',
-        '1 hr 30 min',
-        'Intermediate'
-    ),
-    (
-        'Lumpia',
-        'Street Food',
-        'Crispy fried spring rolls filled with savoury pork and vegetables.',
-        'Lumpia are crisp Filipino spring rolls packed with seasoned meat and vegetables, perfect as appetisers or party snacks.',
-        '1 lb ground pork\n1 cup shredded carrots\n1/2 cup chopped onions\n1 cup finely chopped cabbage\n2 cloves garlic, minced\n1 package lumpia wrappers\nSalt and pepper to taste\nOil for frying',
-        'Combine pork, vegetables, and garlic; season with salt and pepper.\nPlace 2 tablespoons of filling on a wrapper, fold sides, and roll tightly.\nFry in hot oil until golden brown, about 3-5 minutes.\nDrain on paper towels and serve with sweet and sour sauce.',
-        'images/lumpia.jpg',
-        'Plate of golden fried lumpia with dipping sauce',
-        '30 min',
-        '15 min',
-        'Medium'
-    );
+
+-- Sample D&D Characters
+INSERT INTO dnd_characters (name, alignment, race, character_class, level, background, short_description, backstory, personality, abilities_skills, image_path, image_alt) VALUES
+    ('Aelar Brightblade', 'Chaotic Good', 'High Elf', 'Paladin', 5, 'Folk Hero', 'A noble elf paladin fighting for justice', 'Born into a noble elven family, Aelar abandoned his privileged life to fight for the common folk after witnessing their suffering.', 'Idealistic and courageous, always standing up for the weak', 'Divine Smite, Lay on Hands, Aura of Protection', 'images/elf-paladin.jpg', 'Elf paladin in shining armor with a glowing sword'),
+    
+    ('Grimm Ironhide', 'Neutral Good', 'Mountain Dwarf', 'Cleric', 4, 'Acolyte', 'A devoted healer and warrior of Moradin', 'Trained in the sacred halls of the Dwarven temple, Grimm now wanders the land healing the sick and smiting the wicked.', 'Stoic but kind, with a dry sense of humor', 'Divine Domain: Life, Turn Undead, Dwarven Resilience', 'images/dwarf-cleric.jpg', 'Dwarf cleric in chainmail with a holy symbol'),
+    
+    ('Zephyra Swiftwind', 'Chaotic Neutral', 'Wood Elf', 'Ranger', 6, 'Outlander', 'A mysterious archer who appears when least expected', 'Raised by wolves in the deep forest, Zephyra has an uncanny connection to nature and its creatures.', 'Wild and free-spirited, distrustful of cities', 'Favored Enemy: Undead, Natural Explorer, Archery Fighting Style', 'images/elf-ranger.jpg', 'Wood elf ranger with a longbow and forest camouflage'),
+    
+    ('Thaddeus the Wise', 'Lawful Neutral', 'Human', 'Wizard', 7, 'Sage', 'An elderly scholar seeking forbidden knowledge', 'Once a respected professor at the Arcane University, Thaddeus was exiled for his controversial research into necromancy.', 'Eccentric and absent-minded, but brilliant', 'Arcane Recovery, Spell Mastery, Ritual Casting', 'images/human-wizard.jpg', 'Elderly human wizard with a long beard and spellbook'),
+    
+    ('Lilith Shadowdance', 'Neutral Evil', 'Tiefling', 'Warlock', 5, 'Charlatan', 'A charming trickster with infernal powers', 'Struck a bargain with a fiend as a child, Lilith now struggles with the dark powers growing within her.', 'Sarcastic and manipulative, but with a hidden heart of gold', 'Pact Magic, Eldritch Invocations, Hellish Rebuke', 'images/tiefling-warlock.jpg', 'Tiefling warlock with glowing red eyes and arcane sigils');

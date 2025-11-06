@@ -17,9 +17,9 @@
 <body>
     <!-- Header Section - Contains logo and navigation -->
     <header class="header" role="banner">
-        <!-- Logo with home link - Uses food emoji and text -->
+        <!-- Logo with home link - Uses D&D theme -->
         <div class="logo">
-            <a href="{{ url_for('index') }}" class="logo-link" aria-label="Home page">&#127836; Filipino Recipes</a>
+            <a href="{{ url_for('index') }}" class="logo-link" aria-label="Home page">&#x1F9D9; D&D Character Manager</a>
         </div>
     
         <!-- Hamburger menu icon - Only visible on mobile devices -->
@@ -28,7 +28,7 @@
         <!-- Navigation links - Primary site navigation -->
         {% set current_page = active_page | default('') %}
         <nav class="nav-links" aria-label="Main navigation">
-            <a href="{{ url_for('add_recipe') }}" class="btn-link{% if current_page == 'add_recipe' %} active{% endif %}" {% if current_page == 'add_recipe' %}aria-current="page"{% endif %}>Add a recipe</a>
+            <a href="{{ url_for('add_character') }}" class="btn-link{% if current_page == 'add_character' %} active{% endif %}" {% if current_page == 'add_character' %}aria-current="page"{% endif %}>Add Character</a>
             <a href="{{ url_for('about') }}" class="btn-link{% if current_page == 'about' %} active{% endif %}" {% if current_page == 'about' %}aria-current="page"{% endif %}>About</a>
             <a href="{{ url_for('contact') }}" class="btn-link{% if current_page == 'contact' %} active{% endif %}" {% if current_page == 'contact' %}aria-current="page"{% endif %}>Contact</a>
         </nav>
@@ -39,7 +39,7 @@
     
     <!-- Site Footer - Contains copyright information -->
     <footer class="footer" role="contentinfo">
-        &copy; 2024 Filipino Recipes
+        &copy; 2024 D&D Character Manager
     </footer>
     
     <!-- JavaScript for mobile navigation menu toggle -->

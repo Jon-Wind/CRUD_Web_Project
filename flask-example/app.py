@@ -18,7 +18,7 @@ def create_app():
     app = Flask(__name__)
     app.config.from_mapping(
         SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, 'recipes.db'),
+        DATABASE=os.path.join(app.instance_path, 'dnd_characters.db'),
         SCHEMA_PATH='schema.sql',
         UPLOAD_FOLDER=os.path.join(app.static_folder, 'images', 'uploads')
     )
@@ -38,7 +38,7 @@ def register_routes(app):
     def index():
         db = get_db()
         rows = db.execute(
-            'SELECT id, name, race, character_class, short_description, image_path FROM dnd_characters ORDER BY id'
+            'SELECT id, name, race, character_class, level, short_description, image_path, alignment FROM dnd_characters ORDER BY id'
         ).fetchall()
         characters = [dict(row) for row in rows]
         return render_template('index.html', characters=characters, active_page='home')
@@ -56,17 +56,17 @@ def register_routes(app):
         character_context = {
             'id': character['id'],
             'name': character['name'],
-            'alignment': character.get('alignment'),
-            'race': character.get('race'),
-            'short_description': character.get('short_description'),
-            'image_path': character.get('image_path') or 'images/about.webp',
-            'image_alt': character.get('image_alt') or f"Portrait of {character['name']}",
-            'character_class': character.get('character_class'),
-            'backstory': character.get('backstory'),
-            'personality': character.get('personality'),
-            'connections': character.get('connections'),
-            'abilities_skills': character.get('abilities_skills'),
-            'extra': character.get('extra')
+            'alignment': character.get('alignment', ''),
+            'race': character.get('race', ''),
+            'character_class': character.get('character_class', ''),
+            'level': character.get('level', 1),
+            'background': character.get('background', ''),
+            'short_description': character.get('short_description', ''),
+            'backstory': character.get('backstory', ''),
+            'personality': character.get('personality', ''),
+            'abilities_skills': character.get('abilities_skills', ''),
+            'image_path': character.get('image_path', 'images/about.webp'),
+            'image_alt': character.get('image_alt', f"Portrait of {character['name']}")
         }
 
         return render_template('character_detail.html', character=character_context, active_page='character_detail')
@@ -78,13 +78,13 @@ def register_routes(app):
             name = request.form.get('character-name', '').strip()
             alignment = request.form.get('alignment', '').strip()
             race = request.form.get('race', '').strip()
-            short_description = request.form.get('short-description', '').strip()
             character_class = request.form.get('character-class', '').strip()
+            level = int(request.form.get('level', 1))
+            background = request.form.get('background', '').strip()
+            short_description = request.form.get('short-description', '').strip()
             backstory = request.form.get('backstory', '').strip()
             personality = request.form.get('personality', '').strip()
-            connections = request.form.get('connections', '').strip()
             abilities_skills = request.form.get('abilities-skills', '').strip()
-            extra = request.form.get('extra', '').strip()
             image_file = request.files.get('image-upload')
 
             image_path = 'images/about.webp'
@@ -113,9 +113,18 @@ def register_routes(app):
             elif not error:
                 try:
                     db = get_db()
-                    db.execute(
-                        'INSERT INTO dnd_characters (name, alignment, race, short_description, character_class, backstory, personality, connections, abilities_skills, extra, image_path, image_alt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                        (name, alignment, race, short_description, character_class, backstory, personality, connections, abilities_skills, extra, image_path, image_alt)
+                    cursor = db.cursor()
+                    cursor.execute(
+                        '''
+                        INSERT INTO dnd_characters 
+                        (name, alignment, race, character_class, level, background, 
+                         short_description, backstory, personality, abilities_skills, 
+                         image_path, image_alt) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        ''',
+                        (name, alignment, race, character_class, level, background,
+                         short_description, backstory, personality, abilities_skills,
+                         image_path, image_alt)
                     )
                     db.commit()
                     new_id = cursor.lastrowid
@@ -142,13 +151,13 @@ def register_routes(app):
             name = request.form.get('character-name', '').strip()
             alignment = request.form.get('alignment', '').strip()
             race = request.form.get('race', '').strip()
-            short_description = request.form.get('short-description', '').strip()
             character_class = request.form.get('character-class', '').strip()
+            level = int(request.form.get('level', 1))
+            background = request.form.get('background', '').strip()
+            short_description = request.form.get('short-description', '').strip()
             backstory = request.form.get('backstory', '').strip()
             personality = request.form.get('personality', '').strip()
-            connections = request.form.get('connections', '').strip()
             abilities_skills = request.form.get('abilities-skills', '').strip()
-            extra = request.form.get('extra', '').strip()
             image_file = request.files.get('image-upload')
 
             image_path = character.get('image_path', 'images/about.webp')
@@ -177,14 +186,15 @@ def register_routes(app):
                     db.execute(
                         '''
                         UPDATE dnd_characters
-                        SET name = ?, alignment = ?, race = ?, short_description = ?,
-                            character_class = ?, backstory = ?, personality = ?, connections = ?,
-                            abilities_skills = ?, extra = ?, image_path = ?, image_alt = ?
+                        SET name = ?, alignment = ?, race = ?, character_class = ?,
+                            level = ?, background = ?, short_description = ?,
+                            backstory = ?, personality = ?, abilities_skills = ?,
+                            image_path = ?, image_alt = ?
                         WHERE id = ?
                         ''',
-                        (name, alignment, race, short_description, character_class,
-                         backstory, personality, connections, abilities_skills,
-                         extra, image_path, image_alt, character_id)
+                        (name, alignment, race, character_class, level, background,
+                         short_description, backstory, personality, abilities_skills,
+                         image_path, image_alt, character_id)
                     )
                     db.commit()
                     return redirect(url_for('character_detail', character_id=character_id))
@@ -197,13 +207,13 @@ def register_routes(app):
                 'name': name,
                 'alignment': alignment,
                 'race': race,
-                'short_description': short_description,
                 'character_class': character_class,
+                'level': level,
+                'background': background,
+                'short_description': short_description,
                 'backstory': backstory,
                 'personality': personality,
-                'connections': connections,
                 'abilities_skills': abilities_skills,
-                'extra': extra,
                 'image_path': image_path,
                 'image_alt': image_alt
             }
