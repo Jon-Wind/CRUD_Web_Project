@@ -8,17 +8,18 @@
         max-width: 800px;
         margin: 0 auto;
         padding: 2rem;
-        background: #fff;
+        background: #f8fafc;
         border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 6px rgba(30, 64, 175, 0.1);
+        border: 1px solid #e0e7ff;
     }
     
     .form-title {
-        color: #2c3e50;
+        color: #1e40af;
         margin-top: 0;
         margin-bottom: 1.5rem;
         padding-bottom: 0.5rem;
-        border-bottom: 2px solid #3498db;
+        border-bottom: 2px solid #3b82f6;
     }
     
     .form-group {
@@ -29,22 +30,23 @@
         display: block;
         margin-bottom: 0.5rem;
         font-weight: 600;
-        color: #2c3e50;
+        color: #1e3a8a;
     }
     
     .form-control {
         width: 100%;
         padding: 0.75rem;
-        border: 1px solid #ddd;
-        border-radius: 4px;
+        border: 1px solid #bfdbfe;
+        border-radius: 6px;
         font-size: 1rem;
-        transition: border-color 0.2s;
+        background-color: #fff;
+        transition: all 0.2s ease;
     }
     
     .form-control:focus {
-        border-color: #3498db;
+        border-color: #3b82f6;
         outline: none;
-        box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
     }
     
     textarea.form-control {
@@ -57,8 +59,10 @@
         justify-content: flex-end;
         gap: 1rem;
         margin-top: 2rem;
-        padding-top: 1.5rem;
-        border-top: 1px solid #eee;
+        padding: 1.5rem;
+        background-color: #eff6ff;
+        border-radius: 8px;
+        border: 1px solid #dbeafe;
     }
     
     .btn {
@@ -74,21 +78,25 @@
     }
     
     .btn-primary {
-        background: #3498db;
+        background: #2563eb;
         color: white;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     }
     
     .btn-primary:hover {
-        background: #2980b9;
+        background: #1d4ed8;
+        transform: translateY(-1px);
     }
     
     .btn-secondary {
-        background: #95a5a6;
+        background: #3b82f6;
         color: white;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     }
     
     .btn-secondary:hover {
-        background: #7f8c8d;
+        background: #2563eb;
+        transform: translateY(-1px);
     }
     
     .form-row {
@@ -103,8 +111,12 @@
     }
     
     .error-message {
-        color: #e74c3c;
-        margin-top: 0.5rem;
+        color: #ef4444;
+        background-color: #fef2f2;
+        padding: 0.75rem 1rem;
+        border-radius: 6px;
+        border-left: 4px solid #ef4444;
+        margin: 1rem 0;
         font-size: 0.9em;
     }
     
@@ -112,8 +124,9 @@
         max-width: 200px;
         margin-top: 1rem;
         display: none;
-        border-radius: 4px;
-        border: 1px solid #ddd;
+        border-radius: 6px;
+        border: 2px solid #bfdbfe;
+        box-shadow: 0 2px 4px rgba(30, 64, 175, 0.1);
     }
     
     @media (max-width: 768px) {

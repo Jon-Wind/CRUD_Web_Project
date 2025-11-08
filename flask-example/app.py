@@ -26,7 +26,13 @@ def create_app():
     os.makedirs(app.instance_path, exist_ok=True)
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
+    # Initialize the database
     init_app(app)
+    
+    # Create database tables if they don't exist
+    with app.app_context():
+        from db import init_db
+        init_db()
 
     register_routes(app)
 
@@ -36,12 +42,29 @@ def create_app():
 def register_routes(app):
     @app.route('/')
     def index():
+        search_query = request.args.get('search', '').strip()
         db = get_db()
-        rows = db.execute(
-            'SELECT id, name, race, character_class, level, short_description, image_path, alignment FROM dnd_characters ORDER BY id'
-        ).fetchall()
+        
+        if search_query:
+            query = """
+                SELECT id, name, race, character_class, level, short_description, image_path, alignment 
+                FROM dnd_characters 
+                WHERE name LIKE ? OR race LIKE ? OR character_class LIKE ? OR short_description LIKE ?
+                ORDER BY name
+            """
+            search_pattern = f'%{search_query}%'
+            rows = db.execute(query, (search_pattern, search_pattern, search_pattern, search_pattern)).fetchall()
+        else:
+            rows = db.execute(
+                'SELECT id, name, race, character_class, level, short_description, image_path, alignment '
+                'FROM dnd_characters ORDER BY name'
+            ).fetchall()
+            
         characters = [dict(row) for row in rows]
-        return render_template('index.html', characters=characters, active_page='home')
+        return render_template('index.html', 
+                            characters=characters, 
+                            active_page='home',
+                            search_query=search_query)
 
     @app.route('/character/<int:character_id>')
     def character_detail(character_id):

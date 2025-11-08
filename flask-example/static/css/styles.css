@@ -7,17 +7,25 @@
 
 /* ------- MAIN COLORS ------- */
 :root {
-    --red-color: rgb(174, 60, 60);      /* Main red color used in header and buttons */
-    --dark-red: rgb(150, 60, 60);       /* Darker red used for hover effects */
-    --light-gray: #f4f4f4;              /* Light gray background for cards */
-    --border-color: #ccc;               /* Border color for cards and other elements */
+    --primary-color: #1e40af;           /* Navy blue color for header and primary elements */
+    --primary-hover: #1e3a8a;           /* Darker navy for hover states */
+    --secondary-color: #2563eb;         /* Brighter blue for secondary elements */
+    --light-bg: #f8fafc;               /* Light blue-gray background */
+    --card-bg: #ffffff;                /* White background for cards */
+    --border-color: #bfdbfe;           /* Light blue border color */
+    --text-primary: #1e3a8a;           /* Dark blue for primary text */
+    --text-secondary: #4b5563;         /* Gray for secondary text */
+    --shadow-color: rgba(30, 64, 175, 0.1); /* Blue tinted shadow */
 }
 
 /* ------- GENERAL STYLES ------- */
 body {
     margin: 0;                         /* Removes default margin */
-    font-family: Arial, sans-serif;     /* Sets the main font for the website */
+    font-family: 'Cardo', Georgia, serif; /* Uses Cardo with fallbacks */
     box-sizing: border-box;             /* Ensures padding and border are included in width/height */
+    line-height: 1.6;                  /* Better readability */
+    color: var(--text-primary);         /* Dark blue for better readability */
+    background-color: var(--light-bg);  /* Light blue-gray background */
 }
 
 /* Reusable utility classes */
@@ -29,18 +37,23 @@ body {
 .btn-link {
     color: white;                      /* White text color */
     text-decoration: none;              /* Removes underline from links */
-    padding: 5px 10px;                  /* Space inside the button (top/bottom, left/right) */
-    border-radius: 5px;                 /* Rounded corners */
-    transition: background-color 0.3s ease; /* Smooth color change when hovering */
+    padding: 0.5rem 1rem;               /* Better padding for clickable area */
+    border-radius: 6px;                 /* Rounded corners */
+    transition: all 0.2s ease;          /* Smooth transitions */
+    font-weight: 500;                   /* Slightly bolder text */
+    background-color: var(--primary-color);
 }
 
 /* Hover effect - styles that apply when mouse moves over an element */
 .btn-link:hover {
-    background-color: var(--dark-red);  /* Changes background color on hover */
+    background-color: var(--primary-hover);  /* Darker blue on hover */
+    transform: translateY(-1px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .btn-link.active {
-    background-color: var(--dark-red);
+    background-color: var(--primary-hover);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
 }
 
 /* ------- LAYOUT STYLES ------- */
@@ -63,11 +76,17 @@ body {
 /* ------- CARD STYLES ------- */
 /* Card component - used for recipe preview boxes */
 .card {
-    background-color: var(--light-gray); /* Light gray background */
-    padding: 20px;                      /* Space inside the card */
-    border: 1px solid var(--border-color); /* Thin border around the card */
-    border-radius: 10px;                /* Rounded corners */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow for depth */
+    background-color: var(--card-bg);   /* White background */
+    padding: 1.5rem;                    /* Space inside the card */
+    border: 1px solid var(--border-color); /* Light blue border */
+    border-radius: 8px;                 /* Rounded corners */
+    box-shadow: 0 2px 4px var(--shadow-color); /* Subtle blue shadow */
+    transition: all 0.2s ease;          /* Smooth hover effect */
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.15);
 }
 
 .card-image {
@@ -89,7 +108,8 @@ body {
 
 /* Hover effect for recipe links */
 .recipe-link:hover {
-    color: rgb(200, 60, 60);            /* Changes to red color when hovering */
+    color: var(--primary-color);        /* Changes to blue color when hovering */
+    text-decoration: underline;
 }
 
 /* ------- RECIPE TEXT STYLES ------- */
@@ -110,18 +130,19 @@ body {
 /* ------- HEADER STYLES ------- */
 /* Main header at the top of each page */
 .header {
-    background-color: var(--red-color);  /* Red background color */
+    background-color: var(--primary-color);  /* Blue background color */
     color: white;                       /* White text color */
     display: flex;                      /* Allows items to be positioned side by side */
     justify-content: space-between;     /* Puts space between logo and navigation */
     align-items: center;                /* Centers items vertically */
-    padding: 20px;                      /* Space inside the header */
-    margin-bottom: 20px;                /* Space below the header */
+    padding: 1rem 2rem;                 /* Space inside the header */
+    margin-bottom: 2rem;                /* Space below the header */
+    box-shadow: 0 2px 4px var(--shadow-color); /* Subtle shadow */
 }
 
 /* Logo link in the header */
 .logo-link {
-    font-family: 'Asar', cursive;       /* Special font for the logo */
+    font-family: 'Cardo', cursive;       /* Special font for the logo */
     font-size: 22px;                    /* Larger text size */
     color: white;                       /* White text color */
     text-decoration: none;              /* Removes underline from link */
@@ -130,17 +151,19 @@ body {
 
 /* Hover effect for logo */
 .logo-link:hover {
-    color: rgb(255, 102, 102);          /* Lighter red color when hovering */
+    color: #93c5fd;                     /* Light blue color when hovering */
 }
 
 /* ------- FOOTER STYLES ------- */
 /* Footer at the bottom of each page */
 .footer {
-    background-color: var(--red-color);  /* Red background color (same as header) */
+    background-color: var(--primary-color);  /* Blue background color */
     color: white;                       /* White text color */
     text-align: center;                 /* Centers text horizontally */
-    padding: 20px;                      /* Space inside the footer */
-    margin-top: 20px;                   /* Space above the footer */
+    padding: 1.5rem;                    /* Space inside the footer */
+    margin-top: 3rem;                   /* Space above the footer */
+    font-size: 0.9rem;                  /* Slightly smaller text */
+    border-top: 1px solid rgba(255, 255, 255, 0.1); /* Subtle top border */
 }
 
 /* ------- RECIPE DETAIL PAGE STYLES ------- */
@@ -166,13 +189,18 @@ body {
 /* Recipe details container - holds title, ingredients, directions */
 .recipe-details-container {
     flex: 1;                            /* Grows to fill remaining space */
-    padding: 20px;                      /* Space inside the container */
-    background-color: white;            /* White background */
-    border: 1px solid lightgrey;        /* Light gray border */
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-    border-radius: 10px;                /* Rounded corners */
+    padding: 1.5rem;                    /* Space inside the container */
+    background-color: var(--card-bg);   /* White background */
+    border: 1px solid var(--border-color); /* Light blue border */
+    box-shadow: 0 2px 4px var(--shadow-color); /* Subtle blue shadow */
+    border-radius: 8px;                 /* Rounded corners */
     box-sizing: border-box;             /* Ensures padding is included in width */
     width: calc(70% - 40px);            /* Takes up 70% of container width minus gap */
+    transition: all 0.2s ease;          /* Smooth transitions */
+}
+
+.recipe-details-container:hover {
+    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.15);
 }
 
 /* Recipe metadata section - stacks detail chips vertically */

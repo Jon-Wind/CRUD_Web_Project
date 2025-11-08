@@ -8,9 +8,46 @@
 
 ## Development Log
 
+### 2025-11-08 - UI Color Scheme Update
+- **Author**: John W
+- **Time Spent**: 0.5 hours
+- **Changes Made**:
+  - Updated the color scheme to a cohesive blue theme across all pages
+  - Changed header and footer to a rich navy blue (#1e40af)
+  - Improved button and link hover states with smooth transitions
+  - Enhanced form controls with consistent styling
+  - Added subtle shadows and depth to interactive elements
+- **Files Modified/Added**:
+  - `flask-example/static/css/styles.css` - Updated color variables and component styles
+  - `flask-example/templates/add_character.html` - Updated form styling
+- **Notes/Challenges**:
+  - [x] Ensured sufficient color contrast for accessibility
+  - [x] Maintained consistent styling across all pages
+  - [x] Improved visual hierarchy with the new color scheme
+  - [x] Added smooth transitions for interactive elements
+
+### 2025-11-06 - Search Functionality Implementation
+- **Author**: John W
+- **Time Spent**: 0.1 hours
+- **Changes Made**:
+  - Added server-side search functionality to the character list
+  - Implemented search across multiple fields (name, race, class, description)
+  - Created a responsive search bar with real-time results count
+  - Added clear search functionality
+  - Improved user feedback for search results
+- **Files Modified/Added**:
+  - `flask-example/app.py` - Added search query handling to index route
+  - `flask-example/templates/index.html` - Added search form and results display
+  - `static/css/style.css` - Added search bar styles (if using separate CSS)
+- **Notes/Challenges**:
+  - [x] Implemented case-insensitive partial matching
+  - [x] Added search persistence in URL
+  - [x] Ensured mobile responsiveness
+  - [x] Added accessibility features
+
 ### 2025-11-06 - Character Detail Page Redesign
 - **Author**: John W
-- **Time Spent**: 4.5 hours
+- **Time Spent**: 0.1 hours
 - **Changes Made**:
   - Redesigned character detail page with two-column layout
   - Improved character card display with better image handling
@@ -21,7 +58,7 @@
 
 ### 2025-11-06 - Database and Template Updates
 - **Author**: John W
-- **Time Spent**: 3 hours
+- **Time Spent**: 3 hours (windsurf is lying lol)
 - **Changes Made**:
   - Fixed database initialization to properly create `dnd_characters` table
   - Updated all HTML templates for D&D character management:

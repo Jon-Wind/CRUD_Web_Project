@@ -23,8 +23,27 @@ def close_db(e=None):
 def init_db():
     db = get_db()
     schema_path = current_app.config.get('SCHEMA_PATH', 'schema.sql')
+    
+    # First, create the table if it doesn't exist
     with current_app.open_resource(schema_path) as f:
-        db.executescript(f.read().decode('utf-8'))
+        # Split the SQL file into individual statements
+        sql_script = f.read().decode('utf-8')
+        
+        # Execute the table creation part
+        create_table_sql = sql_script.split('-- Sample D&D Characters')[0]
+        db.executescript(create_table_sql)
+        
+        # Check if the table is empty
+        cursor = db.cursor()
+        cursor.execute("SELECT COUNT(*) as count FROM dnd_characters")
+        count = cursor.fetchone()['count']
+        
+        # Only insert sample data if the table is empty
+        if count == 0 and '-- Sample D&D Characters' in sql_script:
+            sample_data_sql = '-- Sample D&D Characters' + sql_script.split('-- Sample D&D Characters')[1]
+            db.executescript(sample_data_sql)
+    
+    db.commit()
 
 
 def init_app(app):
