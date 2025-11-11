@@ -43,6 +43,57 @@
         text-align: center;
         margin: 2rem 0 3rem;
     }
+    
+    .search-controls {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin: 1.5rem 0;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    
+    .sort-controls {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+    
+    .sort-select, .sort-order {
+        padding: 0.5rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        background-color: white;
+        cursor: pointer;
+        transition: border-color 0.2s;
+    }
+    
+    .sort-select:focus, .sort-order:focus {
+        outline: none;
+        border-color: #3498db;
+    }
+    
+    .sort-order {
+        padding: 0.5rem 0.75rem;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+    }
+    
+    .sort-order:hover {
+        background-color: #e9ecef;
+    }
+    
+    .sort-order.active {
+        background-color: #3498db;
+        color: white;
+        border-color: #3498db;
+    }
 
     .search-bar {
         max-width: 600px;
@@ -367,7 +418,57 @@
                     <i class="fas fa-search"></i>
                 </button>
             </div>
+            
+            <div class="search-controls">
+                <div class="sort-controls">
+                    <select name="sort" class="sort-select" onchange="this.form.submit()" aria-label="Sort by">
+                        <option value="name" {% if current_sort == 'name' %}selected{% endif %}>Sort by: Name</option>
+                        <option value="id" {% if current_sort == 'id' %}selected{% endif %}>Sort by: ID</option>
+                        <option value="level" {% if current_sort == 'level' %}selected{% endif %}>Sort by: Level</option>
+                        <option value="race" {% if current_sort == 'race' %}selected{% endif %}>Sort by: Race</option>
+                        <option value="class" {% if current_sort == 'class' %}selected{% endif %}>Sort by: Class</option>
+                        <option value="alignment" {% if current_sort == 'alignment' %}selected{% endif %}>Sort by: Alignment</option>
+                    </select>
+                    
+                    <input type="hidden" name="order" value="{{ 'desc' if current_order == 'desc' else 'asc' }}" id="sort-order-input">
+                    <button type="button" 
+                            class="sort-order {% if current_order == 'asc' %}active{% endif %}" 
+                            onclick="setSortOrder('asc')"
+                            aria-label="Sort ascending">
+                        <i class="fas fa-arrow-up"></i>
+                    </button>
+                    <button type="button" 
+                            class="sort-order {% if current_order == 'desc' %}active{% endif %}" 
+                            onclick="setSortOrder('desc')"
+                            aria-label="Sort descending">
+                        <i class="fas fa-arrow-down"></i>
+                    </button>
+                </div>
+            </div>
         </form>
+        
+        <script>
+            function setSortOrder(order) {
+                document.getElementById('sort-order-input').value = order;
+                // Submit the form to apply the sort order
+                const form = document.querySelector('.search-form');
+                form.submit();
+            }
+            
+            // Preserve search query when changing sort options
+            document.addEventListener('DOMContentLoaded', function() {
+                const sortSelect = document.querySelector('select[name="sort"]');
+                if (sortSelect) {
+                    sortSelect.addEventListener('change', function() {
+                        const searchInput = document.querySelector('input[name="search"]');
+                        if (searchInput && searchInput.value) {
+                            // The form will automatically include the search parameter
+                            // No need to do anything special here
+                        }
+                    });
+                }
+            });
+        </script>
         {% if search_query %}
         <p class="search-results-count">
             Found {{ characters|length }} character{{ 's' if characters|length != 1 else '' }} for "{{ search_query }}"

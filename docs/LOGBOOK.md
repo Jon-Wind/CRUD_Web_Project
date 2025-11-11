@@ -6,6 +6,34 @@
 - **Project Lead**: John W
 - **Repository**: [Repository URL](https://github.com/Jon-Wind/CRUD_Web_Project)
 
+
+Ignore 
+## Development Log
+
+### 2025-11-11 - Added Character Sorting Functionality
+- **Author**: Cascade AI
+- **Time Spent**: 1 hour
+- **Changes Made**:
+  - Added sorting controls to the character listing page
+  - Implemented sorting by multiple fields: Name, ID, Level, Race, Class, and Alignment
+  - Added toggle for ascending/descending sort order
+  - Ensured sort state persists with search functionality
+  - Improved UI with responsive design and visual feedback
+- **Files Modified**:
+  - `flask-example/app.py` - Added sort parameters and updated database queries
+  - `flask-example/templates/index.html` - Added sort controls and styles
+- **Notes/Challenges**:
+  - [x] Implemented server-side sorting for better performance
+  - [x] Ensured sort works in combination with search
+  - [x] Added visual indicators for current sort order
+  - [x] Made controls accessible with proper ARIA labels
+
+### 2025-11-08 - UI Color Scheme Update
+- **Project Name**: Character Creator Library
+- **Start Date**: 27-10-25
+- **Project Lead**: John W
+- **Repository**: [Repository URL](https://github.com/Jon-Wind/CRUD_Web_Project)
+
 ## Development Log
 
 ### 2025-11-08 - UI Color Scheme Update

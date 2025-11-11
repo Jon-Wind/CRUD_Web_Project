@@ -43,28 +43,48 @@ def register_routes(app):
     @app.route('/')
     def index():
         search_query = request.args.get('search', '').strip()
+        sort_by = request.args.get('sort', 'name').lower()
+        sort_order = request.args.get('order', 'asc').lower()
+        
+        # Validate sort parameters
+        valid_sort_columns = {
+            'name': 'name',
+            'id': 'id',
+            'level': 'level',
+            'race': 'race',
+            'class': 'character_class',
+            'alignment': 'alignment'
+        }
+        
+        sort_column = valid_sort_columns.get(sort_by, 'name')
+        sort_order = 'ASC' if sort_order == 'asc' else 'DESC'
+        
         db = get_db()
         
         if search_query:
-            query = """
+            query = f"""
                 SELECT id, name, race, character_class, level, short_description, image_path, alignment 
                 FROM dnd_characters 
                 WHERE name LIKE ? OR race LIKE ? OR character_class LIKE ? OR short_description LIKE ?
-                ORDER BY name
+                ORDER BY {sort_column} {sort_order}, name
             """
             search_pattern = f'%{search_query}%'
             rows = db.execute(query, (search_pattern, search_pattern, search_pattern, search_pattern)).fetchall()
         else:
-            rows = db.execute(
-                'SELECT id, name, race, character_class, level, short_description, image_path, alignment '
-                'FROM dnd_characters ORDER BY name'
-            ).fetchall()
+            query = f"""
+                SELECT id, name, race, character_class, level, short_description, image_path, alignment
+                FROM dnd_characters 
+                ORDER BY {sort_column} {sort_order}, name
+            """
+            rows = db.execute(query).fetchall()
             
         characters = [dict(row) for row in rows]
         return render_template('index.html', 
                             characters=characters, 
                             active_page='home',
-                            search_query=search_query)
+                            search_query=search_query,
+                            current_sort=sort_by,
+                            current_order=sort_order)
 
     @app.route('/character/<int:character_id>')
     def character_detail(character_id):
