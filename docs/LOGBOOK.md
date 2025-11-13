@@ -6,9 +6,23 @@
 - **Project Lead**: John W
 - **Repository**: [Repository URL](https://github.com/Jon-Wind/CRUD_Web_Project)
 
-
-Ignore 
 ## Development Log
+
+### 2025-11-13 - Fixed Duplicate Character Cards
+- **Author**: Cascade AI
+- **Time Spent**: 0.5 hours
+- **Changes Made**:
+  - Fixed an issue where character cards were being displayed twice on the home page
+  - Removed duplicate character grid section from index.html
+  - Fixed template syntax errors that were causing 500 server errors
+  - Ensured proper HTML structure and template inheritance
+- **Files Modified**:
+  - `flask-example/templates/index.html` - Removed duplicate grid and fixed template structure
+- **Notes/Challenges**:
+  - [x] Identified and removed redundant character grid section
+  - [x] Fixed template syntax errors
+  - [x] Verified proper card display in all view modes
+  - [x] Ensured all interactive features (search, sort) continue to work correctly
 
 ### 2025-11-11 - Added Character Sorting Functionality
 - **Author**: Cascade AI

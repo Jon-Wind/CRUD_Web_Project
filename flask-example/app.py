@@ -79,6 +79,24 @@ def register_routes(app):
             rows = db.execute(query).fetchall()
             
         characters = [dict(row) for row in rows]
+        
+        # Check if it's an AJAX request
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            # If it's an AJAX request, only return the character results section
+            from flask import render_template_string
+            return render_template_string(
+                '{% extends "index.html" %}'  
+                '{% block content %}'  
+                '{% include "includes/character_results.html" %}'  
+                '{% endblock %}',
+                characters=characters,
+                active_page='home',
+                search_query=search_query,
+                current_sort=sort_by,
+                current_order=sort_order
+            )
+        
+        # For regular page loads, return the full page
         return render_template('index.html', 
                             characters=characters, 
                             active_page='home',
