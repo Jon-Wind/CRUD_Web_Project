@@ -292,9 +292,41 @@ def register_routes(app):
     def about():
         return render_template('about.html', active_page='about')
 
-    @app.route('/contact')
+    @app.route('/contact', methods=['GET', 'POST'])
     def contact():
+        if request.method == 'POST':
+            name = request.form.get('name', '').strip()
+            email = request.form.get('email', '').strip()
+            subject = request.form.get('subject', '').strip()
+            message = request.form.get('message', '').strip()
+            
+            # Basic validation
+            if not all([name, email, subject, message]):
+                flash('All fields are required', 'error')
+            elif '@' not in email or '.' not in email:
+                flash('Please enter a valid email address', 'error')
+            else:
+                # In a real application, you would typically:
+                # 1. Save the message to a database
+                # 2. Send an email notification
+                # 3. Log the contact attempt
+                
+                # For now, we'll just show a success message
+                flash('Thank you for your message! We will get back to you soon.', 'success')
+                
+                # In a real app, you might want to redirect to prevent form resubmission
+                # return redirect(url_for('contact'))
+                
         return render_template('contact.html', active_page='contact')
+    
+    # Error handlers
+    @app.errorhandler(404)
+    def page_not_found(e):
+        return render_template('errors/404.html'), 404
+    
+    @app.errorhandler(500)
+    def internal_server_error(e):
+        return render_template('errors/500.html'), 500
 
 
 app = create_app()

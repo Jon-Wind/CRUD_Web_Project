@@ -8,6 +8,27 @@
 
 ## Development Log
 
+### 2025-11-14 - Added Contact Page and Error Handling
+- **Author**: Cascade AI
+- **Time Spent**: 1 hour
+- **Changes Made**:
+  - Transformed the contact page into a fully functional contact form
+  - Added server-side form validation for required fields and email format
+  - Created custom 404 (Not Found) and 500 (Internal Server Error) error pages
+  - Implemented flash messages for user feedback
+  - Added responsive styling for all new components
+- **Files Modified/Added**:
+  - `flask-example/templates/contact.html` - Completely redesigned with a contact form
+  - `flask-example/templates/errors/404.html` - New custom 404 error page
+  - `flask-example/templates/errors/500.html` - New custom 500 error page
+  - `flask-example/app.py` - Added contact form handling and error handlers
+- **Notes/Challenges**:
+  - [x] Implemented client-side and server-side form validation
+  - [x] Created user-friendly error pages with consistent styling
+  - [x] Added proper error handling for form submissions
+  - [x] Ensured responsive design works on all device sizes
+  - [x] Added visual feedback for form interactions
+
 ### 2025-11-13 - Fixed Duplicate Character Cards
 - **Author**: Cascade AI
 - **Time Spent**: 0.5 hours

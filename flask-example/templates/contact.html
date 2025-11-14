@@ -1,60 +1,126 @@
 {% extends "base.html" %}
 
-{% block title %}Contact & Educational Guide - Filipino Recipes{% endblock %}
+{% block title %}Contact Us - Filipino Recipes{% endblock %}
 
 {% block content %}
 <main class="recipe-content" role="main">
-    <img src="{{ url_for('static', filename='images/about.webp') }}" alt="Contact the Filipino Recipes team" class="recipe-image">
-
     <div class="recipe-details-container">
-        <h1>How to Recreate This Website</h1>
-        <p>This guide provides step-by-step instructions for recreating this Filipino Recipes website, focusing on modern web development best practices.</p>
+        <h1>Contact Us</h1>
+        <p>Have questions, suggestions, or feedback? We'd love to hear from you! Fill out the form below and we'll get back to you as soon as possible.</p>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
 
-        <h2>Core Web Technologies</h2>
-        <ul>
-            <li><strong>HTML5 Semantic Structure:</strong> Use semantic tags like <strong>&lt;header&gt;</strong>, <strong>&lt;nav&gt;</strong>, <strong>&lt;main&gt;</strong>, <strong>&lt;section&gt;</strong>, <strong>&lt;article&gt;</strong>, and <strong>&lt;footer&gt;</strong> to create a meaningful document outline that improves accessibility and SEO.</li>
-            <li><strong>CSS Layout Systems:</strong> Implement <strong>Flexbox</strong> for one-dimensional layouts and <strong>CSS Grid</strong> for two-dimensional layouts.</li>
-            <li><strong>Responsive Design:</strong> Use media queries and relative units to ensure the site works on all device sizes.</li>
-            <li><strong>Progressive Enhancement:</strong> Build the core functionality first, then add advanced features for modern browsers.</li>
-        </ul>
-
-        <h1>Pages and Component Structure</h1>
-
-        <h2>1. Index Page</h2>
-        <p><strong>Purpose:</strong> Display a responsive grid of recipe cards with clickable links to detailed recipe pages.</p>
-        <ul>
-            <li><strong>Header Component:</strong> Structured with <code>&lt;header class="header" role="banner"&gt;</code> containing a logo and navigation.</li>
-            <li><strong>Recipe Grid Component:</strong> Uses <code>&lt;main class="content grid-4-col" role="main"&gt;</code> with <code>&lt;article class="card"&gt;</code> items rendered from data.</li>
-        </ul>
-
-        <h2>2. Recipe Detail Page</h2>
-        <p><strong>Purpose:</strong> Display detailed information about a specific recipe with a responsive two-column layout.</p>
-        <ul>
-            <li><strong>Layout:</strong> <code>&lt;main class="recipe-content" role="main"&gt;</code> containing the recipe image and detailed content.</li>
-            <li><strong>Content:</strong> Includes title, description, ingredients, directions, and metadata like preparation time.</li>
-        </ul>
-
-        <h2>3. Add Recipe Page</h2>
-        <p><strong>Purpose:</strong> Provide an accessible form for submitting new recipes with validation feedback.</p>
-        <ul>
-            <li><strong>Form Structure:</strong> <code>&lt;form id="recipe-form" method="post"&gt;</code> with labelled inputs and ARIA hints.</li>
-            <li><strong>Validation:</strong> Client-side validation combined with server-side handling when integrated with Flask.</li>
-        </ul>
-
-        <h2>4. About Page</h2>
-        <p><strong>Purpose:</strong> Describe the project, its technical specifications, and educational value.</p>
-        <ul>
-            <li><strong>Content:</strong> Explains the tech stack, design principles, and goals for students building the project.</li>
-        </ul>
-
-        <h2>5. CSS Organization</h2>
-        <p>The CSS is organized into sections for variables, base styles, layout components, responsive adjustments, and accessibility helpers.</p>
-
-        <h2>6. JavaScript Functionality</h2>
-        <p>Enhances user experience with interactive features while maintaining accessibility, such as the mobile navigation toggle and planned form validation.</p>
-
-        <h2>7. Transitioning to Flask</h2>
-        <p>Move HTML files into the <code>templates/</code> folder, static assets into <code>static/</code>, replace static links with <code>{% raw %}{{ url_for('route_name') }}{% endraw %}</code>, and prepare for database-backed content.</p>
+        <form method="POST" action="{{ url_for('contact') }}" class="contact-form">
+            <div class="form-group">
+                <label for="name">Your Name *</label>
+                <input type="text" id="name" name="name" required class="form-control" placeholder="Enter your name">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" name="email" required class="form-control" placeholder="Enter your email">
+            </div>
+            
+            <div class="form-group">
+                <label for="subject">Subject *</label>
+                <input type="text" id="subject" name="subject" required class="form-control" placeholder="What's this about?">
+            </div>
+            
+            <div class="form-group">
+                <label for="message">Your Message *</label>
+                <textarea id="message" name="message" rows="6" required class="form-control" placeholder="Type your message here..."></textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Send Message</button>
+        </form>
+        
+        <div class="contact-info">
+            <h2>Other Ways to Reach Us</h2>
+            <p><strong>Email:</strong> <a href="mailto:info@filipinorecipes.com">info@filipinorecipes.com</a></p>
+            <p><strong>Phone:</strong> +1 (555) 123-4567</p>
+            <p><strong>Address:</strong> 123 Recipe Street, Foodie City, FC 12345</p>
+        </div>
     </div>
 </main>
+
+<style>
+.contact-form {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 150px;
+}
+
+.btn-primary {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #c0392b;
+}
+
+.contact-info {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #eee;
+}
+
+.alert {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 4px;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+</style>
 {% endblock %}
