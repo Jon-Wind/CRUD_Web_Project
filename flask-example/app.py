@@ -1,7 +1,7 @@
 import os
 import uuid
 
-from flask import Flask, render_template, request, redirect, url_for, current_app, abort, jsonify
+from flask import Flask, render_template, request, redirect, url_for, current_app, abort, jsonify, flash
 from werkzeug.utils import secure_filename
 
 from db import get_db, init_app

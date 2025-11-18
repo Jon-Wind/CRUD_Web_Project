@@ -16,7 +16,7 @@
                 <a href="{{ url_for('edit_party', party_id=party.id) }}" class="btn btn-outline">
                     <i class="fas fa-edit"></i> Edit Party
                 </a>
-                <form method="POST" action="{{ url_for('delete_party', party_id=party.id) }}" style="display: inline;">
+                <form method="POST" action="{{ url_for('delete_party', party_id=party.id) }}" style="display: inline-flex;">
                     <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this party? This will remove all characters from the party.')">
                         <i class="fas fa-trash"></i> Delete Party
                     </button>
@@ -69,7 +69,7 @@
                         </div>
                         <div class="character-actions">
                             <a href="{{ url_for('character_detail', character_id=character.id) }}" class="btn btn-sm btn-outline">View</a>
-                            <form method="POST" action="{{ url_for('remove_character_from_party', party_id=party.id, character_id=character.id) }}" style="display: inline;">
+                            <form method="POST" action="{{ url_for('remove_character_from_party', party_id=party.id, character_id=character.id) }}" style="display: inline-flex;">
                                 <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Remove {{ character.name }} from this party?')">Remove</button>
                             </form>
                         </div>

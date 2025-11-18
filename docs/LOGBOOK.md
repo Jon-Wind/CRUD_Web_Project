@@ -8,6 +8,29 @@
 
 ## Development Log
 
+### 2025-11-18 - Button Styling and Template Bug Fixes
+- **Author**: Cascade AI
+- **Time Spent**: 1 hour
+- **Changes Made**:
+  - Fixed button text color issues where text was same color as button background
+  - Added proper CSS classes for btn-primary, btn-outline, btn-danger, and btn-sm variants
+  - Removed conflicting generic .btn styles that were overriding specific button classes
+  - Fixed TypeError in parties template where string concatenation failed with integers
+  - Resolved Jinja2 strftime error by handling string datetime objects from SQLite
+  - Fixed button alignment issues for delete/remove buttons across all templates
+  - Added flash function import to Flask app to resolve undefined flash errors
+- **Files Modified**:
+  - `flask-example/static/css/styles.css` - Added proper button variant styles and removed conflicts
+  - `flask-example/templates/parties.html` - Fixed string concatenation and strftime issues
+  - `flask-example/templates/party_detail.html` - Fixed delete and remove button alignment
+  - `flask-example/app.py` - Added flash import from Flask
+- **Notes/Challenges**:
+  - [x] Resolved button text visibility issues with proper CSS hierarchy
+  - [x] Fixed template syntax errors preventing page loads
+  - [x] Ensured consistent button alignment across all forms
+  - [x] Handled SQLite datetime string formatting properly
+  - [x] Added missing Flask imports for proper functionality
+
 ### 2025-11-18 - Party Management System Implementation
 - **Author**: Cascade AI
 - **Time Spent**: 2 hours
