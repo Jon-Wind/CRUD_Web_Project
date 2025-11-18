@@ -31,8 +31,7 @@
         {% set current_page = active_page | default('') %}
         <nav class="nav-links" aria-label="Main navigation">
             <a href="{{ url_for('add_character') }}" class="btn-link{% if current_page == 'add_character' %} active{% endif %}" {% if current_page == 'add_character' %}aria-current="page"{% endif %}>Add Character</a>
-            <a href="{{ url_for('about') }}" class="btn-link{% if current_page == 'about' %} active{% endif %}" {% if current_page == 'about' %}aria-current="page"{% endif %}>About</a>
-            <a href="{{ url_for('contact') }}" class="btn-link{% if current_page == 'contact' %} active{% endif %}" {% if current_page == 'contact' %}aria-current="page"{% endif %}>Contact</a>
+            <a href="{{ url_for('parties') }}" class="btn-link{% if current_page == 'parties' %} active{% endif %}" {% if current_page == 'parties' %}aria-current="page"{% endif %}>Parties</a>
         </nav>
     </header>
 

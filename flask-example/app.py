@@ -1,7 +1,7 @@
 import os
 import uuid
 
-from flask import Flask, render_template, request, redirect, url_for, current_app, abort
+from flask import Flask, render_template, request, redirect, url_for, current_app, abort, jsonify
 from werkzeug.utils import secure_filename
 
 from db import get_db, init_app
@@ -114,6 +114,13 @@ def register_routes(app):
 
         character = dict(character_row)
         
+        # Get party information for this character
+        party_info = db.execute('''
+            SELECT p.* FROM parties p
+            JOIN character_parties cp ON p.id = cp.party_id
+            WHERE cp.character_id = ?
+        ''', (character_id,)).fetchall()
+        
         character_context = {
             'id': character['id'],
             'name': character['name'],
@@ -130,7 +137,7 @@ def register_routes(app):
             'image_alt': character.get('image_alt', f"Portrait of {character['name']}")
         }
 
-        return render_template('character_detail.html', character=character_context, active_page='character_detail')
+        return render_template('character_detail.html', character=character_context, parties=party_info, active_page='character_detail')
 
     @app.route('/add-character', methods=['GET', 'POST'])
     def add_character():
@@ -146,6 +153,7 @@ def register_routes(app):
             backstory = request.form.get('backstory', '').strip()
             personality = request.form.get('personality', '').strip()
             abilities_skills = request.form.get('abilities-skills', '').strip()
+            party_id = request.form.get('party', '').strip()
             image_file = request.files.get('image-upload')
 
             image_path = 'images/about.webp'
@@ -163,7 +171,6 @@ def register_routes(app):
                     save_path = os.path.join(upload_folder, unique_name)
                     image_file.save(save_path)
                     image_path = '/'.join(['images', 'uploads', unique_name])
-                    image_alt = name or filename
 
             if not (name and short_description):
                 error = 'Please complete all required fields before submitting.'
@@ -187,15 +194,28 @@ def register_routes(app):
                          short_description, backstory, personality, abilities_skills,
                          image_path, image_alt)
                     )
+                    character_id = cursor.lastrowid
+                    
+                    # Add character to party if specified
+                    if party_id:
+                        cursor.execute(
+                            'INSERT INTO character_parties (character_id, party_id) VALUES (?, ?)',
+                            (character_id, int(party_id))
+                        )
+                    
                     db.commit()
-                    new_id = cursor.lastrowid
-                    return redirect(url_for('character_detail', character_id=new_id))
+                    flash('Character added successfully!', 'success')
+                    return redirect(url_for('character_detail', character_id=character_id))
                 except db.IntegrityError:
                     error = f"Character '{name}' already exists."
                 except Exception as e:
                     error = f"An error occurred: {str(e)}"
-
-        return render_template('add_character.html', active_page='add_character', error=error)
+        
+        # Get available parties for the form
+        db = get_db()
+        parties = db.execute('SELECT * FROM parties ORDER BY name').fetchall()
+        
+        return render_template('add_character.html', active_page='add_character', error=error, parties=parties)
 
     @app.route('/character/<int:character_id>/edit', methods=['GET', 'POST'])
     def edit_character(character_id):
@@ -219,6 +239,7 @@ def register_routes(app):
             backstory = request.form.get('backstory', '').strip()
             personality = request.form.get('personality', '').strip()
             abilities_skills = request.form.get('abilities-skills', '').strip()
+            party_id = request.form.get('party', '').strip()
             image_file = request.files.get('image-upload')
 
             image_path = character.get('image_path', 'images/about.webp')
@@ -257,68 +278,190 @@ def register_routes(app):
                          short_description, backstory, personality, abilities_skills,
                          image_path, image_alt, character_id)
                     )
+                    
+                    # Update party assignment
+                    # First, remove existing party assignments
+                    db.execute('DELETE FROM character_parties WHERE character_id = ?', (character_id,))
+                    
+                    # Then add new party assignment if specified
+                    if party_id:
+                        db.execute('INSERT INTO character_parties (character_id, party_id) VALUES (?, ?)',
+                                  (character_id, int(party_id)))
+                    
                     db.commit()
                     return redirect(url_for('character_detail', character_id=character_id))
                 except db.IntegrityError:
                     error = f"Character '{name}' already exists."
                 except Exception as e:
                     error = f"An error occurred: {str(e)}"
+        
+        # Get available parties and current party assignment
+        db = get_db()
+        parties = db.execute('SELECT * FROM parties ORDER BY name').fetchall()
+        current_party = db.execute('SELECT party_id FROM character_parties WHERE character_id = ?', (character_id,)).fetchone()
+        current_party_id = current_party['party_id'] if current_party else None
+        
+        # Add current party to character data for template
+        character['current_party_id'] = current_party_id
 
-            character = {
-                'name': name,
-                'alignment': alignment,
-                'race': race,
-                'character_class': character_class,
-                'level': level,
-                'background': background,
-                'short_description': short_description,
-                'backstory': backstory,
-                'personality': personality,
-                'abilities_skills': abilities_skills,
-                'image_path': image_path,
-                'image_alt': image_alt
-            }
-
-        return render_template('edit_character.html', character=character, error=error, active_page='edit_character')
+        return render_template('edit_character.html', character=character, error=error, active_page='edit_character', parties=parties)
 
     @app.route('/character/<int:character_id>/delete', methods=['POST'])
     def delete_character(character_id):
         db = get_db()
         db.execute('DELETE FROM dnd_characters WHERE id = ?', (character_id,))
         db.commit()
+        flash('Character deleted successfully!', 'success')
         return redirect(url_for('index'))
 
-    @app.route('/about')
-    def about():
-        return render_template('about.html', active_page='about')
+    # Party Management Routes
+    @app.route('/parties')
+    def parties():
+        db = get_db()
+        parties = db.execute('''
+            SELECT p.*, COUNT(cp.character_id) as member_count
+            FROM parties p
+            LEFT JOIN character_parties cp ON p.id = cp.party_id
+            GROUP BY p.id
+            ORDER BY p.created_at DESC
+        ''').fetchall()
+        return render_template('parties.html', parties=parties, active_page='parties')
 
-    @app.route('/contact', methods=['GET', 'POST'])
-    def contact():
+    @app.route('/party/<int:party_id>')
+    def party_detail(party_id):
+        db = get_db()
+        party = db.execute('SELECT * FROM parties WHERE id = ?', (party_id,)).fetchone()
+        
+        if party is None:
+            return "Party not found", 404
+        
+        characters = db.execute('''
+            SELECT c.* FROM dnd_characters c
+            JOIN character_parties cp ON c.id = cp.character_id
+            WHERE cp.party_id = ?
+            ORDER BY c.name
+        ''', (party_id,)).fetchall()
+        
+        return render_template('party_detail.html', party=party, characters=characters, active_page='party_detail')
+
+    @app.route('/add-party', methods=['GET', 'POST'])
+    def add_party():
+        error = None
         if request.method == 'POST':
-            name = request.form.get('name', '').strip()
-            email = request.form.get('email', '').strip()
-            subject = request.form.get('subject', '').strip()
-            message = request.form.get('message', '').strip()
+            name = request.form.get('party-name', '').strip()
+            description = request.form.get('description', '').strip()
+            background = request.form.get('background', '').strip()
             
-            # Basic validation
-            if not all([name, email, subject, message]):
-                flash('All fields are required', 'error')
-            elif '@' not in email or '.' not in email:
-                flash('Please enter a valid email address', 'error')
+            if not name:
+                error = 'Party name is required.'
             else:
-                # In a real application, you would typically:
-                # 1. Save the message to a database
-                # 2. Send an email notification
-                # 3. Log the contact attempt
-                
-                # For now, we'll just show a success message
-                flash('Thank you for your message! We will get back to you soon.', 'success')
-                
-                # In a real app, you might want to redirect to prevent form resubmission
-                # return redirect(url_for('contact'))
-                
-        return render_template('contact.html', active_page='contact')
-    
+                try:
+                    db = get_db()
+                    cursor = db.cursor()
+                    cursor.execute(
+                        'INSERT INTO parties (name, description, background) VALUES (?, ?, ?)',
+                        (name, description, background)
+                    )
+                    db.commit()
+                    flash('Party added successfully!', 'success')
+                    return redirect(url_for('party_detail', party_id=cursor.lastrowid))
+                except db.IntegrityError:
+                    error = f"Party '{name}' already exists."
+                except Exception as e:
+                    error = f"An error occurred: {str(e)}"
+        
+        return render_template('add_party.html', active_page='add_party', error=error)
+
+    @app.route('/party/<int:party_id>/edit', methods=['GET', 'POST'])
+    def edit_party(party_id):
+        db = get_db()
+        party = db.execute('SELECT * FROM parties WHERE id = ?', (party_id,)).fetchone()
+        
+        if party is None:
+            return "Party not found", 404
+        
+        error = None
+        if request.method == 'POST':
+            name = request.form.get('party-name', '').strip()
+            description = request.form.get('description', '').strip()
+            background = request.form.get('background', '').strip()
+            
+            if not name:
+                error = 'Party name is required.'
+            else:
+                try:
+                    db.execute(
+                        'UPDATE parties SET name = ?, description = ?, background = ? WHERE id = ?',
+                        (name, description, background, party_id)
+                    )
+                    db.commit()
+                    flash('Party updated successfully!', 'success')
+                    return redirect(url_for('party_detail', party_id=party_id))
+                except db.IntegrityError:
+                    error = f"Party '{name}' already exists."
+                except Exception as e:
+                    error = f"An error occurred: {str(e)}"
+        
+        party = {
+            'id': party['id'],
+            'name': party['name'],
+            'description': party['description'],
+            'background': party['background']
+        }
+        
+        return render_template('edit_party.html', party=party, error=error, active_page='edit_party')
+
+    @app.route('/party/<int:party_id>/delete', methods=['POST'])
+    def delete_party(party_id):
+        db = get_db()
+        db.execute('DELETE FROM parties WHERE id = ?', (party_id,))
+        db.commit()
+        flash('Party deleted successfully!', 'success')
+        return redirect(url_for('parties'))
+
+    @app.route('/party/<int:party_id>/add-character/<int:character_id>', methods=['POST'])
+    def add_character_to_party(party_id, character_id):
+        db = get_db()
+        try:
+            db.execute(
+                'INSERT OR IGNORE INTO character_parties (character_id, party_id) VALUES (?, ?)',
+                (character_id, party_id)
+            )
+            db.commit()
+            flash('Character added to party successfully!', 'success')
+        except Exception as e:
+            flash(f'Error adding character to party: {str(e)}', 'error')
+        
+        return redirect(url_for('party_detail', party_id=party_id))
+
+    @app.route('/party/<int:party_id>/remove-character/<int:character_id>', methods=['POST'])
+    def remove_character_from_party(party_id, character_id):
+        db = get_db()
+        try:
+            db.execute(
+                'DELETE FROM character_parties WHERE character_id = ? AND party_id = ?',
+                (character_id, party_id)
+            )
+            db.commit()
+            flash('Character removed from party successfully!', 'success')
+        except Exception as e:
+            flash(f'Error removing character from party: {str(e)}', 'error')
+        
+        return redirect(url_for('party_detail', party_id=party_id))
+
+    @app.route('/api/characters/not-in-party/<int:party_id>')
+    def characters_not_in_party(party_id):
+        db = get_db()
+        characters = db.execute('''
+            SELECT c.* FROM dnd_characters c
+            WHERE c.id NOT IN (
+                SELECT cp.character_id FROM character_parties cp WHERE cp.party_id = ?
+            )
+            ORDER BY c.name
+        ''', (party_id,)).fetchall()
+        
+        return jsonify([dict(char) for char in characters])
+
     # Error handlers
     @app.errorhandler(404)
     def page_not_found(e):

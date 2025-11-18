@@ -15,6 +15,23 @@ CREATE TABLE IF NOT EXISTS dnd_characters (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS parties (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    description TEXT,
+    background TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS character_parties (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    character_id INTEGER NOT NULL,
+    party_id INTEGER NOT NULL,
+    FOREIGN KEY (character_id) REFERENCES dnd_characters (id) ON DELETE CASCADE,
+    FOREIGN KEY (party_id) REFERENCES parties (id) ON DELETE CASCADE,
+    UNIQUE(character_id, party_id)
+);
+
 -- Sample D&D Characters
 INSERT INTO dnd_characters (name, alignment, race, character_class, level, background, short_description, backstory, personality, abilities_skills, image_path, image_alt) VALUES
     ('Aelar Brightblade', 'Chaotic Good', 'High Elf', 'Paladin', 5, 'Folk Hero', 'A noble elf paladin fighting for justice', 'Born into a noble elven family, Aelar abandoned his privileged life to fight for the common folk after witnessing their suffering.', 'Idealistic and courageous, always standing up for the weak', 'Divine Smite, Lay on Hands, Aura of Protection', 'images/elf-paladin.jpg', 'Elf paladin in shining armor with a glowing sword'),

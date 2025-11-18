@@ -110,6 +110,37 @@
         min-height: 100px;
     }
     
+    .party-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .party-item {
+        background: #f8f9fa;
+        padding: 0.75rem;
+        border-radius: 4px;
+        border-left: 4px solid #3498db;
+    }
+    
+    .party-link {
+        color: #3498db;
+        text-decoration: none;
+        font-weight: 600;
+        display: block;
+        margin-bottom: 0.25rem;
+    }
+    
+    .party-link:hover {
+        text-decoration: underline;
+    }
+    
+    .party-description {
+        color: #6c757d;
+        font-size: 0.9rem;
+        display: block;
+    }
+    
     .character-actions {
         display: flex;
         gap: 1rem;
@@ -226,6 +257,22 @@
                     <span class="meta-value">{{ character.level or '—' }}</span>
                 </div>
             </div>
+            
+            {% if parties %}
+            <div class="detail-item">
+                <span class="detail-label">Party Memberships</span>
+                <div class="party-list">
+                    {% for party in parties %}
+                    <div class="party-item">
+                        <a href="{{ url_for('party_detail', party_id=party.id) }}" class="party-link">{{ party.name }}</a>
+                        {% if party.description %}
+                            <span class="party-description">{{ party.description }}</span>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
             
             {% if character.short_description %}
             <div class="detail-item">

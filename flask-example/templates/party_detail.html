@@ -1,0 +1,312 @@
+{% extends "base.html" %}
+
+{% block title %}{{ party.name }} - Party Details{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <div class="header-content">
+            <div>
+                <h1>{{ party.name }}</h1>
+                {% if party.description %}
+                    <p class="party-description">{{ party.description }}</p>
+                {% endif %}
+            </div>
+            <div class="header-actions">
+                <a href="{{ url_for('edit_party', party_id=party.id) }}" class="btn btn-outline">
+                    <i class="fas fa-edit"></i> Edit Party
+                </a>
+                <form method="POST" action="{{ url_for('delete_party', party_id=party.id) }}" style="display: inline;">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this party? This will remove all characters from the party.')">
+                        <i class="fas fa-trash"></i> Delete Party
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% if party.background %}
+        <div class="party-background-section">
+            <h3>Party Background</h3>
+            <div class="background-content">
+                {{ party.background }}
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="party-members-section">
+        <div class="section-header">
+            <h3>Party Members</h3>
+            <span class="member-count">{{ characters|length }} members</span>
+        </div>
+
+        {% if characters %}
+            <div class="characters-grid">
+                {% for character in characters %}
+                    <div class="character-card">
+                        <div class="character-image">
+                            {% if character.image_path %}
+                                <img src="{{ url_for('static', filename=character.image_path) }}" alt="{{ character.image_alt or character.name }}">
+                            {% else %}
+                                <img src="{{ url_for('static', filename='images/placeholder-character.jpg') }}" alt="{{ character.name }}">
+                            {% endif %}
+                        </div>
+                        <div class="character-info">
+                            <h4>{{ character.name }}</h4>
+                            <p class="character-class">{{ character.character_class }} Level {{ character.level }}</p>
+                            <p class="character-race">{{ character.race }}</p>
+                            {% if character.short_description %}
+                                <p class="character-description">{{ character.short_description }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="character-actions">
+                            <a href="{{ url_for('character_detail', character_id=character.id) }}" class="btn btn-sm btn-outline">View</a>
+                            <form method="POST" action="{{ url_for('remove_character_from_party', party_id=party.id, character_id=character.id) }}" style="display: inline;">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Remove {{ character.name }} from this party?')">Remove</button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-user-friends fa-2x"></i>
+                <h4>No Members Yet</h4>
+                <p>This party doesn't have any members yet. Add characters to build your adventuring party!</p>
+            </div>
+        {% endif %}
+
+        <div class="add-character-section">
+            <h4>Add Character to Party</h4>
+            <form method="POST" action="{{ url_for('add_character_to_party', party_id=party.id, character_id=0) }}" id="add-character-form">
+                <select name="character_id" id="character-select" class="form-control" required>
+                    <option value="">Select a character to add...</option>
+                </select>
+                <button type="submit" class="btn btn-primary">Add to Party</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.party-description {
+    color: #718096;
+    margin: 5px 0 0 0;
+    font-size: 1.1rem;
+}
+
+.party-background-section {
+    background: #f8fafc;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+.party-background-section h3 {
+    margin-top: 0;
+    color: #2d3748;
+}
+
+.background-content {
+    line-height: 1.6;
+    color: #4a5568;
+}
+
+.party-members-section {
+    margin-bottom: 30px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.section-header h3 {
+    margin: 0;
+    color: #2d3748;
+}
+
+.member-count {
+    background: #edf2f7;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    color: #4a5568;
+}
+
+.characters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.character-card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border: 1px solid #e2e8f0;
+    transition: transform 0.2s ease;
+}
+
+.character-card:hover {
+    transform: translateY(-2px);
+}
+
+.character-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 15px;
+}
+
+.character-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.character-info {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.character-info h4 {
+    margin: 0 0 5px 0;
+    color: #2d3748;
+}
+
+.character-class {
+    font-weight: bold;
+    color: #4a5568;
+    margin: 5px 0;
+}
+
+.character-race {
+    color: #718096;
+    margin: 5px 0;
+    font-size: 0.9rem;
+}
+
+.character-description {
+    color: #4a5568;
+    font-size: 0.85rem;
+    margin: 10px 0 0 0;
+    line-height: 1.4;
+}
+
+.character-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.add-character-section {
+    background: #f7fafc;
+    padding: 20px;
+    border-radius: 8px;
+    border: 2px dashed #cbd5e0;
+}
+
+.add-character-section h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #2d3748;
+}
+
+.add-character-section form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.add-character-section .form-control {
+    flex: 1;
+    max-width: 300px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #718096;
+}
+
+.empty-state i {
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .header-actions {
+        justify-content: flex-start;
+    }
+    
+    .add-character-section form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .add-character-section .form-control {
+        max-width: none;
+    }
+}
+</style>
+
+<script>
+// Load available characters when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('/api/characters/not-in-party/{{ party.id }}')
+        .then(response => response.json())
+        .then(characters => {
+            const select = document.getElementById('character-select');
+            characters.forEach(character => {
+                const option = document.createElement('option');
+                option.value = character.id;
+                option.textContent = `${character.name} (${character.character_class} ${character.race})`;
+                select.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error loading characters:', error);
+        });
+    
+    // Update form action when character is selected
+    document.getElementById('character-select').addEventListener('change', function() {
+        const characterId = this.value;
+        if (characterId) {
+            const form = document.getElementById('add-character-form');
+            form.action = `/party/{{ party.id }}/add-character/${characterId}`;
+        }
+    });
+});
+</script>
+{% endblock %}

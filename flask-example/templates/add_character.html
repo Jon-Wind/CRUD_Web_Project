@@ -363,6 +363,17 @@
             <small class="form-text text-muted">List the character's abilities, skills, and special features.</small>
         </div>
         
+        <div class="form-group">
+            <label for="party" class="form-label">Party Assignment</label>
+            <select id="party" name="party" class="form-control">
+                <option value="">No party assigned</option>
+                {% for party in parties %}
+                    <option value="{{ party.id }}">{{ party.name }}</option>
+                {% endfor %}
+            </select>
+            <small class="form-text text-muted">Assign this character to an existing party (optional).</small>
+        </div>
+        
         <div class="form-actions">
             <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
             <button type="submit" class="btn btn-primary">Save Character</button>
