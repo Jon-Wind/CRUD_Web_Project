@@ -8,6 +8,41 @@
 
 ## Development Log
 
+### 2025-11-18 - Fixed Alignment Grid Functionality
+- **Author**: Cascade AI
+- **Time Spent**: 0.5 hours
+- **Changes Made**:
+  - Fixed alignment grid click functionality that was not working properly
+  - Resolved issue where visual selection would only work once and couldn't be changed
+  - Replaced complex CSS selectors with JavaScript-based visual feedback
+  - Simplified radio button positioning to prevent interference with click events
+  - Added proper initialization for visual selection state on page load
+- **Files Modified**:
+  - `flask-example/templates/add_character.html` - Fixed alignment grid JavaScript and CSS
+- **Notes/Challenges**:
+  - [x] Identified that radio inputs were blocking cell click events
+  - [x] Implemented JavaScript-based visual selection instead of CSS-only approach
+  - [x] Ensured alignment grid works for multiple selections and changes
+  - [x] Maintained form functionality while fixing visual feedback
+
+### 2025-11-14 - Enhanced D&D Alignment Selector
+- **Author**: Cascade AI
+- **Time Spent**: 1 hour
+- **Changes Made**:
+  - Replaced the standard dropdown with an interactive D&D alignment grid
+  - Added visual feedback for selected alignments
+  - Implemented color-coding for different alignment types (Good, Neutral, Evil)
+  - Improved mobile responsiveness of the alignment selector
+  - Added hover effects and transitions for better user experience
+- **Files Modified/Added**:
+  - `flask-example/templates/add_character.html` - Updated alignment selection UI
+  - `flask-example/static/css/styles.css` - Added styles for the alignment grid
+- **Notes/Challenges**:
+  - [x] Ensured the grid is fully accessible
+  - [x] Maintained backward compatibility with existing character data
+  - [x] Added visual indicators for the selected alignment
+  - [x] Optimized for both desktop and mobile views
+
 ### 2025-11-14 - Added Contact Page and Error Handling
 - **Author**: Cascade AI
 - **Time Spent**: 1 hour
