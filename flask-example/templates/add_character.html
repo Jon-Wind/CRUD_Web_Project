@@ -1,432 +1,259 @@
 {% extends "base.html" %}
 
 {% block title %}Add New Character - D&D Character Manager{% endblock %}
+{% block og_title %}Add New Character - D&D Character Manager{% endblock %}
+{% block og_description %}Create a new D&D character with detailed information and stats{% endblock %}
 
 {% block extra_css %}
-<style>
-    .form-container {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 2rem;
-        background: #f8fafc;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(30, 64, 175, 0.1);
-        border: 1px solid #e0e7ff;
-    }
-    
-    .form-title {
-        color: #1e40af;
-        margin-top: 0;
-        margin-bottom: 1.5rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 2px solid #3b82f6;
-    }
-    
-    .form-group {
-        margin-bottom: 1.5rem;
-    }
-    
-    .form-label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 600;
-        color: #1e3a8a;
-    }
-    
-    .form-control {
-        width: 100%;
-        padding: 0.75rem;
-        border: 1px solid #bfdbfe;
-        border-radius: 6px;
-        font-size: 1rem;
-        background-color: #fff;
-        transition: all 0.2s ease;
-    }
-    
-    .form-control:focus {
-        border-color: #3b82f6;
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-    }
-    
-    textarea.form-control {
-        min-height: 120px;
-        resize: vertical;
-    }
-    
-    .form-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 1rem;
-        margin-top: 2rem;
-        padding: 1.5rem;
-        background-color: #eff6ff;
-        border-radius: 8px;
-        border: 1px solid #dbeafe;
-    }
-    
-    .btn {
-        padding: 0.75rem 1.5rem;
-        border: none;
-        border-radius: 4px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s;
-        text-decoration: none;
-        display: inline-block;
-        text-align: center;
-    }
-    
-    .btn-primary {
-        background: #2563eb;
-        color: white;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    }
-    
-    .btn-primary:hover {
-        background: #1d4ed8;
-        transform: translateY(-1px);
-    }
-    
-    .btn-secondary {
-        background: #3b82f6;
-        color: white;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    }
-    
-    .btn-secondary:hover {
-        background: #2563eb;
-        transform: translateY(-1px);
-    }
-    
-    .form-row {
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-    }
-    
-    .form-col {
-        flex: 1;
-        min-width: 200px;
-    }
-    
-    .error-message {
-        color: #ef4444;
-        background-color: #fef2f2;
-        padding: 0.75rem 1rem;
-        border-radius: 6px;
-        border-left: 4px solid #ef4444;
-        margin: 1rem 0;
-        font-size: 0.9em;
-    }
-    
-    .image-preview {
-        max-width: 200px;
-        margin-top: 1rem;
-        display: none;
-        border-radius: 6px;
-        border: 2px solid #bfdbfe;
-        box-shadow: 0 2px 4px rgba(30, 64, 175, 0.1);
-    }
-    
-    @media (max-width: 768px) {
-        .form-container {
-            padding: 1rem;
-        }
-        
-        .form-row {
-            flex-direction: column;
-            gap: 0;
-        }
-        
-        .form-col {
-            width: 100%;
-        }
-    }
-</style>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pages/add-character.css') }}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/pages/add-character.js') }}"></script>
 {% endblock %}
 
 {% block content %}
-<div class="form-container">
-    <h1 class="form-title">Add New Character</h1>
+<div class="add-character-container">
+    <div class="form-header">
+        <h1 class="form-title">Create New Character</h1>
+        <p class="form-subtitle">Bring your D&D character to life with detailed information</p>
+    </div>
+    
+    <!-- Progress Indicator -->
+    <div class="form-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="form-progress-bar"></div>
+    </div>
     
     {% if error %}
-    <div class="error-message" style="margin-bottom: 1.5rem;">
+    <div class="error-message" role="alert">
         {{ error }}
     </div>
     {% endif %}
     
-    <form method="POST" enctype="multipart/form-data">
-        <div class="form-row">
-            <div class="form-col">
-                <div class="form-group">
-                    <label for="character-name" class="form-label">Character Name *</label>
-                    <input type="text" id="character-name" name="character-name" class="form-control" 
-                           value="{{ character.name if character else '' }}" required>
+    <form method="POST" enctype="multipart/form-data" novalidate>
+        <div class="form-layout">
+            <!-- Basic Information Column -->
+            <div class="form-column">
+                <div class="form-section">
+                    <h2 class="section-title">Basic Information</h2>
+                    
+                    <div class="form-group">
+                        <label for="character-name" class="form-label">
+                            Character Name <span class="required">*</span>
+                            <span class="help-text">2-50 characters</span>
+                        </label>
+                        <input type="text" id="character-name" name="character-name" class="form-control" 
+                               value="{{ character.name if character else '' }}" required
+                               maxlength="50" minlength="2"
+                               aria-describedby="character-name-help">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="race" class="form-label">
+                            Race <span class="required">*</span>
+                        </label>
+                        <input type="text" id="race" name="race" class="form-control" 
+                               value="{{ character.race if character else '' }}" required
+                               placeholder="e.g., Human, Elf, Dwarf">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="character-class" class="form-label">
+                            Class <span class="required">*</span>
+                        </label>
+                        <input type="text" id="character-class" name="character-class" class="form-control" 
+                               value="{{ character.character_class if character else '' }}" required
+                               placeholder="e.g., Fighter, Wizard, Rogue">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="level" class="form-label">
+                            Level <span class="required">*</span>
+                            <span class="help-text">1-20</span>
+                        </label>
+                        <input type="number" id="level" name="level" class="form-control" min="1" max="20" 
+                               value="{{ character.level if character else '1' }}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="background" class="form-label">Background</label>
+                        <input type="text" id="background" name="background" class="form-control" 
+                               value="{{ character.background if character else '' }}"
+                               placeholder="e.g., Soldier, Sage, Criminal">
+                    </div>
                 </div>
                 
-                <div class="form-group">
-                    <label for="race" class="form-label">Race *</label>
-                    <input type="text" id="race" name="race" class="form-control" 
-                           value="{{ character.race if character else '' }}" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="character-class" class="form-label">Class *</label>
-                    <input type="text" id="character-class" name="character-class" class="form-control" 
-                           value="{{ character.character_class if character else '' }}" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="level" class="form-label">Level *</label>
-                    <input type="number" id="level" name="level" class="form-control" min="1" max="20" 
-                           value="{{ character.level if character else '1' }}" required>
+                <!-- Character Image -->
+                <div class="form-section">
+                    <h2 class="section-title">Character Image</h2>
+                    
+                    <div class="form-group">
+                        <label for="image-upload" class="form-label">
+                            Character Portrait
+                            <span class="help-text">JPEG, PNG, GIF, WebP (max 5MB)</span>
+                        </label>
+                        <div class="file-upload-wrapper">
+                            <input type="file" id="image-upload" name="image-upload" class="file-upload-input" 
+                                   accept="image/jpeg,image/png,image/gif,image/webp">
+                            <label for="image-upload" class="file-upload-label">
+                                <i class="fas fa-upload"></i>
+                                <span>Choose Image</span>
+                            </label>
+                            <span class="file-upload-filename"></span>
+                        </div>
+                    </div>
                 </div>
             </div>
             
-            <div class="form-col">
-                <div class="form-group">
-                    <label class="form-label">Alignment</label>
-                    <div class="alignment-container">
-                        <div class="alignment-grid">
-                            <input type="radio" id="alignment-lg" name="alignment" value="Lawful Good" class="alignment-radio" 
-                                   {% if character and character.alignment == 'Lawful Good' %}checked{% endif %}>
-                            <input type="radio" id="alignment-ng" name="alignment" value="Neutral Good" class="alignment-radio"
-                                   {% if character and character.alignment == 'Neutral Good' %}checked{% endif %}>
-                            <input type="radio" id="alignment-cg" name="alignment" value="Chaotic Good" class="alignment-radio"
-                                   {% if character and character.alignment == 'Chaotic Good' %}checked{% endif %}>
-                            <input type="radio" id="alignment-ln" name="alignment" value="Lawful Neutral" class="alignment-radio"
-                                   {% if character and character.alignment == 'Lawful Neutral' %}checked{% endif %}>
-                            <input type="radio" id="alignment-tn" name="alignment" value="True Neutral" class="alignment-radio"
-                                   {% if character and character.alignment == 'True Neutral' %}checked{% endif %}>
-                            <input type="radio" id="alignment-cn" name="alignment" value="Chaotic Neutral" class="alignment-radio"
-                                   {% if character and character.alignment == 'Chaotic Neutral' %}checked{% endif %}>
-                            <input type="radio" id="alignment-le" name="alignment" value="Lawful Evil" class="alignment-radio"
-                                   {% if character and character.alignment == 'Lawful Evil' %}checked{% endif %}>
-                            <input type="radio" id="alignment-ne" name="alignment" value="Neutral Evil" class="alignment-radio"
-                                   {% if character and character.alignment == 'Neutral Evil' %}checked{% endif %}>
-                            <input type="radio" id="alignment-ce" name="alignment" value="Chaotic Evil" class="alignment-radio"
-                                   {% if character and character.alignment == 'Chaotic Evil' %}checked{% endif %}>
-                            
-                            <label for="alignment-lg" class="alignment-cell lg" style="grid-column: 1; grid-row: 3;">LG</label>
-                            <label for="alignment-ng" class="alignment-cell ng" style="grid-column: 2; grid-row: 3;">NG</label>
-                            <label for="alignment-cg" class="alignment-cell cg" style="grid-column: 3; grid-row: 3;">CG</label>
-                            <label for="alignment-ln" class="alignment-cell ln" style="grid-column: 1; grid-row: 2;">LN</label>
-                            <label for="alignment-tn" class="alignment-cell tn" style="grid-column: 2; grid-row: 2;">TN</label>
-                            <label for="alignment-cn" class="alignment-cell cn" style="grid-column: 3; grid-row: 2;">CN</label>
-                            <label for="alignment-le" class="alignment-cell le" style="grid-column: 1; grid-row: 1;">LE</label>
-                            <label for="alignment-ne" class="alignment-cell ne" style="grid-column: 2; grid-row: 1;">NE</label>
-                            <label for="alignment-ce" class="alignment-cell ce" style="grid-column: 3; grid-row: 1;">CE</label>
-                            
-                            <div class="alignment-axis x-axis">
-                                <span>Lawful</span>
-                                <span>Neutral</span>
-                                <span>Chaotic</span>
-                            </div>
-                            <div class="alignment-axis y-axis">
-                                <span>Evil</span>
-                                <span>Neutral</span>
-                                <span>Good</span>
+            <!-- Alignment & Stats Column -->
+            <div class="form-column">
+                <!-- Alignment Section -->
+                <div class="form-section alignment-section">
+                    <h2 class="section-title">Alignment</h2>
+                    
+                    <div class="form-group">
+                        <div class="alignment-container">
+                            <div class="alignment-grid" role="radiogroup" aria-label="Character alignment">
+                                <input type="radio" id="alignment-lg" name="alignment" value="Lawful Good" class="alignment-radio" 
+                                       {% if character and character.alignment == 'Lawful Good' %}checked{% endif %}>
+                                <input type="radio" id="alignment-ng" name="alignment" value="Neutral Good" class="alignment-radio"
+                                       {% if character and character.alignment == 'Neutral Good' %}checked{% endif %}>
+                                <input type="radio" id="alignment-cg" name="alignment" value="Chaotic Good" class="alignment-radio"
+                                       {% if character and character.alignment == 'Chaotic Good' %}checked{% endif %}>
+                                <input type="radio" id="alignment-ln" name="alignment" value="Lawful Neutral" class="alignment-radio"
+                                       {% if character and character.alignment == 'Lawful Neutral' %}checked{% endif %}>
+                                <input type="radio" id="alignment-tn" name="alignment" value="True Neutral" class="alignment-radio"
+                                       {% if character and character.alignment == 'True Neutral' %}checked{% endif %}>
+                                <input type="radio" id="alignment-cn" name="alignment" value="Chaotic Neutral" class="alignment-radio"
+                                       {% if character and character.alignment == 'Chaotic Neutral' %}checked{% endif %}>
+                                <input type="radio" id="alignment-le" name="alignment" value="Lawful Evil" class="alignment-radio"
+                                       {% if character and character.alignment == 'Lawful Evil' %}checked{% endif %}>
+                                <input type="radio" id="alignment-ne" name="alignment" value="Neutral Evil" class="alignment-radio"
+                                       {% if character and character.alignment == 'Neutral Evil' %}checked{% endif %}>
+                                <input type="radio" id="alignment-ce" name="alignment" value="Chaotic Evil" class="alignment-radio"
+                                       {% if character and character.alignment == 'Chaotic Evil' %}checked{% endif %}>
+                                
+                                <label for="alignment-lg" class="alignment-cell lg" style="grid-column: 1; grid-row: 3;">LG</label>
+                                <label for="alignment-ng" class="alignment-cell ng" style="grid-column: 2; grid-row: 3;">NG</label>
+                                <label for="alignment-cg" class="alignment-cell cg" style="grid-column: 3; grid-row: 3;">CG</label>
+                                <label for="alignment-ln" class="alignment-cell ln" style="grid-column: 1; grid-row: 2;">LN</label>
+                                <label for="alignment-tn" class="alignment-cell tn" style="grid-column: 2; grid-row: 2;">TN</label>
+                                <label for="alignment-cn" class="alignment-cell cn" style="grid-column: 3; grid-row: 2;">CN</label>
+                                <label for="alignment-le" class="alignment-cell le" style="grid-column: 1; grid-row: 1;">LE</label>
+                                <label for="alignment-ne" class="alignment-cell ne" style="grid-column: 2; grid-row: 1;">NE</label>
+                                <label for="alignment-ce" class="alignment-cell ce" style="grid-column: 3; grid-row: 1;">CE</label>
+                                
+                                <div class="alignment-axis x-axis">
+                                    <span>Lawful</span>
+                                    <span>Neutral</span>
+                                    <span>Chaotic</span>
+                                </div>
+                                <div class="alignment-axis y-axis">
+                                    <span>Evil</span>
+                                    <span>Neutral</span>
+                                    <span>Good</span>
+                                </div>
                             </div>
                         </div>
+                        <input type="hidden" id="alignment-display" value="{{ character.alignment if character else '' }}">
                     </div>
-                    <input type="hidden" id="alignment-display" value="{{ character.alignment if character else '' }}">
                 </div>
                 
-                <style>
-                .alignment-container {
-                    position: relative;
-                    padding-left: 60px;
-                    margin: 10px 0;
-                }
-                
-                .alignment-grid {
-                    display: grid;
-                    grid-template-columns: repeat(3, 1fr);
-                    grid-template-rows: repeat(3, 1fr) auto;
-                    gap: 4px;
-                    position: relative;
-                }
-                
-                .alignment-radio {
-                    position: absolute;
-                    opacity: 0;
-                    width: 0;
-                    height: 0;
-                    margin: 0;
-                }
-                
-                .alignment-cell {
-                    aspect-ratio: 1;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-weight: bold;
-                    cursor: pointer;
-                    border: 2px solid #e2e8f0;
-                    border-radius: 4px;
-                    transition: all 0.2s ease;
-                    background-color: #f8fafc;
-                }
-                
-                .alignment-cell:hover {
-                    transform: translateY(-2px);
-                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                }
-                
-                .alignment-cell.selected {
-                    border-color: #3b82f6;
-                    background-color: #eff6ff;
-                    box-shadow: 0 0 0 2px #bfdbfe;
-                }
-                
-                /* Alignment-specific colors */
-                .lg { background-color: #dbeafe; color: #1e40af; }
-                .ng { background-color: #dbeafe; color: #1e40af; }
-                .cg { background-color: #dbeafe; color: #1e40af; }
-                .ln { background-color: #e0f2fe; color: #0c4a6e; }
-                .tn { background-color: #f0f9ff; color: #0369a1; }
-                .cn { background-color: #e0f2fe; color: #0c4a6e; }
-                .le { background-color: #fee2e2; color: #991b1b; }
-                .ne { background-color: #fee2e2; color: #991b1b; }
-                .ce { background-color: #fee2e2; color: #991b1b; }
-                
-                .alignment-axis {
-                    display: flex;
-                    justify-content: space-between;
-                    padding: 4px 0;
-                    font-size: 0.85rem;
-                    color: #64748b;
-                    font-weight: 600;
-                }
-                
-                .x-axis {
-                    grid-column: 1 / 4;
-                    grid-row: 4;
-                    padding-top: 8px;
-                }
-                
-                .y-axis {
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: space-between;
-                    position: absolute;
-                    left: -50px;
-                    top: 0;
-                    height: calc(100% - 40px);
-                    padding: 0;
-                    font-size: 0.85rem;
-                    color: #64748b;
-                    font-weight: 600;
-                }
-                
-                .y-axis span {
-                    display: inline-block;
-                    width: 100%;
-                    text-align: center;
-                }
-                </style>
-                
-                <div class="form-group">
-                    <label for="background" class="form-label">Background</label>
-                    <input type="text" id="background" name="background" class="form-control" 
-                           value="{{ character.background if character else '' }}">
-                </div>
-                
-                <div class="form-group">
-                    <label for="image-upload" class="form-label">Character Image</label>
-                    <input type="file" id="image-upload" name="image-upload" class="form-control" accept="image/*">
-                    <img id="image-preview" class="image-preview" src="" alt="Preview">
+                <!-- Stats Section -->
+                <div class="form-section stats-section">
+                    <h2 class="section-title">Ability Scores</h2>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-group">
+                            <label for="stat-str" class="stat-label">STR</label>
+                            <input type="number" id="stat-str" name="stat-str" class="stat-input" 
+                                   min="1" max="20" value="{{ character.strength if character else '10' }}">
+                        </div>
+                        <div class="stat-group">
+                            <label for="stat-dex" class="stat-label">DEX</label>
+                            <input type="number" id="stat-dex" name="stat-dex" class="stat-input" 
+                                   min="1" max="20" value="{{ character.dexterity if character else '10' }}">
+                        </div>
+                        <div class="stat-group">
+                            <label for="stat-con" class="stat-label">CON</label>
+                            <input type="number" id="stat-con" name="stat-con" class="stat-input" 
+                                   min="1" max="20" value="{{ character.constitution if character else '10' }}">
+                        </div>
+                        <div class="stat-group">
+                            <label for="stat-int" class="stat-label">INT</label>
+                            <input type="number" id="stat-int" name="stat-int" class="stat-input" 
+                                   min="1" max="20" value="{{ character.intelligence if character else '10' }}">
+                        </div>
+                        <div class="stat-group">
+                            <label for="stat-wis" class="stat-label">WIS</label>
+                            <input type="number" id="stat-wis" name="stat-wis" class="stat-input" 
+                                   min="1" max="20" value="{{ character.wisdom if character else '10' }}">
+                        </div>
+                        <div class="stat-group">
+                            <label for="stat-cha" class="stat-label">CHA</label>
+                            <input type="number" id="stat-cha" name="stat-cha" class="stat-input" 
+                                   min="1" max="20" value="{{ character.charisma if character else '10' }}">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         
-        <div class="form-group">
-            <label for="short-description" class="form-label">Short Description *</label>
-            <textarea id="short-description" name="short-description" class="form-control" required>{{ character.short_description if character else '' }}</textarea>
+        <!-- Description Section -->
+        <div class="form-section">
+            <h2 class="section-title">Character Description</h2>
+            
+            <div class="form-group">
+                <label for="short-description" class="form-label">
+                    Short Description <span class="required">*</span>
+                    <span class="help-text">Brief character summary</span>
+                </label>
+                <textarea id="short-description" name="short-description" class="form-control form-control--textarea" 
+                          required placeholder="Describe your character in a few sentences..."
+                          rows="3">{{ character.short_description if character else '' }}</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="backstory" class="form-label">
+                    Backstory
+                    <span class="help-text">Detailed character history and background</span>
+                </label>
+                <textarea id="backstory" name="backstory" class="form-control form-control--textarea" 
+                          placeholder="Tell your character's story..."
+                          rows="6">{{ character.backstory if character else '' }}</textarea>
+            </div>
         </div>
         
-        <div class="form-group">
-            <label for="backstory" class="form-label">Backstory</label>
-            <textarea id="backstory" name="backstory" class="form-control">{{ character.backstory if character else '' }}</textarea>
+        <!-- Character Preview -->
+        <div class="character-preview">
+            <h3 class="preview-header">Character Preview</h3>
+            <div class="preview-content">
+                <div class="preview-image">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="preview-details">
+                    <div class="preview-name">Unnamed Character</div>
+                    <div class="preview-info">
+                        <strong>Class:</strong> Unknown Class<br>
+                        <strong>Race:</strong> Unknown Race<br>
+                        <strong>Level:</strong> 1<br>
+                        <strong>Alignment:</strong> Unknown Alignment
+                    </div>
+                </div>
+            </div>
         </div>
         
-        <div class="form-group">
-            <label for="personality" class="form-label">Personality & Traits</label>
-            <textarea id="personality" name="personality" class="form-control">{{ character.personality if character else '' }}</textarea>
-            <small class="form-text text-muted">Describe the character's personality, ideals, bonds, and flaws.</small>
-        </div>
-        
-        <div class="form-group">
-            <label for="abilities-skills" class="form-label">Abilities & Skills</label>
-            <textarea id="abilities-skills" name="abilities-skills" class="form-control">{{ character.abilities_skills if character else '' }}</textarea>
-            <small class="form-text text-muted">List the character's abilities, skills, and special features.</small>
-        </div>
-        
-        <div class="form-group">
-            <label for="party" class="form-label">Party Assignment</label>
-            <select id="party" name="party" class="form-control">
-                <option value="">No party assigned</option>
-                {% for party in parties %}
-                    <option value="{{ party.id }}">{{ party.name }}</option>
-                {% endfor %}
-            </select>
-            <small class="form-text text-muted">Assign this character to an existing party (optional).</small>
-        </div>
-        
+        <!-- Form Actions -->
         <div class="form-actions">
-            <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
-            <button type="submit" class="btn btn-primary">Save Character</button>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary btn-form">
+                <i class="fas fa-arrow-left"></i>
+                Cancel
+            </a>
+            <button type="submit" class="btn btn-primary btn-form">
+                <i class="fas fa-save"></i>
+                Create Character
+            </button>
         </div>
     </form>
 </div>
-
-<script>
-    // Image preview functionality
-    document.getElementById('image-upload').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            const preview = document.getElementById('image-preview');
-            
-            reader.onload = function(e) {
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-            }
-            
-            reader.readAsDataURL(file);
-        }
-    });
-
-    // Alignment grid functionality
-    const alignmentDisplay = document.getElementById('alignment-display');
-    
-    // Ensure clicking on alignment cells works properly
-    const alignmentCells = document.querySelectorAll('.alignment-cell');
-    alignmentCells.forEach(cell => {
-        cell.addEventListener('click', function(e) {
-            e.preventDefault();
-            const radioId = this.getAttribute('for');
-            const radio = document.getElementById(radioId);
-            if (radio) {
-                // Always update the visual state, even if the same radio is clicked
-                const allCells = document.querySelectorAll('.alignment-cell');
-                allCells.forEach(c => c.classList.remove('selected'));
-                this.classList.add('selected');
-                
-                radio.checked = true;
-                alignmentDisplay.value = radio.value;
-            }
-        });
-    });
-
-    // Initialize visual selection on page load
-    const checkedRadio = document.querySelector('input[name="alignment"]:checked');
-    if (checkedRadio) {
-        const correspondingCell = document.querySelector(`.alignment-cell[for="${checkedRadio.id}"]`);
-        if (correspondingCell) {
-            correspondingCell.classList.add('selected');
-        }
-    }
-</script>
 {% endblock %}

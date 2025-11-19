@@ -3,10 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Filipino Recipes{% endblock %}</title>
+    <meta name="description" content="D&D Character Manager - Create and manage your Dungeons & Dragons characters and adventuring parties">
+    <meta name="keywords" content="D&D, Dungeons and Dragons, character manager, RPG, tabletop, character sheet">
+    <meta name="author" content="D&D Character Manager">
     
-    <!-- Google Fonts - Cardo for body text -->
-    <link href="https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Open Graph meta tags for social sharing -->
+    <meta property="og:title" content="{% block og_title %}D&D Character Manager{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Create and manage your D&D characters and adventuring parties{% endblock %}">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="{{ url_for('static', filename='images/og-image.jpg') }}">
+    
+    <!-- Theme color for mobile browsers -->
+    <meta name="theme-color" content="#2c3e50">
+    <meta name="msapplication-TileColor" content="#2c3e50">
+    
+    <title>{% block title %}D&D Character Manager{% endblock %}</title>
+    
+    <!-- Preload critical fonts for performance -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;700;900&display=swap" as="style">
+    <!-- Google Fonts - Cinzel for headings (fantasy theme), Lato for body text (readability) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
@@ -17,30 +33,55 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
+    <!-- Skip to content link for screen readers -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
     <!-- Header Section - Contains logo and navigation -->
     <header class="header" role="banner">
         <!-- Logo with home link - Uses D&D theme -->
         <div class="logo">
-            <a href="{{ url_for('index') }}" class="logo-link" aria-label="Home page">&#x1F9D9; D&D Character Manager</a>
+            <a href="{{ url_for('index') }}" class="logo-link" aria-label="Home page">
+                <i class="fas fa-dice-d20"></i>
+                <span class="logo-text">D&D Character Manager</span>
+            </a>
         </div>
     
         <!-- Hamburger menu icon - Only visible on mobile devices -->
-        <div class="nav-toggle" aria-label="Toggle navigation menu" role="button" tabindex="0" aria-expanded="false">&#9776;</div>
+        <div class="nav-toggle" aria-label="Toggle navigation menu" role="button" tabindex="0" aria-expanded="false">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </div>
         
         <!-- Navigation links - Primary site navigation -->
         {% set current_page = active_page | default('') %}
         <nav class="nav-links" aria-label="Main navigation">
-            <a href="{{ url_for('add_character') }}" class="btn-link{% if current_page == 'add_character' %} active{% endif %}" {% if current_page == 'add_character' %}aria-current="page"{% endif %}>Add Character</a>
-            <a href="{{ url_for('parties') }}" class="btn-link{% if current_page == 'parties' %} active{% endif %}" {% if current_page == 'parties' %}aria-current="page"{% endif %}>Parties</a>
+            <a href="{{ url_for('add_character') }}" class="btn-link{% if current_page == 'add_character' %} active{% endif %}" {% if current_page == 'add_character' %}aria-current="page"{% endif %}>
+                <i class="fas fa-plus-circle"></i>
+                <span>Add Character</span>
+            </a>
+            <a href="{{ url_for('parties') }}" class="btn-link{% if current_page == 'parties' %} active{% endif %}" {% if current_page == 'parties' %}aria-current="page"{% endif %}>
+                <i class="fas fa-users"></i>
+                <span>Parties</span>
+            </a>
         </nav>
     </header>
 
     <!-- Main content block that will be replaced in child templates -->
-    {% block content %}{% endblock %}
+    <main id="main-content" class="main-content" role="main">
+        {% block content %}{% endblock %}
+    </main>
     
     <!-- Site Footer - Contains copyright information -->
     <footer class="footer" role="contentinfo">
-        &copy; 2024 D&D Character Manager
+        <div class="footer-content">
+            <p>&copy; 2024 D&D Character Manager. Built for adventurers.</p>
+            <nav class="footer-nav" aria-label="Footer navigation">
+                <a href="{{ url_for('index') }}">Home</a>
+                <a href="{{ url_for('add_character') }}">Add Character</a>
+                <a href="{{ url_for('parties') }}">Parties</a>
+            </nav>
+        </div>
     </footer>
     
     <!-- JavaScript for mobile navigation menu toggle -->

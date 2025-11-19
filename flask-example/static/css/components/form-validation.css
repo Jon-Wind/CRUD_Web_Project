@@ -1,0 +1,255 @@
+/**
+ * Form Validation Component Styles
+ * D&D Character Manager
+ */
+
+/* Form group states */
+.form-group {
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.form-group.has-error {
+    animation: shake 0.5s ease-in-out;
+}
+
+.form-group.has-success {
+    animation: pulse 0.3s ease-in-out;
+}
+
+/* Shake animation for errors */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+/* Pulse animation for success */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+/* Field error messages */
+.field-error {
+    color: var(--color-error);
+    font-size: var(--font-size-xs);
+    margin-top: var(--spacing-xs);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    animation: slideDown 0.2s ease-out;
+}
+
+.field-error::before {
+    content: "⚠️";
+    font-size: var(--font-size-sm);
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Character counter */
+.character-counter {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    text-align: right;
+    margin-top: var(--spacing-xs);
+    transition: color 0.2s ease;
+}
+
+.character-counter.warning {
+    color: var(--color-warning);
+    font-weight: 500;
+}
+
+.character-counter.error {
+    color: var(--color-error);
+    font-weight: 500;
+}
+
+/* Form progress indicator */
+.form-progress {
+    margin-bottom: var(--spacing-lg);
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-full);
+    height: 8px;
+    overflow: hidden;
+    position: relative;
+}
+
+.form-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light));
+    border-radius: var(--radius-full);
+    transition: width 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.form-progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Enhanced input states */
+input:focus,
+select:focus,
+textarea:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+input[aria-invalid="true"],
+select[aria-invalid="true"],
+textarea[aria-invalid="true"] {
+    border-color: var(--color-error);
+    background-color: rgba(220, 38, 38, 0.05);
+}
+
+input[aria-invalid="true"]:focus,
+select[aria-invalid="true"]:focus,
+textarea[aria-invalid="true"]:focus {
+    outline-color: var(--color-error);
+}
+
+input[aria-invalid="false"],
+select[aria-invalid="false"],
+textarea[aria-invalid="false"] {
+    border-color: var(--color-success);
+}
+
+input[aria-invalid="false"]:focus,
+select[aria-invalid="false"]:focus,
+textarea[aria-invalid="false"]:focus {
+    outline-color: var(--color-success);
+}
+
+/* Success indicator */
+.form-group.has-success input,
+.form-group.has-success select,
+.form-group.has-success textarea {
+    border-color: var(--color-success);
+    background-color: rgba(34, 197, 94, 0.05);
+}
+
+.form-group.has-success input:focus,
+.form-group.has-success select:focus,
+.form-group.has-success textarea:focus {
+    outline-color: var(--color-success);
+}
+
+/* Validation icons */
+.form-group.has-error::after {
+    content: "❌";
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: var(--font-size-sm);
+    pointer-events: none;
+}
+
+.form-group.has-success::after {
+    content: "✅";
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: var(--font-size-sm);
+    pointer-events: none;
+}
+
+/* Hide validation icons for specific input types */
+.form-group.has-error:has(input[type="file"])::after,
+.form-group.has-success:has(input[type="file"])::after,
+.form-group.has-error:has(textarea)::after,
+.form-group.has-success:has(textarea)::after,
+.form-group.has-error:has(select)::after,
+.form-group.has-success:has(select)::after {
+    display: none;
+}
+
+/* Screen reader only content */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .form-progress {
+        height: 6px;
+    }
+    
+    .field-error {
+        font-size: 10px;
+    }
+    
+    .character-counter {
+        font-size: 10px;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .form-group.has-error input,
+    .form-group.has-error select,
+    .form-group.has-error textarea {
+        border-width: 3px;
+        background-color: rgba(220, 38, 38, 0.1);
+    }
+    
+    .form-group.has-success input,
+    .form-group.has-success select,
+    .form-group.has-success textarea {
+        border-width: 3px;
+        background-color: rgba(34, 197, 94, 0.1);
+    }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .form-group,
+    .field-error,
+    .form-progress-bar {
+        animation: none;
+        transition: none;
+    }
+    
+    .form-progress-bar::after {
+        animation: none;
+    }
+}
