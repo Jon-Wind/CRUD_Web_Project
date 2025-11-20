@@ -68,15 +68,6 @@
             </div>
             {% endif %}
 
-            <div class="section-header">
-                {% if search_query %}
-                <h2 class="section-title">Search Results</h2>
-                {% else %}
-                <h2 class="section-title">Character Library</h2>
-                {% endif %}
-                <p class="section-subtitle">Browse your collection of D&D characters</p>
-            </div>
-
             <!-- Sort Controls -->
             {% if characters %}
             <div class="sort-container">
@@ -95,13 +86,13 @@
                         </select>
                         <button type="button" 
                                 class="sort-order-btn {% if current_order == 'asc' %}active{% endif %}" 
-                                onclick="updateSortOrder('asc')"
+                                onclick="document.getElementById('sort-order-input').value='asc'; this.form.submit()"
                                 title="Sort ascending">
                             <i class="fas fa-arrow-up"></i>
                         </button>
                         <button type="button" 
                                 class="sort-order-btn {% if current_order == 'desc' %}active{% endif %}" 
-                                onclick="updateSortOrder('desc')"
+                                onclick="document.getElementById('sort-order-input').value='desc'; this.form.submit()"
                                 title="Sort descending">
                             <i class="fas fa-arrow-down"></i>
                         </button>

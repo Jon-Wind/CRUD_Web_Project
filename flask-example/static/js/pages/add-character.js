@@ -16,7 +16,7 @@ function initializeAddCharacterPage() {
     initializeCharacterPreview();
     initializeAlignmentGrid();
     initializeFileUpload();
-    initializeStatsInputs();
+    initializeCharacterPreview();
     initializeProgressIndicator();
 }
 
@@ -308,20 +308,35 @@ function updateCharacterPreview() {
 function initializeAlignmentGrid() {
     const alignmentRadios = document.querySelectorAll('.alignment-radio');
     const displayField = document.getElementById('alignment-display');
+    const selectionText = document.getElementById('alignment-selected-text');
+
+    const updateSelectionUI = (radio) => {
+        const value = radio?.value || '';
+
+        if (displayField) {
+            displayField.value = value;
+        }
+
+        if (selectionText) {
+            selectionText.textContent = value || 'None selected';
+        }
+
+        const cells = document.querySelectorAll('.alignment-cell');
+        cells.forEach(cell => cell.classList.remove('selected'));
+
+        if (radio) {
+            const selectedCell = document.querySelector(`label[for="${radio.id}"]`);
+            if (selectedCell) {
+                selectedCell.classList.add('selected');
+            }
+        }
+    };
 
     alignmentRadios.forEach(radio => {
         radio.addEventListener('change', function() {
             if (this.checked) {
-                displayField.value = this.value;
+                updateSelectionUI(this);
                 updateCharacterPreview();
-                
-                // Add visual feedback
-                const cells = document.querySelectorAll('.alignment-cell');
-                cells.forEach(cell => cell.classList.remove('selected'));
-                const selectedCell = document.querySelector(`label[for="${this.id}"]`);
-                if (selectedCell) {
-                    selectedCell.classList.add('selected');
-                }
             }
         });
 
@@ -350,6 +365,17 @@ function initializeAlignmentGrid() {
             radios[newIndex].dispatchEvent(new Event('change'));
         });
     });
+
+    const preSelectedRadio = Array.from(alignmentRadios).find(radio => radio.checked)
+        || Array.from(alignmentRadios).find(radio => displayField?.value && radio.value === displayField.value);
+
+    if (preSelectedRadio) {
+        updateSelectionUI(preSelectedRadio);
+    } else if (selectionText) {
+        selectionText.textContent = 'None selected';
+    }
+
+    updateCharacterPreview();
 }
 
 /**
@@ -425,51 +451,6 @@ function showImagePreview(file) {
         };
         reader.readAsDataURL(file);
     }
-}
-
-/**
- * Initialize stats inputs with validation
- */
-function initializeStatsInputs() {
-    const statInputs = document.querySelectorAll('.stat-input');
-
-    statInputs.forEach(input => {
-        // Ensure numeric input
-        input.addEventListener('input', function() {
-            this.value = this.value.replace(/[^0-9]/g, '');
-            
-            // Clamp to valid range (1-20 for D&D stats)
-            const value = parseInt(this.value) || 0;
-            if (value < 1) this.value = 1;
-            if (value > 20) this.value = 20;
-            
-            updateProgress();
-        });
-
-        // Add keyboard navigation
-        input.addEventListener('keydown', function(e) {
-            const inputs = Array.from(statInputs);
-            const currentIndex = inputs.indexOf(this);
-            let newIndex = currentIndex;
-
-            switch (e.key) {
-                case 'ArrowUp':
-                case 'ArrowLeft':
-                    newIndex = currentIndex > 0 ? currentIndex - 1 : inputs.length - 1;
-                    break;
-                case 'ArrowDown':
-                case 'ArrowRight':
-                    newIndex = currentIndex < inputs.length - 1 ? currentIndex + 1 : 0;
-                    break;
-                default:
-                    return;
-            }
-
-            e.preventDefault();
-            inputs[newIndex].focus();
-            inputs[newIndex].select();
-        });
-    });
 }
 
 /**

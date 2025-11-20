@@ -183,14 +183,24 @@
   grid-template-rows: repeat(3, 1fr) auto;
   gap: 4px;
   position: relative;
-  width: 240px;
-  height: 240px;
+  width: clamp(180px, 50vw, 240px);
+  height: clamp(180px, 50vw, 240px);
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .alignment-grid {
+    width: clamp(160px, 45vw, 200px);
+    height: clamp(160px, 45vw, 200px);
+    gap: 3px;
+  }
 }
 
 @media (max-width: 480px) {
   .alignment-grid {
-    width: 180px;
-    height: 180px;
+    width: clamp(140px, 40vw, 180px);
+    height: clamp(140px, 40vw, 180px);
+    gap: 2px;
   }
 }
 
@@ -209,8 +219,10 @@
   border-radius: var(--radius-md);
   cursor: pointer;
   font-weight: var(--font-weight-bold);
-  font-size: var(--font-size-sm);
+  font-size: clamp(10px, 2.5vw, var(--font-size-sm));
   transition: all var(--transition-fast);
+  padding: clamp(4px, 1vw, 8px);
+  text-align: center;
   position: relative;
   overflow: hidden;
 }

@@ -155,45 +155,13 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="alignment-selection" aria-live="polite">
+                            <span class="alignment-selection-label">Selected alignment:</span>
+                            <span id="alignment-selected-text">
+                                {{ character.alignment if character else 'None selected' }}
+                            </span>
+                        </div>
                         <input type="hidden" id="alignment-display" value="{{ character.alignment if character else '' }}">
-                    </div>
-                </div>
-                
-                <!-- Stats Section -->
-                <div class="form-section stats-section">
-                    <h2 class="section-title">Ability Scores</h2>
-                    
-                    <div class="stats-grid">
-                        <div class="stat-group">
-                            <label for="stat-str" class="stat-label">STR</label>
-                            <input type="number" id="stat-str" name="stat-str" class="stat-input" 
-                                   min="1" max="20" value="{{ character.strength if character else '10' }}">
-                        </div>
-                        <div class="stat-group">
-                            <label for="stat-dex" class="stat-label">DEX</label>
-                            <input type="number" id="stat-dex" name="stat-dex" class="stat-input" 
-                                   min="1" max="20" value="{{ character.dexterity if character else '10' }}">
-                        </div>
-                        <div class="stat-group">
-                            <label for="stat-con" class="stat-label">CON</label>
-                            <input type="number" id="stat-con" name="stat-con" class="stat-input" 
-                                   min="1" max="20" value="{{ character.constitution if character else '10' }}">
-                        </div>
-                        <div class="stat-group">
-                            <label for="stat-int" class="stat-label">INT</label>
-                            <input type="number" id="stat-int" name="stat-int" class="stat-input" 
-                                   min="1" max="20" value="{{ character.intelligence if character else '10' }}">
-                        </div>
-                        <div class="stat-group">
-                            <label for="stat-wis" class="stat-label">WIS</label>
-                            <input type="number" id="stat-wis" name="stat-wis" class="stat-input" 
-                                   min="1" max="20" value="{{ character.wisdom if character else '10' }}">
-                        </div>
-                        <div class="stat-group">
-                            <label for="stat-cha" class="stat-label">CHA</label>
-                            <input type="number" id="stat-cha" name="stat-cha" class="stat-input" 
-                                   min="1" max="20" value="{{ character.charisma if character else '10' }}">
-                        </div>
                     </div>
                 </div>
             </div>

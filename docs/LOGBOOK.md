@@ -8,6 +8,47 @@
 
 ## Development Log
 
+### 2025-11-20 - Alignment Selection & Preview Fixes
+- **Author**: Cascade AI
+- **Time Spent**: 0.5 hours
+- **Changes Made**:
+  - Restored execution of page-specific JavaScript by rendering the `extra_js` block in `base.html`
+  - Added visible "Selected alignment" indicator on the add character page
+  - Synced alignment grid selections with hidden field, display text, and character preview
+- **Files Modified**:
+  - `flask-example/templates/base.html` - Rendered `{% block extra_js %}` before legacy scripts block
+  - `flask-example/templates/add_character.html` - Added alignment selection display section
+  - `flask-example/static/js/pages/add-character.js` - Centralized alignment selection UI updates and initialization
+- **Notes/Challenges**:
+  - [x] Identified missing script block that prevented page JS from running
+  - [x] Ensured alignment selection text updates alongside preview
+  - [x] Preserved keyboard navigation and accessibility in the grid
+
+### 2025-11-19 - Sort Bar Fixes and UI Refinements
+- **Author**: Cascade AI
+- **Time Spent**: 1 hour
+- **Changes Made**:
+  - Removed "Character Library" header and subtitle from search section
+  - Enhanced D&D Character Manager title contrast with text shadows and stroke
+  - Changed hero title color to brighter blue (#5DADE2) for better visibility
+  - Improved sort bar styling with background, borders, padding, and hover effects
+  - Added responsive design for sort bar on tablets and mobile devices
+  - Fixed ascending/descending sort arrow buttons functionality
+  - Attempted AJAX implementation for seamless sorting without page refresh
+  - Reverted to reliable form submission approach after AJAX complications
+- **Files Modified**:
+  - `flask-example/templates/index.html` - Removed headers, fixed sort buttons
+  - `flask-example/static/css/pages/home.css` - Enhanced title contrast and sort bar styling
+  - `flask-example/static/js/pages/home.js` - Modified and reverted AJAX functionality
+  - `flask-example/app.py` - Modified and reverted AJAX response handling
+- **Notes/Challenges**:
+  - [x] Successfully removed redundant Character Library headers
+  - [x] Enhanced title visibility against gradient background
+  - [x] Implemented responsive sort bar design
+  - [x] Fixed sort arrow button functionality
+  - [-] AJAX implementation faced complexity with template rendering
+  - [x] Reverted to stable form submission approach for reliability
+
 ### 2025-11-19 - JavaScript Enhancement and UI Fixes
 - **Author**: Cascade AI
 - **Time Spent**: 2 hours
@@ -24,6 +65,10 @@
   - Fixed button positioning within character cards to prevent cutoff
   - Reduced hero section padding and enhanced button contrast on home page
   - Fixed CSS syntax errors in home.css
+  - Removed ability scores section from add character page
+  - Made alignment grid more responsive with clamp() functions
+  - Added "Character Library" header above search bar on home page
+  - Further decreased hero section padding for better spacing
 - **Files Modified**:
   - `flask-example/static/js/pages/home.js` - Added search suggestions functionality
   - `flask-example/static/js/pages/add-character.js` - Enhanced validation and UX
@@ -32,12 +77,17 @@
   - `flask-example/static/css/styles.css` - Added component imports
   - `flask-example/templates/parties.html` - Fixed datetime formatting issue
   - `flask-example/static/css/pages/home.css` - Fixed card layout and hero section
+  - `flask-example/templates/add_character.html` - Removed ability scores section
+  - `flask-example/static/css/pages/add-character.css` - Made alignment grid responsive
+  - `flask-example/templates/index.html` - Added Character Library header
 - **Notes/Challenges**:
   - [x] Implemented accessible autocomplete with keyboard navigation
   - [x] Added comprehensive real-time form validation
   - [x] Fixed character card responsive layout issues
   - [x] Enhanced button contrast and visibility on gradient backgrounds
   - [x] Resolved template syntax errors preventing page loads
+  - [x] Successfully removed unused ability scores functionality
+  - [x] Improved alignment grid responsiveness across device sizes
 
 ### 2025-11-18 - Button Styling and Template Bug Fixes
 - **Author**: Cascade AI

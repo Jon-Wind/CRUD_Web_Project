@@ -87,7 +87,10 @@
     <!-- JavaScript for mobile navigation menu toggle -->
     <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
     
-    <!-- Additional JavaScript can be included in child templates -->
+    <!-- Page-specific scripts -->
+    {% block extra_js %}{% endblock %}
+    
+    <!-- Additional JavaScript hook (legacy support) -->
     {% block scripts %}{% endblock %}
 </body>
 </html>
