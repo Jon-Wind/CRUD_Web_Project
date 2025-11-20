@@ -209,8 +209,8 @@ a:hover {
   margin: 0 auto;
   padding: 0 var(--spacing-4);
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: var(--spacing-4);
 }
 
 .logo {
@@ -273,6 +273,8 @@ a:hover {
 .nav-links {
   display: flex;
   gap: var(--spacing-6);
+  margin-left: auto;
+  align-items: center;
 }
 
 .btn-link {

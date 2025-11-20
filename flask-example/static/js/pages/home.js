@@ -78,10 +78,10 @@ async function handleSearch(event) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
-        const html = await response.text();
-        
+        const data = await response.json();
+
         // Update character grid with new results
-        updateCharacterGrid(html);
+        updateCharacterGrid(data);
         
         // Update URL without page reload
         updateURL(formData);
@@ -102,29 +102,28 @@ async function handleSearch(event) {
 
 /**
  * Update the character grid with new results
- * @param {string} html - HTML response from server
+ * @param {Object} data - JSON response from server
  */
-function updateCharacterGrid(html) {
+function updateCharacterGrid(data) {
     try {
-        // Create temporary container to parse response
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = html;
-        
-        // Find the character results in the response
-        const newResults = tempDiv.querySelector('#character-results');
+        // Update search query display
+        updateSearchHeader(data.search_query);
+
+        // Update sort controls
+        updateSortControls(data.current_sort, data.current_order);
+
+        // Update character grid
         const currentResults = document.getElementById('character-results');
-        
-        if (newResults && currentResults) {
-            // Update the results container
-            currentResults.innerHTML = newResults.innerHTML;
-            
-            // Re-initialize any event listeners for new content
-            initializeNewContent();
-            
-            // Announce to screen readers
-            announceToScreenReader('Search results updated');
+        if (currentResults) {
+            currentResults.innerHTML = generateCharacterGridHTML(data.characters);
         }
-        
+
+        // Re-initialize any event listeners for new content
+        initializeNewContent();
+
+        // Announce to screen readers
+        announceToScreenReader('Search results updated');
+
     } catch (error) {
         console.error('Error updating character grid:', error);
         throw error;

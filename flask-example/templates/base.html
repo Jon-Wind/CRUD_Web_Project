@@ -38,33 +38,43 @@
     
     <!-- Header Section - Contains logo and navigation -->
     <header class="header" role="banner">
-        <!-- Logo with home link - Uses D&D theme -->
-        <div class="logo">
-            <a href="{{ url_for('index') }}" class="logo-link" aria-label="Home page">
-                <i class="fas fa-dice-d20"></i>
-                <span class="logo-text">D&D Character Manager</span>
-            </a>
-        </div>
-    
-        <!-- Hamburger menu icon - Only visible on mobile devices -->
-        <div class="nav-toggle" aria-label="Toggle navigation menu" role="button" tabindex="0" aria-expanded="false">
-            <span class="hamburger-line"></span>
-            <span class="hamburger-line"></span>
-            <span class="hamburger-line"></span>
-        </div>
+        <div class="header-content">
+            <!-- Logo with home link - Uses D&D theme -->
+            <div class="logo">
+                <a href="{{ url_for('index') }}" class="logo-link" aria-label="Home page">
+                    <i class="fas fa-dice-d20"></i>
+                    <span class="logo-text">D&D Character Manager</span>
+                </a>
+            </div>
         
-        <!-- Navigation links - Primary site navigation -->
-        {% set current_page = active_page | default('') %}
-        <nav class="nav-links" aria-label="Main navigation">
-            <a href="{{ url_for('add_character') }}" class="btn-link{% if current_page == 'add_character' %} active{% endif %}" {% if current_page == 'add_character' %}aria-current="page"{% endif %}>
-                <i class="fas fa-plus-circle"></i>
-                <span>Add Character</span>
-            </a>
-            <a href="{{ url_for('parties') }}" class="btn-link{% if current_page == 'parties' %} active{% endif %}" {% if current_page == 'parties' %}aria-current="page"{% endif %}>
-                <i class="fas fa-users"></i>
-                <span>Parties</span>
-            </a>
-        </nav>
+            <!-- Hamburger menu icon - Only visible on mobile devices -->
+            <div class="nav-toggle" aria-label="Toggle navigation menu" role="button" tabindex="0" aria-expanded="false" aria-controls="primary-navigation">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </div>
+            
+            <!-- Navigation links - Primary site navigation -->
+            {% set current_page = active_page | default('') %}
+            <nav id="primary-navigation" class="nav-links" aria-label="Main navigation">
+                <a href="{{ url_for('add_character') }}" class="btn-link{% if current_page == 'add_character' %} active{% endif %}" {% if current_page == 'add_character' %}aria-current="page"{% endif %}>
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Add Character</span>
+                </a>
+                <a href="{{ url_for('parties') }}" class="btn-link{% if current_page == 'parties' %} active{% endif %}" {% if current_page == 'parties' %}aria-current="page"{% endif %}>
+                    <i class="fas fa-users"></i>
+                    <span>Parties</span>
+                </a>
+                <a href="{{ url_for('about') }}" class="btn-link{% if current_page == 'about' %} active{% endif %}" {% if current_page == 'about' %}aria-current="page"{% endif %}>
+                    <i class="fas fa-info-circle"></i>
+                    <span>About</span>
+                </a>
+                <a href="{{ url_for('contact') }}" class="btn-link{% if current_page == 'contact' %} active{% endif %}" {% if current_page == 'contact' %}aria-current="page"{% endif %}>
+                    <i class="fas fa-envelope"></i>
+                    <span>Contact</span>
+                </a>
+            </nav>
+        </div>
     </header>
 
     <!-- Main content block that will be replaced in child templates -->

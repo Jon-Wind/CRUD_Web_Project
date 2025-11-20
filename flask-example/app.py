@@ -82,19 +82,13 @@ def register_routes(app):
         
         # Check if it's an AJAX request
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            # If it's an AJAX request, only return the character results section
-            from flask import render_template_string
-            return render_template_string(
-                '{% extends "index.html" %}'  
-                '{% block content %}'  
-                '{% include "includes/character_results.html" %}'  
-                '{% endblock %}',
-                characters=characters,
-                active_page='home',
-                search_query=search_query,
-                current_sort=sort_by,
-                current_order=sort_order
-            )
+            # Return JSON for AJAX requests
+            return jsonify({
+                'characters': characters,
+                'search_query': search_query,
+                'current_sort': sort_by,
+                'current_order': sort_order
+            })
         
         # For regular page loads, return the full page
         return render_template('index.html', 
@@ -462,11 +456,19 @@ def register_routes(app):
         
         return jsonify([dict(char) for char in characters])
 
+    @app.route('/about')
+    def about():
+        return render_template('about.html', active_page='about')
+
+    @app.route('/contact')
+    def contact():
+        return render_template('contact.html', active_page='contact')
+
     # Error handlers
     @app.errorhandler(404)
     def page_not_found(e):
         return render_template('errors/404.html'), 404
-    
+
     @app.errorhandler(500)
     def internal_server_error(e):
         return render_template('errors/500.html'), 500

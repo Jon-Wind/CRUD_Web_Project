@@ -114,33 +114,32 @@
                     <div class="form-group">
                         <div class="alignment-container">
                             <div class="alignment-grid" role="radiogroup" aria-label="Character alignment">
-                                <input type="radio" id="alignment-lg" name="alignment" value="Lawful Good" class="alignment-radio" 
+                                <input type="radio" id="alignment-lg" name="alignment" value="Lawful Good" class="alignment-radio"
                                        {% if character and character.alignment == 'Lawful Good' %}checked{% endif %}>
+                                <label for="alignment-lg" class="alignment-cell lg" style="grid-column: 1; grid-row: 3;">LG</label>
                                 <input type="radio" id="alignment-ng" name="alignment" value="Neutral Good" class="alignment-radio"
                                        {% if character and character.alignment == 'Neutral Good' %}checked{% endif %}>
+                                <label for="alignment-ng" class="alignment-cell ng" style="grid-column: 2; grid-row: 3;">NG</label>
                                 <input type="radio" id="alignment-cg" name="alignment" value="Chaotic Good" class="alignment-radio"
                                        {% if character and character.alignment == 'Chaotic Good' %}checked{% endif %}>
+                                <label for="alignment-cg" class="alignment-cell cg" style="grid-column: 3; grid-row: 3;">CG</label>
                                 <input type="radio" id="alignment-ln" name="alignment" value="Lawful Neutral" class="alignment-radio"
                                        {% if character and character.alignment == 'Lawful Neutral' %}checked{% endif %}>
+                                <label for="alignment-ln" class="alignment-cell ln" style="grid-column: 1; grid-row: 2;">LN</label>
                                 <input type="radio" id="alignment-tn" name="alignment" value="True Neutral" class="alignment-radio"
                                        {% if character and character.alignment == 'True Neutral' %}checked{% endif %}>
+                                <label for="alignment-tn" class="alignment-cell tn" style="grid-column: 2; grid-row: 2;">TN</label>
                                 <input type="radio" id="alignment-cn" name="alignment" value="Chaotic Neutral" class="alignment-radio"
                                        {% if character and character.alignment == 'Chaotic Neutral' %}checked{% endif %}>
+                                <label for="alignment-cn" class="alignment-cell cn" style="grid-column: 3; grid-row: 2;">CN</label>
                                 <input type="radio" id="alignment-le" name="alignment" value="Lawful Evil" class="alignment-radio"
                                        {% if character and character.alignment == 'Lawful Evil' %}checked{% endif %}>
+                                <label for="alignment-le" class="alignment-cell le" style="grid-column: 1; grid-row: 1;">LE</label>
                                 <input type="radio" id="alignment-ne" name="alignment" value="Neutral Evil" class="alignment-radio"
                                        {% if character and character.alignment == 'Neutral Evil' %}checked{% endif %}>
+                                <label for="alignment-ne" class="alignment-cell ne" style="grid-column: 2; grid-row: 1;">NE</label>
                                 <input type="radio" id="alignment-ce" name="alignment" value="Chaotic Evil" class="alignment-radio"
                                        {% if character and character.alignment == 'Chaotic Evil' %}checked{% endif %}>
-                                
-                                <label for="alignment-lg" class="alignment-cell lg" style="grid-column: 1; grid-row: 3;">LG</label>
-                                <label for="alignment-ng" class="alignment-cell ng" style="grid-column: 2; grid-row: 3;">NG</label>
-                                <label for="alignment-cg" class="alignment-cell cg" style="grid-column: 3; grid-row: 3;">CG</label>
-                                <label for="alignment-ln" class="alignment-cell ln" style="grid-column: 1; grid-row: 2;">LN</label>
-                                <label for="alignment-tn" class="alignment-cell tn" style="grid-column: 2; grid-row: 2;">TN</label>
-                                <label for="alignment-cn" class="alignment-cell cn" style="grid-column: 3; grid-row: 2;">CN</label>
-                                <label for="alignment-le" class="alignment-cell le" style="grid-column: 1; grid-row: 1;">LE</label>
-                                <label for="alignment-ne" class="alignment-cell ne" style="grid-column: 2; grid-row: 1;">NE</label>
                                 <label for="alignment-ce" class="alignment-cell ce" style="grid-column: 3; grid-row: 1;">CE</label>
                                 
                                 <div class="alignment-axis x-axis">

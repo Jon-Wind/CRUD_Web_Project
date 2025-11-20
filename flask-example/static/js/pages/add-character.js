@@ -535,14 +535,6 @@ async function handleFormSubmit(event) {
     submitButton.disabled = true;
     submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Character...';
     
-    // Disable all form fields during submission
-    const allFields = form.querySelectorAll('input, select, textarea, button');
-    allFields.forEach(field => {
-        if (field !== submitButton) {
-            field.disabled = true;
-        }
-    });
-    
     try {
         // Submit form normally (could be enhanced with AJAX)
         form.submit();
@@ -553,9 +545,6 @@ async function handleFormSubmit(event) {
         // Restore form state
         submitButton.disabled = false;
         submitButton.textContent = originalText;
-        allFields.forEach(field => {
-            field.disabled = false;
-        });
     }
 }
 
