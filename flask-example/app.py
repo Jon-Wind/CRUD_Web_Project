@@ -443,6 +443,32 @@ def register_routes(app):
         
         return redirect(url_for('party_detail', party_id=party_id))
 
+    @app.route('/api/search-suggestions')
+    def search_suggestions():
+        query = request.args.get('q', '').strip()
+        if not query or len(query) < 2:
+            return jsonify([])
+
+        db = get_db()
+        # Search across multiple fields and return distinct suggestions
+        suggestions = db.execute('''
+            SELECT DISTINCT name as text, 'name' as type FROM dnd_characters
+            WHERE name LIKE ?
+            UNION
+            SELECT DISTINCT race as text, 'race' as type FROM dnd_characters
+            WHERE race LIKE ?
+            UNION
+            SELECT DISTINCT character_class as text, 'class' as type FROM dnd_characters
+            WHERE character_class LIKE ?
+            UNION
+            SELECT DISTINCT short_description as text, 'description' as type FROM dnd_characters
+            WHERE short_description LIKE ?
+            ORDER BY text
+            LIMIT 10
+        ''', (f'%{query}%', f'%{query}%', f'%{query}%', f'%{query}%')).fetchall()
+
+        return jsonify([dict(suggestion) for suggestion in suggestions])
+
     @app.route('/api/characters/not-in-party/<int:party_id>')
     def characters_not_in_party(party_id):
         db = get_db()
@@ -453,7 +479,7 @@ def register_routes(app):
             )
             ORDER BY c.name
         ''', (party_id,)).fetchall()
-        
+
         return jsonify([dict(char) for char in characters])
 
     @app.route('/about')

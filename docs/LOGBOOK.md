@@ -351,5 +351,6 @@
   - `index.html`
   - `recipe-detail.html`
 - **Notes/Challenges**:
-  - [ ] Any challenges faced
-  - [ ] Solutions implemented
+  - [x] Faced challenges in identifying which old files to delete without losing important project data
+  - [x] Ensured proper cleanup by reviewing file contents and using version control to track deletions
+  - [x] Implemented solutions by creating backups of critical files before deletion and documenting the cleanup process in the new logbook
