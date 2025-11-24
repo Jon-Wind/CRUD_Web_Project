@@ -82,19 +82,13 @@ def register_routes(app):
         
         # Check if it's an AJAX request
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            # If it's an AJAX request, only return the character results section
-            from flask import render_template_string
-            return render_template_string(
-                '{% extends "index.html" %}'  
-                '{% block content %}'  
-                '{% include "includes/character_results.html" %}'  
-                '{% endblock %}',
-                characters=characters,
-                active_page='home',
-                search_query=search_query,
-                current_sort=sort_by,
-                current_order=sort_order
-            )
+            # Return JSON for AJAX requests
+            return jsonify({
+                'characters': characters,
+                'search_query': search_query,
+                'current_sort': sort_by,
+                'current_order': sort_order
+            })
         
         # For regular page loads, return the full page
         return render_template('index.html', 
@@ -449,6 +443,32 @@ def register_routes(app):
         
         return redirect(url_for('party_detail', party_id=party_id))
 
+    @app.route('/api/search-suggestions')
+    def search_suggestions():
+        query = request.args.get('q', '').strip()
+        if not query or len(query) < 2:
+            return jsonify([])
+
+        db = get_db()
+        # Search across multiple fields and return distinct suggestions
+        suggestions = db.execute('''
+            SELECT DISTINCT name as text, 'name' as type FROM dnd_characters
+            WHERE name LIKE ?
+            UNION
+            SELECT DISTINCT race as text, 'race' as type FROM dnd_characters
+            WHERE race LIKE ?
+            UNION
+            SELECT DISTINCT character_class as text, 'class' as type FROM dnd_characters
+            WHERE character_class LIKE ?
+            UNION
+            SELECT DISTINCT short_description as text, 'description' as type FROM dnd_characters
+            WHERE short_description LIKE ?
+            ORDER BY text
+            LIMIT 10
+        ''', (f'%{query}%', f'%{query}%', f'%{query}%', f'%{query}%')).fetchall()
+
+        return jsonify([dict(suggestion) for suggestion in suggestions])
+
     @app.route('/api/characters/not-in-party/<int:party_id>')
     def characters_not_in_party(party_id):
         db = get_db()
@@ -459,14 +479,22 @@ def register_routes(app):
             )
             ORDER BY c.name
         ''', (party_id,)).fetchall()
-        
+
         return jsonify([dict(char) for char in characters])
+
+    @app.route('/about')
+    def about():
+        return render_template('about.html', active_page='about')
+
+    @app.route('/contact')
+    def contact():
+        return render_template('contact.html', active_page='contact')
 
     # Error handlers
     @app.errorhandler(404)
     def page_not_found(e):
         return render_template('errors/404.html'), 404
-    
+
     @app.errorhandler(500)
     def internal_server_error(e):
         return render_template('errors/500.html'), 500
