@@ -277,9 +277,9 @@
     
     <!-- Delete form outside the main form to avoid nesting -->
     <form method="POST" action="{{ url_for('delete_character', character_id=character.id) }}" style="display: inline; margin-top: 1rem;">
-        <button type="submit" class="btn btn-danger"
+        <button type="submit" class="btn btn-delete" aria-label="Delete {{ character.name }}"
                 onclick="return confirm('Are you sure you want to delete this character? This cannot be undone.');">
-            Delete Character
+            <i class="fas fa-trash"></i> Delete Character
         </button>
     </form>
 </div>

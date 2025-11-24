@@ -17,7 +17,7 @@
                     <i class="fas fa-edit"></i> Edit Party
                 </a>
                 <form method="POST" action="{{ url_for('delete_party', party_id=party.id) }}" style="display: inline-flex;">
-                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this party? This will remove all characters from the party.')">
+                    <button type="submit" class="btn btn-delete" onclick="return confirm('Are you sure you want to delete this party? This will remove all characters from the party.')">
                         <i class="fas fa-trash"></i> Delete Party
                     </button>
                 </form>
@@ -48,6 +48,16 @@
             <span class="member-count">{{ characters|length }} members</span>
         </div>
 
+        <div class="add-character-section">
+            <h4>Add Character to Party</h4>
+            <form method="POST" action="{{ url_for('add_character_to_party', party_id=party.id, character_id=0) }}" id="add-character-form">
+                <select name="character_id" id="character-select" class="form-control" required>
+                    <option value="">Select a character to add...</option>
+                </select>
+                <button type="submit" class="btn btn-primary">Add to Party</button>
+            </form>
+        </div>
+
         {% if characters %}
             <div class="characters-grid">
                 {% for character in characters %}
@@ -70,7 +80,7 @@
                         <div class="character-actions">
                             <a href="{{ url_for('character_detail', character_id=character.id) }}" class="btn btn-sm btn-outline">View</a>
                             <form method="POST" action="{{ url_for('remove_character_from_party', party_id=party.id, character_id=character.id) }}" style="display: inline-flex;">
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Remove {{ character.name }} from this party?')">Remove</button>
+                                <button type="submit" class="btn btn-sm btn-delete" onclick="return confirm('Remove {{ character.name }} from this party?')">Remove</button>
                             </form>
                         </div>
                     </div>
@@ -83,16 +93,6 @@
                 <p>This party doesn't have any members yet. Add characters to build your adventuring party!</p>
             </div>
         {% endif %}
-
-        <div class="add-character-section">
-            <h4>Add Character to Party</h4>
-            <form method="POST" action="{{ url_for('add_character_to_party', party_id=party.id, character_id=0) }}" id="add-character-form">
-                <select name="character_id" id="character-select" class="form-control" required>
-                    <option value="">Select a character to add...</option>
-                </select>
-                <button type="submit" class="btn btn-primary">Add to Party</button>
-            </form>
-        </div>
     </div>
 </div>
 
