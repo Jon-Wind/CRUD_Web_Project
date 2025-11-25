@@ -1,596 +1,178 @@
 {% extends "base.html" %}
 
-{% block title %}D&D Character Manager{% endblock %}
+{% block title %}D&D Character Manager - Character Library{% endblock %}
+{% block og_title %}D&D Character Manager - Character Library{% endblock %}
+{% block og_description %}Browse and search your collection of D&D characters{% endblock %}
 
 {% block extra_css %}
-<style>
-    .header-content {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem 0;
-        border-bottom: 1px solid #e0e0e0;
-        margin-bottom: 2rem;
-    }
-
-    .logo {
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: #2c3e50;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .nav-links {
-        display: flex;
-        gap: 1.5rem;
-    }
-
-    .nav-link {
-        color: #2c3e50;
-        text-decoration: none;
-        font-weight: 500;
-        transition: color 0.2s;
-    }
-
-    .nav-link:hover {
-        color: #3498db;
-    }
-
-    .search-section {
-        text-align: center;
-        margin: 2rem 0 3rem;
-    }
-    
-    .search-controls {
-        display: flex;
-        justify-content: center;
-        gap: 1rem;
-        margin: 1.5rem 0;
-        align-items: center;
-        flex-wrap: wrap;
-    }
-    
-    .sort-controls {
-        display: flex;
-        gap: 0.5rem;
-        align-items: center;
-    }
-    
-    .sort-select, .sort-order {
-        padding: 0.5rem;
-        border: 2px solid #e0e0e0;
-        border-radius: 4px;
-        font-size: 0.9rem;
-        background-color: white;
-        cursor: pointer;
-        transition: border-color 0.2s;
-    }
-    
-    .sort-select:focus, .sort-order:focus {
-        outline: none;
-        border-color: #3498db;
-    }
-    
-    .sort-order {
-        padding: 0.5rem 0.75rem;
-        background-color: #f8f9fa;
-        border-radius: 4px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s;
-    }
-    
-    .sort-order:hover {
-        background-color: #e9ecef;
-    }
-    
-    .sort-order.active {
-        background-color: #3498db;
-        color: white;
-        border-color: #3498db;
-    }
-
-    .search-bar {
-        max-width: 600px;
-        margin: 0 auto;
-        position: relative;
-    }
-
-    .search-input {
-        width: 100%;
-        padding: 0.75rem 1rem;
-        padding-right: 3rem;
-        border: 2px solid #e0e0e0;
-        border-radius: 4px;
-        font-size: 1rem;
-        transition: border-color 0.2s;
-    }
-
-    .search-input:focus {
-        outline: none;
-        border-color: #3498db;
-    }
-
-    .search-icon {
-        position: absolute;
-        right: 1rem;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #7f8c8d;
-    }
-
-    .character-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 2rem;
-        padding: 1rem 0;
-    }
-
-    .character-card {
-        background: #fff;
-        border-radius: 6px;
-        overflow: hidden;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-    }
-
-    .character-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-    }
-
-    .character-image-container {
-        position: relative;
-        width: 100%;
-        padding-top: 75%; /* 4:3 aspect ratio */
-        overflow: hidden;
-        background-color: #f5f5f5;
-    }
-
-    .character-image {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .character-info {
-        padding: 1.25rem;
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .character-name {
-        margin: 0 0 0.75rem 0;
-        color: #2c3e50;
-        font-size: 1.25rem;
-        font-weight: 600;
-    }
-
-    .character-meta {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        color: #6c757d;
-        font-size: 0.9rem;
-        margin-bottom: 0.75rem;
-        padding-bottom: 0.75rem;
-        border-bottom: 1px solid #eee;
-    }
-
-    .character-meta span {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .character-description {
-        color: #495057;
-        font-size: 0.95rem;
-        line-height: 1.5;
-        margin: 0 0 1rem 0;
-        flex-grow: 1;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        line-clamp: 3;
-    }
-    
-    .btn {
-        display: inline-block;
-        font-weight: 500;
-        text-align: center;
-        white-space: nowrap;
-        vertical-align: middle;
-        user-select: none;
-        border: 1px solid transparent;
-        padding: 0.375rem 0.75rem;
-        font-size: 0.9rem;
-        line-height: 1.5;
-        border-radius: 0.25rem;
-        transition: color 0.15s ease-in-out, 
-                   background-color 0.15s ease-in-out, 
-                   border-color 0.15s ease-in-out, 
-                   box-shadow 0.15s ease-in-out;
-        text-decoration: none;
-        cursor: pointer;
-    }
-    
-    .btn-sm {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.875rem;
-        line-height: 1.5;
-        border-radius: 0.2rem;
-    }
-    
-    .btn-outline-primary {
-        color: #3498db;
-        border-color: #3498db;
-        background-color: transparent;
-    }
-    
-    .btn-outline-primary:hover {
-        color: #fff;
-        background-color: #3498db;
-        border-color: #3498db;
-    }
-    
-    .btn i {
-        margin-left: 0.25rem;
-        transition: transform 0.2s ease;
-    }
-    
-    .btn:hover i {
-        transform: translateX(2px);
-    }
-
-    .no-characters {
-        grid-column: 1 / -1;
-        text-align: center;
-        padding: 3rem 1rem;
-        color: #7f8c8d;
-        background: #f9f9f9;
-        border-radius: 4px;
-    }
-
-    .add-character-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        background-color: #3498db;
-        color: white;
-        padding: 0.6rem 1.2rem;
-        border-radius: 4px;
-        text-decoration: none;
-        font-weight: 500;
-        font-size: 0.9rem;
-        transition: background-color 0.2s;
-        margin-top: 1rem;
-    }
-
-    .add-character-btn:hover {
-        background-color: #2980b9;
-        color: white;
-    }
-
-    @media (max-width: 768px) {
-        .character-grid {
-            grid-template-columns: 1fr;
-        }
-        
-        .header-content {
-            flex-direction: column;
-            gap: 1rem;
-            text-align: center;
-        }
-        
-        .nav-links {
-            width: 100%;
-            justify-content: center;
-        }
-    }
-
-    /* Search form styles */
-    .search-form {
-        margin: 0 auto;
-        max-width: 600px;
-    }
-
-    .search-bar {
-        position: relative;
-        display: flex;
-        align-items: center;
-    }
-
-    .search-input {
-        width: 100%;
-        padding: 0.75rem 1rem;
-        padding-right: 3rem;
-        border: 2px solid #e0e0e0;
-        border-radius: 4px;
-        font-size: 1rem;
-        transition: all 0.2s ease;
-    }
-
-    .search-input:focus {
-        outline: none;
-        border-color: #3498db;
-        box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-    }
-
-    .search-button {
-        position: absolute;
-        right: 0.5rem;
-        background: none;
-        border: none;
-        color: #7f8c8d;
-        cursor: pointer;
-        padding: 0.5rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: color 0.2s;
-    }
-
-    .search-button:hover {
-        color: #3498db;
-    }
-
-    .search-results-count {
-        margin-top: 1rem;
-        color: #7f8c8d;
-        font-size: 0.9rem;
-    }
-
-    .clear-search {
-        margin-left: 0.5rem;
-        color: #3498db;
-        text-decoration: none;
-    }
-
-    .clear-search:hover {
-        text-decoration: underline;
-    }
-
-    .character-actions {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 1rem;
-    }
-
-    .delete-form {
-        margin-left: 0.5rem;
-    }
-
-    .btn-danger {
-        background-color: #e74c3c;
-        color: white;
-        border: none;
-        padding: 0.25rem 0.5rem;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.2s;
-    }
-
-    .btn-danger:hover {
-        background-color: #c0392b;
-    }
-</style>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pages/home.css') }}">
 {% endblock %}
 
-{% block content %}
-<div class="container">
-
-    <section class="search-section">
-        <h1>Character Library</h1>
-        <form method="get" action="{{ url_for('index') }}" class="search-form" id="search-form">
-            <div class="search-bar">
-                <input type="text" 
-                       name="search" 
-                       class="search-input" 
-                       id="search-input"
-                       placeholder="Search by name, race, class, or description..."
-                       value="{{ search_query }}"
-                       aria-label="Search characters">
-                <button type="submit" class="search-button" aria-label="Search">
-                    <i class="fas fa-search"></i>
-                </button>
-            </div>
-            
-            <div class="search-controls">
-                <div class="sort-controls">
-                    <select name="sort" class="sort-select" id="sort-select" aria-label="Sort by">
-                        <option value="name" {% if current_sort == 'name' %}selected{% endif %}>Sort by: Name</option>
-                        <option value="id" {% if current_sort == 'id' %}selected{% endif %}>Sort by: ID</option>
-                        <option value="level" {% if current_sort == 'level' %}selected{% endif %}>Sort by: Level</option>
-                        <option value="race" {% if current_sort == 'race' %}selected{% endif %}>Sort by: Race</option>
-                        <option value="class" {% if current_sort == 'class' %}selected{% endif %}>Sort by: Class</option>
-                        <option value="alignment" {% if current_sort == 'alignment' %}selected{% endif %}>Sort by: Alignment</option>
-                    </select>
-                    
-                    <input type="hidden" name="order" value="{{ 'desc' if current_order == 'desc' else 'asc' }}" id="sort-order-input">
-                    <button type="button" 
-                            class="sort-order {% if current_order == 'asc' %}active{% endif %}" 
-                            onclick="updateSortOrder('asc')"
-                            aria-label="Sort ascending">
-                        <i class="fas fa-arrow-up"></i>
-                    </button>
-                    <button type="button" 
-                            class="sort-order {% if current_order == 'desc' %}active{% endif %}" 
-                            onclick="updateSortOrder('desc')"
-                            aria-label="Sort descending">
-                        <i class="fas fa-arrow-down"></i>
-                    </button>
-                </div>
-                <div id="loading-indicator" class="loading-indicator" style="display: none;">
-                    <i class="fas fa-spinner fa-spin"></i> Loading...
-                </div>
-            </div>
-        </form>
-        
-        <div id="character-results">
-            {% if characters %}
-            <div class="character-grid">
-                {% for character in characters %}
-                <div class="character-card">
-                    <a href="{{ url_for('character_detail', character_id=character['id']) }}" class="character-image-container">
-                        {% if character['image_path'] %}
-                        {% set placeholder_url = url_for('static', filename='images/placeholder-character.jpg') %}
-                        <img src="{{ url_for('static', filename=character['image_path']) }}" 
-                             alt="{{ character['image_alt'] or character['name'] }}" 
-                             class="character-image"
-                             onerror="this.onerror=null; this.src='{{ placeholder_url }}';">
-                        {% else %}
-                        <img src="{{ url_for('static', filename='images/placeholder-character.jpg') }}" 
-                             alt="{{ character['name'] }}" 
-                             class="character-image">
-                        {% endif %}
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/pages/home.js') }}"></script>
+{% endblock %}
+        {% block content %}
+<div class="grid-container">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">D&D Character Manager</h1>
+                <p class="hero-subtitle">Create, manage, and explore your Dungeons & Dragons characters</p>
+                <div class="hero-actions">
+                    <a href="{{ url_for('add_character') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus-circle"></i>
+                        Create New Character
                     </a>
-                    <div class="character-info">
-                        <h3 class="character-name">{{ character['name'] }}</h3>
-                        <p class="character-details">
-                            {{ character['race'] }} {{ character['character_class'] }}
-                            <br>
-                            Level {{ character['level'] }} - {{ character['alignment'] }}
-                        </p>
-                    </div>
+                    <a href="{{ url_for('parties') }}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-users"></i>
+                        Manage Parties
+                    </a>
                 </div>
-                {% endfor %}
             </div>
-            {% else %}
-            <p class="no-results">No characters found. Try a different search or add a new character.</p>
-            {% endif %}
         </div>
-        
-        <script>
-            // Function to update the character grid with new results
-            function updateCharacterGrid(html) {
-                try {
-                    // Parse the response as JSON if it's a JSON string
-                    let responseData;
-                    try {
-                        responseData = JSON.parse(html);
-                    } catch (e) {
-                        // If not JSON, treat as HTML
-                        const tempDiv = document.createElement('div');
-                        tempDiv.innerHTML = html;
-                        const newResults = tempDiv.querySelector('#character-results');
-                        if (newResults) {
-                            document.getElementById('character-results').innerHTML = newResults.innerHTML;
-                        }
-                        return;
-                    }
+    </section>
 
-                    // Handle JSON response (if the server is updated to return JSON)
-                    if (responseData && responseData.html) {
-                        document.getElementById('character-results').innerHTML = responseData.html;
-                    }
-                    
-                    // Update the URL without reloading the page
-                    const url = new URL(window.location);
-                    const formData = new FormData(document.getElementById('search-form'));
-                    const params = new URLSearchParams(formData).toString();
-                    window.history.pushState({}, '', `${url.pathname}?${params}`);
-                } catch (error) {
-                    console.error('Error updating character grid:', error);
-                    // Fallback to full page reload if there's an error
-                    window.location.reload();
-                }
-            }
-            
-            // Function to show/hide loading indicator
-            function setLoading(isLoading) {
-                const loadingIndicator = document.getElementById('loading-indicator');
-                if (loadingIndicator) {
-                    loadingIndicator.style.display = isLoading ? 'block' : 'none';
-                }
-            }
-            
-            // Function to handle form submission
-            async function handleSearch(event) {
-                event.preventDefault();
-                
-                const form = event.target;
-                const formData = new FormData(form);
-                const url = form.action;
-                
-                try {
-                    setLoading(true);
-                    const response = await fetch(`${url}?${new URLSearchParams(formData).toString()}`, {
-                        method: 'GET',
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'Accept': 'application/json, text/html' // Prefer JSON but accept HTML as fallback
-                        }
-                    });
-                    
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    
-                    const contentType = response.headers.get('content-type');
-                    if (contentType && contentType.includes('application/json')) {
-                        const data = await response.json();
-                        updateCharacterGrid(JSON.stringify(data));
-                    } else {
-                        const html = await response.text();
-                        updateCharacterGrid(html);
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    // Fallback to normal form submission if AJAX fails
-                    form.submit();
-                } finally {
-                    setLoading(false);
-                }
-            }
-            
-            // Function to update sort order
-            function updateSortOrder(order) {
-                document.getElementById('sort-order-input').value = order;
-                document.getElementById('search-form').dispatchEvent(new Event('submit', { cancelable: true }));
-            }
-            
-            // Add event listeners when the DOM is loaded
-            document.addEventListener('DOMContentLoaded', function() {
-                const form = document.getElementById('search-form');
-                const searchInput = document.getElementById('search-input');
-                const sortSelect = document.getElementById('sort-select');
-                
-                if (form) {
-                    form.addEventListener('submit', handleSearch);
-                }
-                
-                if (sortSelect) {
-                    sortSelect.addEventListener('change', function() {
-                        form.dispatchEvent(new Event('submit', { cancelable: true }));
-                    });
-                }
-                
-                // Handle back/forward navigation
-                window.addEventListener('popstate', function() {
-                    location.reload();
-                });
-            });
-        </script>
-        {% if search_query %}
-        <p class="search-results-count">
-            Found {{ characters|length }} character{{ 's' if characters|length != 1 else '' }} for "{{ search_query }}"
-            <a href="{{ url_for('index') }}" class="clear-search">Clear search</a>
-        </p>
-        {% endif %}
+    <!-- Search Section -->
+    <section class="search-section">
+        <div class="container">
+            <div class="search-container">
+                <form method="get" action="{{ url_for('index') }}" class="search-form" id="search-form" role="search">
+                    <div class="search-input-group">
+                        <input type="text" 
+                               name="search" 
+                               class="search-input" 
+                               id="search-input"
+                               placeholder="Search by name, race, class, or description..."
+                               value="{{ search_query }}"
+                               aria-label="Search characters">
+                        <button type="submit" class="search-button btn btn-primary" aria-label="Search">
+                            <i class="fas fa-search"></i>
+                            Search
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Characters Section -->
+    <section class="characters-section">
+        <div class="container">
+            {% if search_query %}
+            <div class="search-results-header">
+                <p class="search-results-count">
+                    Found {{ characters|length }} character{{ 's' if characters|length != 1 else '' }} for "{{ search_query }}"
+                    <a href="{{ url_for('index') }}" class="clear-search btn btn-sm btn-outline-primary">Clear search</a>
+                </p>
+            </div>
+            {% endif %}
+
+            <!-- Sort Controls -->
+            {% if characters %}
+            <div class="sort-container">
+                <div class="sort-label">
+                    <label for="sort-select">Sort by:</label>
+                </div>
+                <div class="sort-controls">
+                    <form method="get" action="{{ url_for('index') }}" class="sort-form">
+                        <input type="hidden" name="search" value="{{ search_query }}">
+                        <select name="sort" class="sort-select" id="sort-select" onchange="this.form.submit()">
+                            <option value="name" {% if current_sort == 'name' %}selected{% endif %}>Name</option>
+                            <option value="level" {% if current_sort == 'level' %}selected{% endif %}>Level</option>
+                            <option value="race" {% if current_sort == 'race' %}selected{% endif %}>Race</option>
+                            <option value="class" {% if current_sort == 'class' %}selected{% endif %}>Class</option>
+                            <option value="alignment" {% if current_sort == 'alignment' %}selected{% endif %}>Alignment</option>
+                        </select>
+                        <button type="button" 
+                                class="sort-order-btn {% if current_order == 'asc' %}active{% endif %}" 
+                                onclick="document.getElementById('sort-order-input').value='asc'; this.form.submit()"
+                                title="Sort ascending">
+                            <i class="fas fa-arrow-up"></i>
+                        </button>
+                        <button type="button" 
+                                class="sort-order-btn {% if current_order == 'desc' %}active{% endif %}" 
+                                onclick="document.getElementById('sort-order-input').value='desc'; this.form.submit()"
+                                title="Sort descending">
+                            <i class="fas fa-arrow-down"></i>
+                        </button>
+                        <input type="hidden" name="order" value="{{ current_order }}" id="sort-order-input">
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Character Grid -->
+            <div id="character-results">
+                {% if characters %}
+                <div class="grid-4-col">
+                    {% for character in characters %}
+                    <article class="character-card" data-character-id="{{ character['id'] }}">
+                        <a href="{{ url_for('character_detail', character_id=character['id']) }}" class="character-image-container">
+                            {% if character['image_path'] %}
+                            {% set placeholder_url = url_for('static', filename='images/placeholder-character.jpg') %}
+                            <img src="{{ url_for('static', filename=character['image_path']) }}" 
+                                 alt="{{ character['image_alt'] or character['name'] }}" 
+                                 class="character-image"
+                                 loading="lazy"
+                                 onerror="this.onerror=null; this.src='{{ placeholder_url }}';">
+                            {% else %}
+                            <img src="{{ url_for('static', filename='images/placeholder-character.jpg') }}" 
+                                 alt="{{ character['name'] }}" 
+                                 class="character-image"
+                                 loading="lazy">
+                            {% endif %}
+                            <div class="character-level-badge">Level {{ character['level'] }}</div>
+                        </a>
+                        <div class="character-content">
+                            <h3 class="character-name">{{ character['name'] }}</h3>
+                            <p class="character-class">{{ character['character_class'] }}</p>
+                            <p class="character-race">{{ character['race'] }} • {{ character['alignment'] }}</p>
+                            {% if character['description'] %}
+                            <p class="character-description">{{ character['description'] }}</p>
+                            {% endif %}
+                            <div class="character-actions">
+                                <a href="{{ url_for('character_detail', character_id=character['id']) }}" class="character-action-btn btn btn-primary btn-sm">
+                                    <i class="fas fa-eye"></i>
+                                    View
+                                </a>
+                                <a href="{{ url_for('edit_character', character_id=character['id']) }}" class="character-action-btn btn btn-secondary btn-sm">
+                                    <i class="fas fa-edit"></i>
+                                    Edit
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="fas fa-dice-d20"></i>
+                    </div>
+                    <h2 class="empty-title">No Characters Found</h2>
+                    <p class="empty-description">
+                        {% if search_query %}
+                        No characters match your search "{{ search_query }}". Try different keywords or 
+                        <a href="{{ url_for('index') }}">browse all characters</a>.
+                        {% else %}
+                        Your character library is empty. Create your first character to begin your adventure!
+                        {% endif %}
+                    </p>
+                    <a href="{{ url_for('add_character') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus-circle"></i>
+                        Create Your First Character
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Loading Indicator -->
+            <div id="loading-indicator" class="loading-container" style="display: none;" role="status" aria-live="polite">
+                <div class="loading-spinner"></div>
+                <p class="loading-text">Searching characters...</p>
+            </div>
+        </div>
     </section>
 </div>
-</main>
 {% endblock %}

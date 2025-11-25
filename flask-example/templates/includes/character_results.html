@@ -1,0 +1,107 @@
+{% if search_query %}
+<div class="search-results-header">
+    <p class="search-results-count">
+        Found {{ characters|length }} character{{ 's' if characters|length != 1 else '' }} for "{{ search_query }}"
+        <a href="{{ url_for('index') }}" class="clear-search btn btn-sm btn-outline-primary">Clear search</a>
+    </p>
+</div>
+{% endif %}
+
+<!-- Sort Controls -->
+{% if characters %}
+<div class="sort-container">
+    <div class="sort-label">
+        <label for="sort-select">Sort by:</label>
+    </div>
+    <div class="sort-controls">
+        <form method="get" action="{{ url_for('index') }}" class="sort-form">
+            <input type="hidden" name="search" value="{{ search_query }}">
+            <select name="sort" class="sort-select" id="sort-select">
+                <option value="name" {% if current_sort == 'name' %}selected{% endif %}>Name</option>
+                <option value="level" {% if current_sort == 'level' %}selected{% endif %}>Level</option>
+                <option value="race" {% if current_sort == 'race' %}selected{% endif %}>Race</option>
+                <option value="class" {% if current_sort == 'class' %}selected{% endif %}>Class</option>
+                <option value="alignment" {% if current_sort == 'alignment' %}selected{% endif %}>Alignment</option>
+            </select>
+            <button type="button"
+                    class="sort-order-btn {% if current_order == 'asc' %}active{% endif %}"
+                    onclick="updateSortOrder('asc')"
+                    title="Sort ascending">
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            <button type="button"
+                    class="sort-order-btn {% if current_order == 'desc' %}active{% endif %}"
+                    onclick="updateSortOrder('desc')"
+                    title="Sort descending">
+                <i class="fas fa-arrow-down"></i>
+            </button>
+            <input type="hidden" name="order" value="{{ current_order }}" id="sort-order-input">
+        </form>
+    </div>
+</div>
+{% endif %}
+
+<!-- Character Grid -->
+<div id="character-results">
+    {% if characters %}
+    <div class="grid-4-col">
+        {% for character in characters %}
+        <article class="character-card" data-character-id="{{ character['id'] }}">
+            <a href="{{ url_for('character_detail', character_id=character['id']) }}" class="character-image-container">
+                {% if character['image_path'] %}
+                {% set placeholder_url = url_for('static', filename='images/placeholder-character.jpg') %}
+                <img src="{{ url_for('static', filename=character['image_path']) }}"
+                     alt="{{ character['image_alt'] or character['name'] }}"
+                     class="character-image"
+                     loading="lazy"
+                     onerror="this.onerror=null; this.src='{{ placeholder_url }}';">
+                {% else %}
+                <img src="{{ url_for('static', filename='images/placeholder-character.jpg') }}"
+                     alt="{{ character['name'] }}"
+                     class="character-image"
+                     loading="lazy">
+                {% endif %}
+                <div class="character-level-badge">Level {{ character['level'] }}</div>
+            </a>
+            <div class="character-content">
+                <h3 class="character-name">{{ character['name'] }}</h3>
+                <p class="character-class">{{ character['character_class'] }}</p>
+                <p class="character-race">{{ character['race'] }} • {{ character['alignment'] }}</p>
+                {% if character['short_description'] %}
+                <p class="character-description">{{ character['short_description'] }}</p>
+                {% endif %}
+                <div class="character-actions">
+                    <a href="{{ url_for('character_detail', character_id=character['id']) }}" class="character-action-btn btn btn-primary btn-sm">
+                        <i class="fas fa-eye"></i>
+                        View
+                    </a>
+                    <a href="{{ url_for('edit_character', character_id=character['id']) }}" class="character-action-btn btn btn-secondary btn-sm">
+                        <i class="fas fa-edit"></i>
+                        Edit
+                    </a>
+                </div>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">
+            <i class="fas fa-dice-d20"></i>
+        </div>
+        <h2 class="empty-title">No Characters Found</h2>
+        <p class="empty-description">
+            {% if search_query %}
+            No characters match your search "{{ search_query }}". Try different keywords or
+            <a href="{{ url_for('index') }}">browse all characters</a>.
+            {% else %}
+            Your character library is empty. Create your first character to begin your adventure!
+            {% endif %}
+        </p>
+        <a href="{{ url_for('add_character') }}" class="btn btn-primary btn-lg">
+            <i class="fas fa-plus-circle"></i>
+            Create Your First Character
+        </a>
+    </div>
+    {% endif %}
+</div>

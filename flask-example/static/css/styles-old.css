@@ -5,19 +5,56 @@
  * It includes styles for layout, navigation, cards, and responsive design.
  */
 
-/* ------- MAIN COLORS ------- */
+/* ------- COLOR SYSTEM - 60/30/10 RULE ------- */
 :root {
-    --red-color: rgb(174, 60, 60);      /* Main red color used in header and buttons */
-    --dark-red: rgb(150, 60, 60);       /* Darker red used for hover effects */
-    --light-gray: #f4f4f4;              /* Light gray background for cards */
-    --border-color: #ccc;               /* Border color for cards and other elements */
+    /* 60% - Dominant/Neutral Colors */
+    --color-neutral-100: #ffffff;      /* White */
+    --color-neutral-200: #f8fafc;      /* Lightest blue-gray */
+    --color-neutral-300: #f1f5f9;      /* Very light blue-gray */
+    --color-neutral-400: #e2e8f0;      /* Light blue-gray */
+    --color-neutral-500: #94a3b8;      /* Medium blue-gray */
+    
+    /* 30% - Secondary Colors (supporting colors) */
+    --color-secondary-500: #2563eb;    /* Bright blue */
+    --color-secondary-600: #1d4ed8;    /* Slightly darker blue */
+    --color-secondary-700: #1e40af;    /* Navy blue */
+    
+    /* 10% - Accent Colors (for CTAs and important elements) */
+    --color-accent-500: #3b82f6;       /* Vibrant blue */
+    --color-accent-600: #2563eb;       /* Slightly darker accent */
+    --color-accent-700: #1d4ed8;       /* Darker accent for hover/active */
+    
+    /* Text Colors - High contrast for accessibility */
+    --text-primary: #1e293b;           /* Almost black for main text (AA+ contrast on white) */
+    --text-secondary: #475569;         /* Dark gray for secondary text */
+    --text-on-accent: #ffffff;         /* White text on accent colors */
+    
+    /* Semantic Colors */
+    --primary-color: var(--color-secondary-700);
+    --primary-hover: var(--color-secondary-600);
+    --secondary-color: var(--color-secondary-500);
+    --light-bg: var(--color-neutral-200);
+    --card-bg: var(--color-neutral-100);
+    --border-color: var(--color-neutral-400);
+    --shadow-color: rgba(30, 41, 59, 0.1);
+    
+    /* Success, Warning, Error */
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --error-color: #ef4444;
 }
 
 /* ------- GENERAL STYLES ------- */
 body {
-    margin: 0;                         /* Removes default margin */
-    font-family: Arial, sans-serif;     /* Sets the main font for the website */
-    box-sizing: border-box;             /* Ensures padding and border are included in width/height */
+    margin: 0;
+    font-family: 'Cardo', Georgia, serif;
+    box-sizing: border-box;
+    line-height: 1.6;
+    color: var(--text-primary);
+    background-color: var(--light-bg);
+    /* 60/30/10 base distribution */
+    background-color: var(--color-neutral-100);  /* 60% neutral */
+    color: var(--text-primary);                  /* High contrast text */
 }
 
 /* Reusable utility classes */
@@ -29,14 +66,129 @@ body {
 .btn-link {
     color: white;                      /* White text color */
     text-decoration: none;              /* Removes underline from links */
-    padding: 5px 10px;                  /* Space inside the button (top/bottom, left/right) */
-    border-radius: 5px;                 /* Rounded corners */
-    transition: background-color 0.3s ease; /* Smooth color change when hovering */
+    padding: 0.5rem 1rem;               /* Better padding for clickable area */
+    border-radius: 6px;                 /* Rounded corners */
+    transition: all 0.2s ease;          /* Smooth transitions */
+    font-weight: 500;                   /* Slightly bolder text */
+    background-color: var(--primary-color);
 }
 
 /* Hover effect - styles that apply when mouse moves over an element */
 .btn-link:hover {
-    background-color: var(--dark-red);  /* Changes background color on hover */
+    background-color: var(--primary-hover);  /* Darker blue on hover */
+    transform: translateY(-1px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.btn-link.active {
+    background-color: var(--primary-hover);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+}
+
+/* Buttons - Base styles for all button variants */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.6rem 1.25rem;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+/* Secondary button style */
+.btn-secondary {
+    background-color: var(--color-neutral-200);
+    color: var(--text-primary);
+}
+
+.btn-secondary:hover, .btn-secondary:focus {
+    background-color: var(--color-neutral-300);
+}
+
+/* Button with icon */
+.btn i {
+    margin-right: 0.5rem;
+    font-size: 1.1em;
+}
+
+/* Primary button style */
+.btn-primary {
+    background-color: var(--color-accent-500);
+    color: var(--text-on-accent);
+    border: 2px solid transparent;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: var(--color-accent-600);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    outline: none;
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* Outline button style */
+.btn-outline {
+    background-color: transparent;
+    color: var(--color-accent-500);
+    border: 2px solid var(--color-accent-500);
+}
+
+.btn-outline:hover, .btn-outline:focus {
+    background-color: var(--color-accent-500);
+    color: var(--text-on-accent);
+}
+
+/* Small button variant */
+.btn-sm {
+    padding: 0.375rem 0.875rem;
+    font-size: 0.875rem;
+}
+
+/* Danger button style */
+.btn-danger {
+    background-color: var(--error-color);
+    color: white;
+}
+
+.btn-danger:hover, .btn-danger:focus {
+    background-color: #dc2626;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.btn-danger:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* Links - Using secondary color for links */
+a {
+    color: var(--color-secondary-700);  /* Using secondary color for links */
+    text-decoration: none;
+    transition: color 0.2s ease, background-color 0.2s ease;
+    font-weight: 500;
+    border-bottom: 2px solid transparent;
+}
+
+a:hover, a:focus {
+    color: var(--color-accent-600);     /* Accent color on hover */
+    border-bottom-color: currentColor;
+    outline: none;
+}
+
+/* Hover effect for logo */
+.logo-link:hover {
+    color: #93c5fd;                     /* Light blue color when hovering */
 }
 
 /* ------- LAYOUT STYLES ------- */
@@ -54,19 +206,31 @@ body {
     /* Automatically fits as many 250px columns as possible */
     gap: 20px;                          /* Space between grid items */
     padding: 0 20px;                    /* Space on left and right sides */
+    max-width: 1400px;                  /* Maximum width for better readability */
+    margin: 0 auto;                     /* Center the grid container */
 }
 
 /* ------- CARD STYLES ------- */
-/* Card component - used for recipe preview boxes */
+/* Cards - Using neutral colors for the 60% */
 .card {
-    background-color: var(--light-gray); /* Light gray background */
-    padding: 20px;                      /* Space inside the card */
-    border: 1px solid var(--border-color); /* Thin border around the card */
-    border-radius: 10px;                /* Rounded corners */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow for depth */
+    background-color: var(--color-neutral-100);
+    border: 1px solid var(--color-neutral-300);
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
-/* Card image preview */
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: var(--color-neutral-400);
+}
+
+/* Recipe image styling */
 .card-image {
     width: 100%;                        /* Fill card width */
     height: 180px;                      /* Consistent image height */
@@ -86,7 +250,8 @@ body {
 
 /* Hover effect for recipe links */
 .recipe-link:hover {
-    color: rgb(200, 60, 60);            /* Changes to red color when hovering */
+    color: var(--primary-color);        /* Changes to blue color when hovering */
+    text-decoration: underline;
 }
 
 /* ------- RECIPE TEXT STYLES ------- */
@@ -107,18 +272,19 @@ body {
 /* ------- HEADER STYLES ------- */
 /* Main header at the top of each page */
 .header {
-    background-color: var(--red-color);  /* Red background color */
+    background-color: var(--primary-color);  /* Blue background color */
     color: white;                       /* White text color */
     display: flex;                      /* Allows items to be positioned side by side */
     justify-content: space-between;     /* Puts space between logo and navigation */
     align-items: center;                /* Centers items vertically */
-    padding: 20px;                      /* Space inside the header */
-    margin-bottom: 20px;                /* Space below the header */
+    padding: 1rem 2rem;                 /* Space inside the header */
+    margin-bottom: 2rem;                /* Space below the header */
+    box-shadow: 0 2px 4px var(--shadow-color); /* Subtle shadow */
 }
 
 /* Logo link in the header */
 .logo-link {
-    font-family: 'Asar', cursive;       /* Special font for the logo */
+    font-family: 'Cardo', cursive;       /* Special font for the logo */
     font-size: 22px;                    /* Larger text size */
     color: white;                       /* White text color */
     text-decoration: none;              /* Removes underline from link */
@@ -127,17 +293,19 @@ body {
 
 /* Hover effect for logo */
 .logo-link:hover {
-    color: rgb(255, 102, 102);          /* Lighter red color when hovering */
+    color: #93c5fd;                     /* Light blue color when hovering */
 }
 
 /* ------- FOOTER STYLES ------- */
 /* Footer at the bottom of each page */
 .footer {
-    background-color: var(--red-color);  /* Red background color (same as header) */
+    background-color: var(--primary-color);  /* Blue background color */
     color: white;                       /* White text color */
     text-align: center;                 /* Centers text horizontally */
-    padding: 20px;                      /* Space inside the footer */
-    margin-top: 20px;                   /* Space above the footer */
+    padding: 1.5rem;                    /* Space inside the footer */
+    margin-top: 3rem;                   /* Space above the footer */
+    font-size: 0.9rem;                  /* Slightly smaller text */
+    border-top: 1px solid rgba(255, 255, 255, 0.1); /* Subtle top border */
 }
 
 /* ------- RECIPE DETAIL PAGE STYLES ------- */
@@ -163,21 +331,39 @@ body {
 /* Recipe details container - holds title, ingredients, directions */
 .recipe-details-container {
     flex: 1;                            /* Grows to fill remaining space */
-    padding: 20px;                      /* Space inside the container */
-    background-color: white;            /* White background */
-    border: 1px solid lightgrey;        /* Light gray border */
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-    border-radius: 10px;                /* Rounded corners */
+    padding: 1.5rem;                    /* Space inside the container */
+    background-color: var(--card-bg);   /* White background */
+    border: 1px solid var(--border-color); /* Light blue border */
+    box-shadow: 0 2px 4px var(--shadow-color); /* Subtle blue shadow */
+    border-radius: 8px;                 /* Rounded corners */
     box-sizing: border-box;             /* Ensures padding is included in width */
     width: calc(70% - 40px);            /* Takes up 70% of container width minus gap */
+    transition: all 0.2s ease;          /* Smooth transitions */
+}
+
+.recipe-details-container:hover {
+    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.15);
 }
 
 /* Recipe metadata section - stacks detail chips vertically */
-.recipe-info {
+.recipe-info {  
     display: flex;                      /* Use flex to control layout */
     flex-direction: column;             /* Place items on separate lines */
     gap: 4px;                           /* Space between metadata rows */
     align-items: flex-start;            /* Align text to the left */
+}
+
+.recipe-info span {
+    font-size: 14px;                    /* Match recipe description text size */
+    color: #555;                        /* Match recipe description text colour */
+}
+
+.info-section + .info-section {
+    margin-top: 30px;
+}
+
+.info-section h2 {
+    margin-bottom: 10px;
 }
 
 /* ------- RESPONSIVE DESIGN ------- */
@@ -244,11 +430,23 @@ body {
     color: rgb(255, 102, 102);          /* Lighter red color when hovering */
 }
 
+.inline-form {
+    display: inline;
+}
+
+.inline-form .action-link {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+}
+
 /* ------- FORM STYLES ------- */
 /* Container for the add recipe form */
 .form-container {
     background-color: var(--light-gray); /* Light gray background */
-    padding: 20px;                      /* Space inside the form container */
+    padding: 40px;                      /* Space inside the form container */
     border-radius: 10px;                /* Rounded corners */
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
     width: 100%;                        /* Full width form */
@@ -288,22 +486,36 @@ body {
     justify-content: flex-start;        /* Left-aligns the buttons */
 }
 
+.form-error {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid var(--dark-red);
+    border-radius: 5px;
+    background-color: rgba(174, 60, 60, 0.1);
+    color: var(--dark-red);
+    font-weight: bold;
+}
+
+.form-hint {
+    display: block;
+    font-size: 0.8em;
+    color: #666;
+    margin-top: 5px;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
 /* Button styling */
-.btn {
-    padding: 10px 20px;                 /* Space inside buttons */
-    background-color: var(--red-color);  /* Red background color */
-    color: white;                       /* White text color */
-    border: none;                       /* No border */
-    border-radius: 5px;                 /* Rounded corners */
-    cursor: pointer;                    /* Changes cursor to hand when hovering */
-    transition: background-color 0.3s ease; /* Smooth color change when hovering */
-}
-
-/* Hover effect for buttons */
-.btn:hover {
-    background-color: var(--dark-red);  /* Darker red when hovering */
-}
-
 /* ------- MOBILE MENU STYLES ------- */
 /* Hamburger menu icon - hidden on desktop, visible on mobile */
 .nav-toggle {
