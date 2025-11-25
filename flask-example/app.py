@@ -1,3 +1,16 @@
+"""
+Dungeons & Dragons Character Manager - Flask Application
+
+This module serves as the main entry point for the D&D Character Manager web application.
+It handles HTTP requests, manages character data, and serves the frontend.
+
+Key Features:
+- CRUD operations for D&D characters
+- Image upload and management
+- Search and sort functionality
+- Party management for characters
+- RESTful API endpoints
+"""
 import os
 import uuid
 
@@ -7,52 +20,99 @@ from werkzeug.utils import secure_filename
 from db import get_db, init_app
 
 
+# Set of allowed image file extensions for uploads
 ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp', 'gif'}
 
-
 def allowed_image(filename):
+    """
+    Check if the given filename has an allowed image extension.
+    
+    Args:
+        filename (str): The name of the file to check
+        
+    Returns:
+        bool: True if the file extension is allowed, False otherwise
+    """
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_IMAGE_EXTENSIONS
 
 
 def create_app():
+    """
+    Create and configure the Flask application.
+    
+    This is the application factory function that sets up the Flask app,
+    configuration, database, and routes.
+    
+    Returns:
+        Flask: The configured Flask application instance
+    """
+    # Initialize Flask application
     app = Flask(__name__)
+    
+    # Configure application settings
     app.config.from_mapping(
-        SECRET_KEY='dev',
+        SECRET_KEY='dev',  # In production, this should be a secure, random key
         DATABASE=os.path.join(app.instance_path, 'dnd_characters.db'),
         SCHEMA_PATH='schema.sql',
         UPLOAD_FOLDER=os.path.join(app.static_folder, 'images', 'uploads')
     )
 
+    # Ensure required directories exist
     os.makedirs(app.instance_path, exist_ok=True)
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
-    # Initialize the database
+    # Initialize database and register routes
     init_app(app)
     
-    # Create database tables if they don't exist
+    # Create database tables and initial data if they don't exist
     with app.app_context():
         from db import init_db
         init_db()
 
+    # Register all application routes
     register_routes(app)
 
     return app
 
 
 def register_routes(app):
+    """
+    Register all application routes and their handlers.
+    
+    This function contains all the route definitions for the application,
+    including API endpoints and page routes.
+    
+    Args:
+        app (Flask): The Flask application instance to register routes on
+    """
     @app.route('/')
     def index():
+        """
+        Render the main character listing page with optional search and sorting.
+        
+        Handles both regular page loads and AJAX requests for dynamic updates.
+        Supports searching by character attributes and sorting by various fields.
+        
+        Query Parameters:
+            search (str): Optional search term to filter characters
+            sort (str): Field to sort by (name, level, race, class, alignment, id)
+            order (str): Sort order (asc or desc)
+            
+        Returns:
+            Response: Rendered template or JSON response for AJAX requests
+        """
+        # Get and sanitize request parameters
         search_query = request.args.get('search', '').strip()
         sort_by = request.args.get('sort', 'name').lower()
         sort_order = request.args.get('order', 'asc').lower()
         
-        # Validate sort parameters
+        # Define valid sort columns and map them to database columns
         valid_sort_columns = {
             'name': 'name',
             'id': 'id',
             'level': 'level',
             'race': 'race',
-            'class': 'character_class',
+            'class': 'character_class',  # 'class' is reserved in Python, using 'character_class' in DB
             'alignment': 'alignment'
         }
         
