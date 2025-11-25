@@ -447,6 +447,52 @@ a:hover {
   font-size: var(--font-size-lg);
 }
 
+/* Unified Delete Button Styling */
+.btn-delete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-4);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--white);
+  background-color: var(--danger-color);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+  white-space: nowrap;
+  user-select: none;
+  vertical-align: middle;
+  box-shadow: none;
+}
+
+.btn-delete i {
+  margin-right: var(--spacing-2);
+}
+
+.btn-delete:hover:not(:disabled) {
+  background-color: var(--secondary-dark);
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+  transform: translateY(-2px);
+}
+
+.btn-delete:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-delete:focus {
+  outline: 2px solid var(--danger-color);
+  outline-offset: 2px;
+}
+
+.btn-delete:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* ===================================
    Form Components
    =================================== */
