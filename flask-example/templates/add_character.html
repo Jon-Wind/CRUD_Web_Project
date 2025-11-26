@@ -6,10 +6,539 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/add-character.css') }}">
+<style>
+    /* Base form styles */
+    .add-character-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        color: #333;
+        background: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .form-title {
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+        font-family: var(--font-family-heading);
+        font-weight: var(--font-weight-medium);
+    }
+
+    .form-subtitle {
+        color: #aaa;
+        margin-top: 0;
+    }
+
+    /* Form layout */
+    .form-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .form-column {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    /* Form sections */
+    .form-section {
+        background: #ffffff;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .section-title {
+        color: var(--primary-color);
+        border-bottom: 1px solid var(--gray-200);
+        padding-bottom: 0.5rem;
+        margin-top: 0;
+        margin-bottom: 1.5rem;
+        font-family: var(--font-family-heading);
+        font-weight: var(--font-weight-normal);
+    }
+
+    /* Form elements */
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #f0f0f0;
+    }
+
+    .help-text {
+        display: block;
+        font-size: 0.85rem;
+        color: #999;
+        font-weight: normal;
+        margin-top: 0.25rem;
+    }
+
+    .required {
+        color: #ff6b6b;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        background: #ffffff;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        color: #333;
+        font-size: 1rem;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .form-control:focus {
+        border-color: #d4af37;
+        box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+        outline: none;
+    }
+
+    textarea.form-control {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    /* Buttons */
+    .btn {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background-color: #8b4513;
+        color: #f5deb3;
+        border: 2px solid #5e2c04;
+    }
+
+    .btn-primary:hover {
+        background-color: #a0522d;
+        border-color: #8b4513;
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    }
+
+    /* Enhanced Character Preview */
+    .character-preview {
+        background: #ffffff;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-top: 2rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .preview-header {
+        color: var(--primary-color);
+        margin-top: 0;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid var(--primary-light);
+        font-family: var(--font-family-heading);
+        font-weight: var(--font-weight-medium);
+        font-size: 1.5rem;
+    }
+
+    .preview-content {
+        display: flex;
+        gap: 2rem;
+        align-items: flex-start;
+    }
+
+    /* Image Container */
+    .preview-image-container {
+        position: relative;
+        width: 150px;
+        height: 200px;
+        flex-shrink: 0;
+        margin-right: 1.5rem;
+    }
+
+    .preview-image {
+        width: 100%;
+        height: 240px;
+        background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+        border: 2px dashed #ccc;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #bbb;
+        font-size: 4rem;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .preview-image:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .preview-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .image-upload-hint {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.7);
+        color: #fff;
+        padding: 0.75rem;
+        text-align: center;
+        font-size: 0.85rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .preview-image:hover .image-upload-hint {
+        background: rgba(0, 0, 0, 0.8);
+    }
+
+    .preview-level-badge {
+        position: absolute;
+        top: -15px;
+        right: -15px;
+        background: var(--primary-color);
+        color: white;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1rem;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        z-index: 2;
+        border: 2px solid #fff;
+    }
+
+    /* Character Details */
+    .preview-details {
+        flex: 1;
+        padding: 0.5rem 0;
+        min-width: 300px;
+    }
+
+    .preview-header-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+    }
+
+    .preview-name {
+        margin: 0;
+        color: var(--primary-dark);
+        font-size: 1.75rem;
+        font-weight: var(--font-weight-medium);
+    }
+
+    .preview-race-class {
+        display: flex;
+        gap: 1.5rem;
+        margin: 1rem 0;
+        color: var(--gray-600);
+    }
+
+    .preview-race-class span {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.1rem;
+    }
+
+    .preview-race-class i {
+        color: var(--primary-color);
+        font-size: 1.1em;
+    }
+
+    .preview-background {
+        color: var(--gray-600);
+        font-style: italic;
+        margin: 1.5rem 0 0.5rem 0;
+        padding: 0.75rem;
+        background: var(--gray-50);
+        border-left: 3px solid var(--primary-color);
+        border-radius: 0 4px 4px 0;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    .preview-stats {
+        display: flex;
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px dashed var(--gray-200);
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--primary-color);
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+        color: var(--gray-500);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Abilities Section */
+    .preview-abilities {
+        flex: 1.5;
+        background: var(--gray-50);
+        padding: 1.25rem;
+        border-radius: 6px;
+        border: 1px solid var(--gray-100);
+    }
+
+    .preview-abilities-title {
+        margin: 0 0 1rem 0;
+        color: var(--primary-color);
+        font-size: 1.1rem;
+        text-align: center;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--gray-200);
+    }
+
+    .abilities-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+    }
+
+    .ability {
+        text-align: center;
+        padding: 0.75rem 0.5rem;
+        background: white;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        transition: all 0.2s ease;
+    }
+
+    .ability:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+    }
+
+    .ability-name {
+        font-size: 0.9rem;
+        font-weight: bold;
+        color: var(--gray-600);
+        margin-bottom: 0.25rem;
+    }
+
+    .ability-score {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--primary-color);
+        margin-bottom: 0.25rem;
+    }
+
+    .ability-mod {
+        font-size: 0.9rem;
+        color: var(--gray-500);
+        background: var(--gray-100);
+        display: inline-block;
+        padding: 0.1rem 0.5rem;
+        }
+
+        .preview-image:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .preview-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-upload-hint {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 0.75rem;
+            text-align: center;
+            font-size: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .preview-image:hover .image-upload-hint {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .preview-level-badge {
+            position: absolute;
+            top: -12px;
+            right: -12px;
+            background: var(--primary-color);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            z-index: 2;
+        }
+
+        /* Character Details */
+        .preview-details {
+            flex: 2;
+            padding: 0.5rem 0;
+        }
+
+        .preview-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+
+        .preview-name {
+            margin: 0;
+            color: var(--primary-dark);
+            font-size: 1.75rem;
+            font-weight: var(--font-weight-medium);
+        }
+
+        .preview-race-class {
+            display: flex;
+            gap: 1.5rem;
+            margin: 1rem 0;
+            color: var(--gray-600);
+        }
+
+        .preview-race-class span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+    /* Modal Styles */
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 1000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-content {
+        background: #ffffff;
+        padding: 2rem;
+        border-radius: 8px;
+        max-width: 80%;
+        max-height: 90%;
+        overflow-y: auto;
+        position: relative;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .close {
+        position: absolute;
+        top: 1rem;
+        right: 1.5rem;
+        font-size: 1.5rem;
+        color: #aaa;
+        cursor: pointer;
+    }
+
+    .close:hover {
+        color: #f0f0f0;
+    }
+
+    #image-crop-container {
+        width: 100%;
+        max-width: 500px;
+        height: 400px;
+        margin: 1rem 0;
+        background: #f5f5f5;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+</style>
 {% endblock %}
 
 {% block extra_js %}
 <script src="{{ url_for('static', filename='js/pages/add-character.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize any character-specific JavaScript here
+        const alignmentRadios = document.querySelectorAll('input[type="radio"][name="alignment"]');
+        const alignmentDisplay = document.getElementById('alignment-selected-text');
+
+        alignmentRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.checked) {
+                    alignmentDisplay.textContent = this.value;
+                }
+            });
+        });
+
+        // Initialize from existing value if editing
+        const currentAlignment = document.getElementById('alignment-display').value;
+        if (currentAlignment) {
+            alignmentDisplay.textContent = currentAlignment;
+        }
+    });
+</script>
 {% endblock %}
 
 {% block content %}
@@ -18,82 +547,82 @@
         <h1 class="form-title">Create New Character</h1>
         <p class="form-subtitle">Bring your D&D character to life with detailed information</p>
     </div>
-    
+
     <!-- Progress Indicator -->
     <div class="form-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
         <div class="form-progress-bar"></div>
     </div>
-    
+
     {% if error %}
     <div class="error-message" role="alert">
         {{ error }}
     </div>
     {% endif %}
-    
+
     <form method="POST" enctype="multipart/form-data" novalidate>
         <div class="form-layout">
             <!-- Basic Information Column -->
             <div class="form-column">
                 <div class="form-section">
                     <h2 class="section-title">Basic Information</h2>
-                    
+
                     <div class="form-group">
                         <label for="character-name" class="form-label">
                             Character Name <span class="required">*</span>
                             <span class="help-text">2-50 characters</span>
                         </label>
-                        <input type="text" id="character-name" name="character-name" class="form-control" 
+                        <input type="text" id="character-name" name="character-name" class="form-control"
                                value="{{ character.name if character else '' }}" required
                                maxlength="50" minlength="2"
                                aria-describedby="character-name-help">
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="race" class="form-label">
                             Race <span class="required">*</span>
                         </label>
-                        <input type="text" id="race" name="race" class="form-control" 
+                        <input type="text" id="race" name="race" class="form-control"
                                value="{{ character.race if character else '' }}" required
                                placeholder="e.g., Human, Elf, Dwarf">
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="character-class" class="form-label">
                             Class <span class="required">*</span>
                         </label>
-                        <input type="text" id="character-class" name="character-class" class="form-control" 
+                        <input type="text" id="character-class" name="character-class" class="form-control"
                                value="{{ character.character_class if character else '' }}" required
                                placeholder="e.g., Fighter, Wizard, Rogue">
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="level" class="form-label">
                             Level <span class="required">*</span>
                             <span class="help-text">1-20</span>
                         </label>
-                        <input type="number" id="level" name="level" class="form-control" min="1" max="20" 
+                        <input type="number" id="level" name="level" class="form-control" min="1" max="20"
                                value="{{ character.level if character else '1' }}" required>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="background" class="form-label">Background</label>
-                        <input type="text" id="background" name="background" class="form-control" 
+                        <input type="text" id="background" name="background" class="form-control"
                                value="{{ character.background if character else '' }}"
                                placeholder="e.g., Soldier, Sage, Criminal">
                     </div>
                 </div>
-                
+
                 <!-- Character Image -->
                 <div class="form-section">
                     <h2 class="section-title">Character Image</h2>
-                    
+
                     <div class="form-group">
                         <label for="image-upload" class="form-label">
                             Character Portrait
                             <span class="help-text">JPEG, PNG, GIF, WebP (max 5MB)</span>
                         </label>
                         <div class="file-upload-wrapper">
-                            <input type="file" id="image-upload" name="image-upload" class="file-upload-input" 
+                            <input type="file" id="image-upload" name="image-upload" class="file-upload-input"
                                    accept="image/jpeg,image/png,image/gif,image/webp">
                             <label for="image-upload" class="file-upload-label">
                                 <i class="fas fa-upload"></i>
@@ -104,13 +633,13 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Alignment & Stats Column -->
             <div class="form-column">
                 <!-- Alignment Section -->
                 <div class="form-section alignment-section">
                     <h2 class="section-title">Alignment</h2>
-                    
+
                     <div class="form-group">
                         <div class="alignment-container">
                             <div class="alignment-grid" role="radiogroup" aria-label="Character alignment">
@@ -141,7 +670,7 @@
                                 <input type="radio" id="alignment-ce" name="alignment" value="Chaotic Evil" class="alignment-radio"
                                        {% if character and character.alignment == 'Chaotic Evil' %}checked{% endif %}>
                                 <label for="alignment-ce" class="alignment-cell ce" style="grid-column: 3; grid-row: 1;">CE</label>
-                                
+
                                 <div class="alignment-axis x-axis">
                                     <span>Lawful</span>
                                     <span>Neutral</span>
@@ -165,46 +694,95 @@
                 </div>
             </div>
         </div>
-        
-        <!-- Description Section -->
+
+        <!-- Character Details Section -->
         <div class="form-section">
-            <h2 class="section-title">Character Description</h2>
-            
+            <h2 class="section-title">Character Details</h2>
+
             <div class="form-group">
                 <label for="short-description" class="form-label">
                     Short Description <span class="required">*</span>
-                    <span class="help-text">Brief character summary</span>
+                    <span class="help-text">Brief character summary (max 200 characters)</span>
                 </label>
-                <textarea id="short-description" name="short-description" class="form-control form-control--textarea" 
-                          required placeholder="Describe your character in a few sentences..."
+                <textarea id="short-description" name="short-description" class="form-control form-control--textarea"
+                          required placeholder="A brief overview of your character..." maxlength="200"
                           rows="3">{{ character.short_description if character else '' }}</textarea>
             </div>
-            
+
             <div class="form-group">
                 <label for="backstory" class="form-label">
                     Backstory
-                    <span class="help-text">Detailed character history and background</span>
+                    <span class="help-text">Your character's history, motivations, and background</span>
                 </label>
-                <textarea id="backstory" name="backstory" class="form-control form-control--textarea" 
-                          placeholder="Tell your character's story..."
+                <textarea id="backstory" name="backstory" class="form-control form-control--textarea"
+                          placeholder="Where does your character come from? What drives them?"
                           rows="6">{{ character.backstory if character else '' }}</textarea>
             </div>
+
+            <div class="form-group">
+                <label for="personality" class="form-label">
+                    Personality & Traits
+                    <span class="help-text">Personality traits, ideals, bonds, and flaws</span>
+                </label>
+                <textarea id="personality" name="personality" class="form-control form-control--textarea"
+                          placeholder="What makes your character unique? How do they interact with others?"
+                          rows="4">{{ character.personality if character else '' }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="abilities-skills" class="form-label">
+                    Abilities & Skills
+                    <span class="help-text">Special abilities, skills, and proficiencies</span>
+                </label>
+                <textarea id="abilities-skills" name="abilities-skills" class="form-control form-control--textarea"
+                          placeholder="List your character's special abilities, skills, and proficiencies..."
+                          rows="4">{{ character.abilities_skills if character else '' }}</textarea>
+            </div>
         </div>
-        
-        <!-- Character Preview -->
+
+        <!-- Enhanced Character Preview -->
         <div class="character-preview">
             <h3 class="preview-header">Character Preview</h3>
             <div class="preview-content">
-                <div class="preview-image">
-                    <i class="fas fa-user"></i>
+                <!-- Character Image with Level Badge -->
+                <div class="preview-image-container">
+                    <div class="preview-image">
+                        <i class="fas fa-user"></i>
+                        <div class="image-upload-hint">
+                            <i class="fas fa-camera"></i>
+                            <span>Add Character Image</span>
+                        </div>
+                    </div>
+                    <div class="preview-level-badge" id="preview-level-badge">
+                        {{ character.level if character else '1' }}
+                    </div>
                 </div>
+
+                <!-- Character Info -->
                 <div class="preview-details">
-                    <div class="preview-name">Unnamed Character</div>
-                    <div class="preview-info">
-                        <strong>Class:</strong> Unknown Class<br>
-                        <strong>Race:</strong> Unknown Race<br>
-                        <strong>Level:</strong> 1<br>
-                        <strong>Alignment:</strong> Unknown Alignment
+                    <div class="preview-header-row">
+                        <h3 id="preview-name" class="preview-name">
+                            {{ character.name if character else 'Character Name' }}
+                        </h3>
+                        <span class="preview-alignment" id="preview-alignment">
+                            <i class="fas fa-shield-alt"></i>
+                            {{ character.alignment if character and character.alignment else 'Alignment' }}
+                        </span>
+                    </div>
+                    
+                    <div class="preview-race-class">
+                        <span class="preview-race" id="preview-race">
+                            <i class="fas fa-paw"></i>
+                            {{ character.race if character else 'Race' }}
+                        </span>
+                        <span class="preview-class" id="preview-class">
+                            <i class="fas fa-sword"></i>
+                            {{ character.character_class if character else 'Class' }}
+                        </span>
+                    </div>
+
+                    <div class="preview-background" id="preview-background">
+                        {{ character.background if character and character.background else 'Background not set' }}
                     </div>
                 </div>
             </div>
@@ -223,4 +801,15 @@
         </div>
     </form>
 </div>
+
+<!-- Add any additional modals or hidden elements here -->
+<div id="image-crop-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Crop Character Image</h3>
+        <div id="image-crop-container"></div>
+        <button id="crop-save" class="btn btn-primary">Save Image</button>
+    </div>
+</div>
+
 {% endblock %}

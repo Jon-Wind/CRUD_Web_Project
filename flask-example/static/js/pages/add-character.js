@@ -253,18 +253,29 @@ function removeErrorMessage(formGroup) {
  * Initialize character preview functionality
  */
 function initializeCharacterPreview() {
-    const nameField = document.getElementById('character-name');
-    const classField = document.getElementById('character-class');
-    const raceField = document.getElementById('race');
-    const levelField = document.getElementById('level');
-    const alignmentField = document.getElementById('alignment-display');
-
-    const fields = [nameField, classField, raceField, levelField, alignmentField];
-    fields.forEach(field => {
+    const previewFields = [
+        'character-name', 'character-class', 'race', 'level', 
+        'background', 'short-description', 'alignment-display'
+    ];
+    
+    previewFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
         if (field) {
             field.addEventListener('input', updateCharacterPreview);
             field.addEventListener('change', updateCharacterPreview);
         }
+    });
+    
+    // Also update when alignment radio buttons change
+    const alignmentRadios = document.querySelectorAll('input[type="radio"][name="alignment"]');
+    alignmentRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            const alignmentDisplay = document.getElementById('alignment-display');
+            if (alignmentDisplay) {
+                alignmentDisplay.value = this.value;
+                updateCharacterPreview();
+            }
+        });
     });
 
     // Initial preview update
@@ -278,27 +289,83 @@ function updateCharacterPreview() {
     const preview = document.querySelector('.character-preview');
     if (!preview) return;
 
-    const name = document.getElementById('character-name')?.value || 'Unnamed Character';
-    const characterClass = document.getElementById('character-class')?.value || 'Unknown Class';
-    const race = document.getElementById('race')?.value || 'Unknown Race';
+    // Get form values
+    const name = document.getElementById('character-name')?.value || 'Character Name';
+    const characterClass = document.getElementById('character-class')?.value || 'Class';
+    const race = document.getElementById('race')?.value || 'Race';
     const level = document.getElementById('level')?.value || '1';
-    const alignment = document.getElementById('alignment-display')?.value || 'Unknown Alignment';
+    const alignment = document.getElementById('alignment-display')?.value || 'Alignment';
+    const background = document.getElementById('background')?.value || 'Background not set';
+    const shortDescription = document.getElementById('short-description')?.value || '';
 
     // Update preview elements
-    const previewName = preview.querySelector('.preview-name');
-    const previewInfo = preview.querySelector('.preview-info');
+    const previewName = preview.querySelector('#preview-name');
+    const previewClass = preview.querySelector('#preview-class');
+    const previewRace = preview.querySelector('#preview-race');
+    const previewAlignment = preview.querySelector('#preview-alignment');
+    const previewBackground = preview.querySelector('#preview-background');
+    const previewLevelBadge = preview.querySelector('#preview-level-badge');
+    
+    // Debug log
+    console.log('Updating preview with values:', {
+        name, characterClass, race, level, alignment, background, shortDescription
+    });
 
+    // Update each element if it exists
     if (previewName) {
-        previewName.textContent = name;
+        previewName.textContent = name || 'Character Name';
+        console.log('Updated name to:', name);
     }
-
-    if (previewInfo) {
-        previewInfo.innerHTML = `
-            <strong>Class:</strong> ${characterClass}<br>
-            <strong>Race:</strong> ${race}<br>
-            <strong>Level:</strong> ${level}<br>
-            <strong>Alignment:</strong> ${alignment}
-        `;
+    
+    if (previewClass) {
+        const classText = characterClass || 'Class';
+        // Update both the text node and the icon if it exists
+        const icon = previewClass.querySelector('i') || document.createElement('i');
+        if (!icon.classList.contains('fa-sword')) {
+            icon.className = 'fas fa-sword';
+        }
+        previewClass.innerHTML = '';
+        previewClass.appendChild(icon);
+        previewClass.appendChild(document.createTextNode(` ${classText}`));
+        console.log('Updated class to:', classText);
+    }
+    
+    if (previewRace) {
+        const raceText = race || 'Race';
+        // Update both the text node and the icon if it exists
+        const icon = previewRace.querySelector('i') || document.createElement('i');
+        if (!icon.classList.contains('fa-paw')) {
+            icon.className = 'fas fa-paw';
+        }
+        previewRace.innerHTML = '';
+        previewRace.appendChild(icon);
+        previewRace.appendChild(document.createTextNode(` ${raceText}`));
+        console.log('Updated race to:', raceText);
+    }
+    
+    if (previewAlignment) {
+        const alignmentText = alignment || 'Alignment';
+        // Update both the text node and the icon if it exists
+        const icon = previewAlignment.querySelector('i') || document.createElement('i');
+        if (!icon.classList.contains('fa-shield-alt')) {
+            icon.className = 'fas fa-shield-alt';
+        }
+        previewAlignment.innerHTML = '';
+        previewAlignment.appendChild(icon);
+        previewAlignment.appendChild(document.createTextNode(` ${alignmentText}`));
+        console.log('Updated alignment to:', alignmentText);
+    }
+    
+    if (previewBackground) {
+        const backgroundText = shortDescription || background || 'Background not set';
+        previewBackground.textContent = backgroundText;
+        console.log('Updated background to:', backgroundText);
+    }
+    
+    if (previewLevelBadge) {
+        const levelText = level || '1';
+        previewLevelBadge.textContent = levelText;
+        console.log('Updated level to:', levelText);
     }
 }
 

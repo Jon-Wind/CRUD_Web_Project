@@ -8,6 +8,24 @@
 
 ## Development Log
 
+### 2025-11-26 - Character Preview and Form Styling Updates
+- **Author**: Cascade AI
+- **Time Spent**: 1 hour
+- **Changes Made**:
+  - Removed stats and ability scores from the character preview for a cleaner design
+  - Fixed the level circle positioning and styling in the character preview
+  - Updated the character preview to properly display character information with icons
+  - Fixed JavaScript errors in the character preview update function
+  - Improved the overall layout and responsiveness of the character preview
+- **Files Modified**:
+  - `flask-example/static/js/pages/add-character.js` - Updated preview update logic
+  - `flask-example/templates/add_character.html` - Modified preview HTML and CSS
+- **Notes/Challenges**:
+  - [x] Fixed syntax errors in the JavaScript update function
+  - [x] Ensured proper icon display for class, race, and alignment
+  - [x] Added debug logging for troubleshooting preview updates
+  - [x] Verified all form fields update the preview in real-time
+
 ### 2025-11-20 - Website Crash Fix: Added Missing Route Handlers
 - **Author**: BLACKBOXAI
 - **Time Spent**: 0.5 hours
