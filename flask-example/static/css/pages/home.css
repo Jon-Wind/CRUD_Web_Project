@@ -178,11 +178,44 @@
 }
 
 /* Character Cards Grid */
+#characters-container {
+  width: 100%;
+}
+
 .grid-4-col {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--spacing-6);
   margin-bottom: var(--spacing-8);
+  width: 100%;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 var(--spacing-4);
+  box-sizing: border-box;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .grid-4-col {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 992px) {
+  .grid-4-col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .grid-4-col {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 .character-card {
@@ -192,7 +225,8 @@
   overflow: hidden;
   transition: all var(--transition-normal);
   position: relative;
-  height: 360px;
+  height: 100%;
+  min-height: 360px;
   display: flex;
   flex-direction: column;
 }

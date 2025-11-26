@@ -121,23 +121,33 @@ def register_routes(app):
         
         db = get_db()
         
+        # Build the base query
+        query = """
+            SELECT id, name, race, character_class, level, short_description, 
+                   image_path, alignment, backstory, personality
+            FROM dnd_characters 
+        """
+        
+        params = []
+        
+        # Add search conditions if search query exists
         if search_query:
-            query = f"""
-                SELECT id, name, race, character_class, level, short_description, image_path, alignment 
-                FROM dnd_characters 
-                WHERE name LIKE ? OR race LIKE ? OR character_class LIKE ? OR short_description LIKE ?
-                ORDER BY {sort_column} {sort_order}, name
-            """
             search_pattern = f'%{search_query}%'
-            rows = db.execute(query, (search_pattern, search_pattern, search_pattern, search_pattern)).fetchall()
-        else:
-            query = f"""
-                SELECT id, name, race, character_class, level, short_description, image_path, alignment
-                FROM dnd_characters 
-                ORDER BY {sort_column} {sort_order}, name
+            query += """
+                WHERE name LIKE ? 
+                OR race LIKE ? 
+                OR character_class LIKE ? 
+                OR short_description LIKE ?
+                OR backstory LIKE ?
+                OR personality LIKE ?
             """
-            rows = db.execute(query).fetchall()
-            
+            params.extend([search_pattern] * 6)
+        
+        # Add sorting
+        query += f" ORDER BY {sort_column} {sort_order}, name"
+        
+        # Execute the query
+        rows = db.execute(query, params).fetchall() if params else db.execute(query).fetchall()
         characters = [dict(row) for row in rows]
         
         # Check if it's an AJAX request

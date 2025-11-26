@@ -1,12 +1,17 @@
 /**
  * Homepage JavaScript - D&D Character Manager
- * Handles search, sorting, and AJAX functionality
+ * Handles search, sorting, and AJAX functionality with debouncing
  */
 
 // Wait for DOM to be loaded
 document.addEventListener('DOMContentLoaded', function() {
     initializeHomepage();
+    initializeSearchSuggestions();
 });
+
+// Global variables
+let debounceTimer;
+const DEBOUNCE_DELAY = 300; // ms
 
 /**
  * Initialize homepage functionality
@@ -15,25 +20,63 @@ function initializeHomepage() {
     const searchForm = document.getElementById('search-form');
     const searchInput = document.getElementById('search-input');
     const sortSelect = document.getElementById('sort-select');
-    const loadingIndicator = document.getElementById('loading-indicator');
+    const orderSelect = document.getElementById('order-select');
     
-    // Initialize search functionality
+    // Initialize search functionality with debouncing
+    if (searchInput) {
+        searchInput.addEventListener('input', debounce(handleSearch, DEBOUNCE_DELAY));
+    }
+    
+    // Prevent form submission for AJAX search
     if (searchForm) {
-        searchForm.addEventListener('submit', handleSearch);
+        searchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            handleSearch();
+        });
     }
     
     // Initialize sort functionality
     if (sortSelect) {
-        sortSelect.addEventListener('change', function() {
-            if (searchForm) {
-                searchForm.dispatchEvent(new Event('submit', { cancelable: true }));
-            }
+        sortSelect.addEventListener('change', handleSearch);
+    }
+    
+        // Initialize order toggle and buttons
+    if (orderSelect) {
+        orderSelect.addEventListener('change', handleSearch);
+        
+        // Add click handlers for sort order buttons
+        const orderButtons = document.querySelectorAll('.sort-order-btn');
+        orderButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                orderButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.setAttribute('aria-pressed', 'false');
+                });
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                this.setAttribute('aria-pressed', 'true');
+                
+                // Update the hidden input value
+                document.getElementById('order-input').value = this.dataset.order;
+                
+                // Trigger search
+                handleSearch();
+            });
         });
     }
     
     // Handle browser back/forward navigation
     window.addEventListener('popstate', function() {
-        location.reload();
+        // Update UI based on URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        if (searchInput) searchInput.value = urlParams.get('search') || '';
+        if (sortSelect) sortSelect.value = urlParams.get('sort') || 'name';
+        if (orderSelect) orderSelect.value = urlParams.get('order') || 'asc';
+        
+        // Trigger search with current parameters
+        handleSearch();
     });
     
     // Add keyboard navigation support
@@ -43,90 +86,134 @@ function initializeHomepage() {
             if (e.key === 'Escape') {
                 this.value = '';
                 this.blur();
+                handleSearch();
             }
         });
     }
 }
 
 /**
- * Handle search form submission with AJAX
- * @param {Event} event - Form submission event
+ * Handle search functionality with AJAX
+ * @param {Event} [event] - Optional event object
  */
-async function handleSearch(event) {
-    event.preventDefault();
-    
-    const form = event.target;
-    const formData = new FormData(form);
-    const url = form.action;
-    const loadingIndicator = document.getElementById('loading-indicator');
-    const characterResults = document.getElementById('character-results');
-    
-    try {
-        // Show loading state
-        setLoading(true);
-        
-        // Make AJAX request
-        const response = await fetch(`${url}?${new URLSearchParams(formData).toString()}`, {
-            method: 'GET',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'Accept': 'text/html,application/json'
-            }
-        });
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-
-        // Update character grid with new results
-        updateCharacterGrid(data);
-        
-        // Update URL without page reload
-        updateURL(formData);
-        
-    } catch (error) {
-        console.error('Search error:', error);
-        
-        // Fallback to normal form submission if AJAX fails
-        showErrorMessage('Search failed. Please try again.');
-        setTimeout(() => {
-            form.submit();
-        }, 2000);
-        
-    } finally {
-        setLoading(false);
+function handleSearch(event) {
+    if (event) {
+        event.preventDefault();
     }
+    
+    const searchInput = document.getElementById('search-input');
+    const sortSelect = document.getElementById('sort-select');
+    const orderInput = document.getElementById('order-input');
+    
+    if (!searchInput || !sortSelect || !orderInput) return;
+    
+    const searchQuery = searchInput.value.trim();
+    const sortBy = sortSelect.value;
+    const sortOrder = orderInput.value;
+    
+    // Show loading state
+    setLoading(true);
+    
+    // Build URL with query parameters
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams();
+    
+    if (searchQuery) params.set('search', searchQuery);
+    if (sortBy) params.set('sort', sortBy);
+    if (sortOrder) params.set('order', sortOrder);
+    
+    // Update URL without page reload
+    const newUrl = `${url.pathname}?${params.toString()}`;
+    window.history.pushState({}, '', newUrl);
+    
+    // Make AJAX request
+    fetch(newUrl, {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Update the character grid
+        updateCharacterGrid(data.characters);
+        
+        // Update the result count
+        updateResultCount(data.characters.length);
+        
+        // Update URL and title
+        document.title = `D&D Characters${searchQuery ? ` - Search: ${searchQuery}` : ''}`;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showErrorMessage('Failed to load characters. Please try again.');
+    })
+    .finally(() => {
+        setLoading(false);
+    });
 }
 
 /**
  * Update the character grid with new results
- * @param {Object} data - JSON response from server
+ * @param {Array} characters - Array of character objects
  */
-function updateCharacterGrid(data) {
-    try {
-        // Update search query display
-        updateSearchHeader(data.search_query);
+function updateCharacterGrid(characters) {
+    const characterResults = document.getElementById('characters-container');
+    if (!characterResults) return;
 
-        // Update sort controls
-        updateSortControls(data.current_sort, data.current_order);
+    // Clear existing content
+    characterResults.innerHTML = '';
 
-        // Update character grid
-        const currentResults = document.getElementById('character-results');
-        if (currentResults) {
-            currentResults.innerHTML = generateCharacterGridHTML(data.characters);
-        }
+    if (characters && characters.length > 0) {
+        // Create the grid container
+        const gridContainer = document.createElement('div');
+        gridContainer.className = 'grid-4-col';
 
-        // Re-initialize any event listeners for new content
+        // Create and append new character cards to the grid
+        characters.forEach(character => {
+            const characterCard = createCharacterCard(character);
+            gridContainer.appendChild(characterCard);
+        });
+
+        // Append the grid to the results container
+        characterResults.appendChild(gridContainer);
+
+        // Initialize any new content (e.g., tooltips, event listeners)
         initializeNewContent();
 
-        // Announce to screen readers
-        announceToScreenReader('Search results updated');
+        // Announce results to screen readers
+        announceToScreenReader(`Found ${characters.length} characters`);
+    } else {
+        // No results found - use the proper empty state styling
+        characterResults.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-dice-d20"></i>
+                </div>
+                <h2 class="empty-title">No Characters Found</h2>
+                <p class="empty-description">
+                    No characters match your search. Try different keywords or browse all characters.
+                </p>
+            </div>
+        `;
 
-    } catch (error) {
-        console.error('Error updating character grid:', error);
-        throw error;
+        announceToScreenReader('No characters found');
+    }
+}
+
+/**
+ * Update the result count display
+ * @param {number} count - Number of results
+ */
+function updateResultCount(count) {
+    const resultCountElement = document.getElementById('result-count');
+    if (resultCountElement) {
+        resultCountElement.textContent = `${count} character${count !== 1 ? 's' : ''} found`;
     }
 }
 
@@ -318,13 +405,13 @@ function announceToScreenReader(message) {
  */
 function debounce(func, wait) {
     let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
+    return function(...args) {
+        const context = this;
+        
         clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
+        timeout = setTimeout(() => {
+            func.apply(context, args);
+        }, wait);
     };
 }
 
@@ -508,6 +595,106 @@ function selectSuggestion(suggestion) {
             searchForm.dispatchEvent(new Event('submit', { cancelable: true }));
         }
     }
+}
+
+/**
+ * Create a character card element
+ * @param {Object} character - Character data
+ * @returns {HTMLElement} - Character card element
+ */
+function createCharacterCard(character) {
+    // Create the article element directly (matching initial HTML structure)
+    const card = document.createElement('article');
+    card.className = 'character-card';
+    card.setAttribute('data-character-id', character.id);
+
+    // Set the image source, with a fallback to placeholder
+    let imageSrc = '/static/images/placeholder-character.jpg';
+    if (character.image_path) {
+        imageSrc = character.image_path.startsWith('http') ?
+            character.image_path :
+            `/static/${character.image_path}`;
+    }
+
+    // Create the card HTML
+    card.innerHTML = `
+        <a href="/character/${character.id}" class="character-image-container">
+            <img src="${imageSrc}"
+                 alt="${escapeHtml(character.image_alt || character.name || 'Character')}"
+                 class="character-image"
+                 loading="lazy"
+                 onerror="this.onerror=null; this.src='/static/images/placeholder-character.jpg';">
+            <div class="character-level-badge">Level ${character.level || 1}</div>
+        </a>
+        <div class="character-content">
+            <h3 class="character-name">${escapeHtml(character.name || 'Unnamed Character')}</h3>
+            <p class="character-class">${escapeHtml(character.character_class || 'Unknown Class')}</p>
+            <p class="character-race">${escapeHtml(character.race || 'Unknown Race')} • ${character.alignment || ''}</p>
+            ${character.short_description ?
+                `<p class="character-description">${truncate(escapeHtml(character.short_description), 100)}</p>` :
+                '<p class="character-description">No description available</p>'
+            }
+            <div class="character-actions">
+                <a href="/character/${character.id}" class="character-action-btn btn btn-primary btn-sm">
+                    <i class="fas fa-eye"></i>
+                    View
+                </a>
+                <a href="/character/${character.id}/edit" class="character-action-btn btn btn-secondary btn-sm">
+                    <i class="fas fa-edit"></i>
+                    Edit
+                </a>
+            </div>
+        </div>
+    `;
+
+    return card;
+}
+
+/**
+ * Escape HTML to prevent XSS
+ * @param {string} str - String to escape
+ * @returns {string} - Escaped string
+ */
+function escapeHtml(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+/**
+ * Truncate text to a certain length
+ * @param {string} text - Text to truncate
+ * @param {number} maxLength - Maximum length
+ * @returns {string} - Truncated text
+ */
+function truncate(text, maxLength) {
+    if (!text) return '';
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
+}
+
+/**
+ * Get Bootstrap badge class based on alignment
+ * @param {string} alignment - Character alignment
+ * @returns {string} - Bootstrap badge class
+ */
+function getAlignmentBadgeClass(alignment) {
+    if (!alignment) return 'bg-secondary';
+    
+    const alignmentMap = {
+        'lawful good': 'bg-success',
+        'neutral good': 'bg-success bg-opacity-75',
+        'chaotic good': 'bg-success bg-opacity-50',
+        'lawful neutral': 'bg-secondary bg-opacity-75',
+        'true neutral': 'bg-secondary',
+        'chaotic neutral': 'bg-secondary bg-opacity-50',
+        'lawful evil': 'bg-danger bg-opacity-75',
+        'neutral evil': 'bg-danger',
+        'chaotic evil': 'bg-danger bg-opacity-50'
+    };
+    
+    return alignmentMap[alignment.toLowerCase()] || 'bg-secondary';
 }
 
 // Export functions for global access

@@ -1,4 +1,4 @@
-# Project Logbook
+A# Project Logbook
 
 ## Project Information
 - **Project Name**: Character Creator Library
@@ -7,6 +7,40 @@
 - **Repository**: [Repository URL](https://github.com/Jon-Wind/CRUD_Web_Project)
 
 ## Development Log
+
+### 2025-12-02 - Fixed Character Card Layout Consistency After AJAX Updates
+- **Author**: BLACKBOXAI
+- **Time Spent**: 0.5 hours
+- **Changes Made**:
+  - Fixed character cards expanding to full width after AJAX searches by ensuring proper CSS grid structure
+  - Modified `updateCharacterGrid` function to create `.grid-4-col` container div for consistent 3-per-row layout
+  - Updated `createCharacterCard` to return `<article>` elements directly instead of Bootstrap-wrapped divs
+  - Replaced Bootstrap alert styling in "no results" state with proper `.empty-state` CSS class
+  - Corrected edit button URL from `/edit-character/${character.id}` to `/character/${character.id}/edit`
+- **Files Modified**:
+  - `flask-example/static/js/pages/home.js` - Updated character grid and card creation logic
+- **Notes/Challenges**:
+  - [x] Identified that AJAX updates were using Bootstrap grid classes instead of CSS grid structure
+  - [x] Ensured consistent layout before and after searches/refreshes
+  - [x] Maintained proper semantic HTML structure with `<article>` elements
+  - [x] Fixed URL routing for edit functionality
+
+### 2025-11-27 - Mobile Responsiveness Improvements for Add Character Page
+- **Time Spent**: 0.5 hours
+- **Changes Made**:
+  - Made the add character form fully responsive for mobile devices
+  - Implemented a single-column layout for mobile screens (< 768px)
+  - Improved form controls and touch targets for better mobile interaction
+  - Enhanced character preview section for mobile viewing
+  - Added responsive spacing and padding adjustments
+  - Ensured form actions are properly stacked on mobile
+- **Files Modified**:
+  - `flask-example/templates/add_character.html` - Updated CSS with responsive design
+- **Notes/Challenges**:
+  - [x] Ensured all form elements are properly sized for touch interaction
+  - [x] Maintained functionality while improving mobile layout
+  - [x] Verified appearance across different screen sizes
+  - [x] Added appropriate media queries for responsive behavior
 
 ### 2025-11-26 - Character Preview and Form Styling Updates
 - **Author**: Cascade AI

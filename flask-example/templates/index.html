@@ -6,12 +6,112 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/home.css') }}">
+<style>
+    /* Loading indicator */
+    #loading-indicator {
+        display: none;
+        text-align: center;
+        padding: 1rem 0;
+    }
+    
+    .spinner-border {
+        width: 2rem;
+        height: 2rem;
+    }
+    
+    /* Search suggestions */
+    .search-suggestions {
+        position: absolute;
+        width: 100%;
+        max-height: 300px;
+        overflow-y: auto;
+        background: white;
+        border: 1px solid #dee2e6;
+        border-top: none;
+        border-radius: 0 0 0.25rem 0.25rem;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        z-index: 1000;
+        display: none;
+    }
+    
+    .search-suggestions.show {
+        display: block;
+    }
+    
+    .suggestion-item {
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    
+    .suggestion-item:hover,
+    .suggestion-item.selected {
+        background-color: #f8f9fa;
+    }
+    
+    .suggestion-item .suggestion-name {
+        font-weight: 500;
+    }
+    
+    .suggestion-item .suggestion-details {
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+    
+    /* Sort controls */
+    .sort-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .sort-label {
+        margin-right: 0.75rem;
+        font-weight: 500;
+    }
+    
+    .sort-controls {
+        display: flex;
+        align-items: center;
+    }
+    
+    .sort-select {
+        margin-right: 0.5rem;
+        padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+    }
+    
+    .sort-order-btn {
+        background: none;
+        border: 1px solid #ced4da;
+        padding: 0.375rem 0.75rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .sort-order-btn:first-of-type {
+        border-radius: 0.25rem 0 0 0.25rem;
+        border-right: none;
+    }
+    
+    .sort-order-btn:last-of-type {
+        border-radius: 0 0.25rem 0.25rem 0;
+    }
+    
+    .sort-order-btn.active {
+        background-color: #0d6efd;
+        color: white;
+        border-color: #0d6efd;
+    }
+</style>
 {% endblock %}
 
 {% block extra_js %}
 <script src="{{ url_for('static', filename='js/pages/home.js') }}"></script>
 {% endblock %}
-        {% block content %}
+
+{% block content %}
 <div class="grid-container">
     <!-- Hero Section -->
     <section class="hero-section">
@@ -37,7 +137,7 @@
     <section class="search-section">
         <div class="container">
             <div class="search-container">
-                <form method="get" action="{{ url_for('index') }}" class="search-form" id="search-form" role="search">
+                <form id="search-form" class="search-form" role="search">
                     <div class="search-input-group">
                         <input type="text" 
                                name="search" 
@@ -45,11 +145,15 @@
                                id="search-input"
                                placeholder="Search by name, race, class, or description..."
                                value="{{ search_query }}"
-                               aria-label="Search characters">
+                               autocomplete="off"
+                               aria-label="Search characters"
+                               aria-autocomplete="list"
+                               aria-controls="search-suggestions">
                         <button type="submit" class="search-button btn btn-primary" aria-label="Search">
                             <i class="fas fa-search"></i>
                             Search
                         </button>
+                        <div id="search-suggestions" class="search-suggestions" role="listbox"></div>
                     </div>
                 </form>
             </div>
@@ -59,51 +163,59 @@
     <!-- Characters Section -->
     <section class="characters-section">
         <div class="container">
-            {% if search_query %}
             <div class="search-results-header">
-                <p class="search-results-count">
-                    Found {{ characters|length }} character{{ 's' if characters|length != 1 else '' }} for "{{ search_query }}"
-                    <a href="{{ url_for('index') }}" class="clear-search btn btn-sm btn-outline-primary">Clear search</a>
+                <p id="result-count" class="search-results-count">
+                    {% if search_query %}
+                        Found {{ characters|length }} character{{ 's' if characters|length != 1 else '' }} for "{{ search_query }}"
+                        <a href="{{ url_for('index') }}" class="clear-search btn btn-sm btn-outline-primary">Clear search</a>
+                    {% else %}
+                        {{ characters|length }} character{{ 's' if characters|length != 1 else '' }} found
+                    {% endif %}
                 </p>
             </div>
-            {% endif %}
 
             <!-- Sort Controls -->
-            {% if characters %}
             <div class="sort-container">
                 <div class="sort-label">
                     <label for="sort-select">Sort by:</label>
                 </div>
                 <div class="sort-controls">
-                    <form method="get" action="{{ url_for('index') }}" class="sort-form">
-                        <input type="hidden" name="search" value="{{ search_query }}">
-                        <select name="sort" class="sort-select" id="sort-select" onchange="this.form.submit()">
-                            <option value="name" {% if current_sort == 'name' %}selected{% endif %}>Name</option>
-                            <option value="level" {% if current_sort == 'level' %}selected{% endif %}>Level</option>
-                            <option value="race" {% if current_sort == 'race' %}selected{% endif %}>Race</option>
-                            <option value="class" {% if current_sort == 'class' %}selected{% endif %}>Class</option>
-                            <option value="alignment" {% if current_sort == 'alignment' %}selected{% endif %}>Alignment</option>
-                        </select>
-                        <button type="button" 
-                                class="sort-order-btn {% if current_order == 'asc' %}active{% endif %}" 
-                                onclick="document.getElementById('sort-order-input').value='asc'; this.form.submit()"
-                                title="Sort ascending">
-                            <i class="fas fa-arrow-up"></i>
-                        </button>
-                        <button type="button" 
-                                class="sort-order-btn {% if current_order == 'desc' %}active{% endif %}" 
-                                onclick="document.getElementById('sort-order-input').value='desc'; this.form.submit()"
-                                title="Sort descending">
-                            <i class="fas fa-arrow-down"></i>
-                        </button>
-                        <input type="hidden" name="order" value="{{ current_order }}" id="sort-order-input">
-                    </form>
+                    <select class="sort-select" id="sort-select">
+                        <option value="name" {% if current_sort == 'name' %}selected{% endif %}>Name</option>
+                        <option value="level" {% if current_sort == 'level' %}selected{% endif %}>Level</option>
+                        <option value="race" {% if current_sort == 'race' %}selected{% endif %}>Race</option>
+                        <option value="class" {% if current_sort == 'class' %}selected{% endif %}>Class</option>
+                        <option value="alignment" {% if current_sort == 'alignment' %}selected{% endif %}>Alignment</option>
+                    </select>
+                    <button type="button" 
+                            class="sort-order-btn {% if current_order == 'asc' %}active{% endif %}" 
+                            id="order-asc"
+                            data-order="asc"
+                            title="Sort ascending">
+                        <i class="fas fa-arrow-up"></i>
+                    </button>
+                    <button type="button" 
+                            class="sort-order-btn {% if current_order == 'desc' %}active{% endif %}" 
+                            id="order-desc"
+                            data-order="desc"
+                            title="Sort descending">
+                        <i class="fas fa-arrow-down"></i>
+                    </button>
+                    <input type="hidden" id="order-input" value="{{ current_order }}">
                 </div>
             </div>
-            {% endif %}
 
             <!-- Character Grid -->
-            <div id="character-results">
+            <!-- Loading Indicator -->
+            <div id="loading-indicator" class="text-center py-3" style="display: none;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2">Loading characters...</p>
+            </div>
+
+            <!-- Character Results -->
+            <div id="characters-container">
                 {% if characters %}
                 <div class="grid-4-col">
                     {% for character in characters %}
